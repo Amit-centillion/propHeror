@@ -1,0 +1,232 @@
+<div id="splash-screen" class="splash-screen" *ngIf="IsLoading">
+    <img src="./assets/media/logos/prophero-small.svg" alt="PropHero logo" />
+    <span>Loading ...</span>
+</div>
+  <form novalidate="" [formGroup]="filterUserForm" class="form">
+      <div class="card-header align-items-center p-0 gap-2 gap-md-5">
+        <div class="d-flex w-100 flex-end">
+          <a *ngIf="isAddUserPermission && isAllowAdduser" (click)="onAddUser()" 
+          class="kt_user-details_toggle btn btn-sm btn-flex btn-flex  btn-primary fw-bold me-1">
+            <i class="bi bi-plus fs-2"></i> Add User
+          </a>
+        </div>
+        <div class="table-responsive">
+          <table
+            id="listings_row"
+            class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+            <thead class="fw-bold">
+              <th class="w-40px">
+                <div
+                  class="form-check form-check-sm form-check-custom form-check-solid p-0">
+                  <input class="form-check-input cursor-pointer" type="checkbox" value="1" 
+                  data-kt-check="true" data-kt-check-target=".widget-9-check"/>
+                </div>
+              </th>
+              <th class="min-w-120px" (click)="userData('status', !filterUserForm.value.sortDirection,
+                  page, itemsPerPage)">
+                 Status
+              </th>
+              <th class="min-w-120px" (click)="userData('email', !filterUserForm.value.sortDirection,
+                    page,itemsPerPage)">
+                 Email
+              </th>
+              <th class="min-w-120px" (click)="userData('roleId',!filterUserForm.value.sortDirection,
+                    page,itemsPerPage)">
+                Role
+              </th>
+              <th class="min-w-120px" (click)="userData('firstName',!filterUserForm.value.sortDirection,
+                    page,itemsPerPage)">
+                First Name
+              </th>
+              <th class="min-w-120px" (click)="userData('lastName', !userBasicForm.value.sortDirection,
+                    page,itemsPerPage)">
+                Last Name
+              </th>
+              <th class="min-w-120px" (click)="userData('mobile',!filterUserForm.value.sortDirection,
+                    page,itemsPerPage)">
+                Mobile 
+              </th>
+              <th class="min-w-120px" (click)="userData('jobTitle',!filterUserForm.value.sortDirection,
+                    page,itemsPerPage)">
+              Job Title 
+              </th>
+              <th class="min-w-120px" (click)="userData('department',!filterUserForm.value.sortDirection,
+                    page,itemsPerPage)">
+                Department
+              </th>
+              <th class="min-w-120px" (click)="userData('rerabrn',!filterUserForm.value.sortDirection,
+                    page,itemsPerPage)">
+                Broker Registration No.
+              </th>
+              <th class="min-w-120px" (click)="userData('Created',!filterUserForm.value.sortDirection,
+                            page,itemsPerPage)"> Created </th>
+              <th class="min-w-120px" (click)="userData('CreatedBy',!filterUserForm.value.sortDirection,
+                        page,itemsPerPage)"> Created By </th>
+              <th class="min-w-120px" (click)="userData('Updated',!filterUserForm.value.sortDirection,
+                        page,itemsPerPage)"> Updated </th>
+              <th class="min-w-120px" (click)="userData('UpdatedBy',!filterUserForm.value.sortDirection,
+                        page,itemsPerPage)"> Updated By </th>
+            </thead>
+            <thead id="filter">
+              <th></th>
+              <th>
+                  <ng-select formControlName="status" bindLabel="name"
+                    (change)="onFilterSelectionDrp('status', $event, page, itemsPerPage)">
+                    <ng-option
+                      *ngFor="let status of AllStatusTypess"
+                      [value]="status.id">{{status.name}}
+                      </ng-option>
+                  </ng-select>
+              </th> 
+              <th>
+                  <input class="form-control mb-3 mb-lg-0" type="text"
+                    placeholder="Min 3 chars"  formControlName="email"
+                    name="email" 
+                    (keyup)="onFilterSelection('email', $event, page, itemsPerPage)"/>
+              </th>
+              <th>
+                  <ng-select
+                    formControlName="roleId" bindLabel="name"
+                    (change)="onFilterSelectionDrp('roleId', $event, page, itemsPerPage)">
+                    <ng-option
+                      *ngFor="let role of AllRolesTypess"
+                      [value]="role.id">{{ role.name }}</ng-option>
+                  </ng-select>
+              </th>
+              <th>
+                    <input class="form-control mb-3 mb-lg-0" type="text"
+                      placeholder="Min 3 chars" formControlName="firstName"
+                      name="firstName" 
+                      (keyup)="onFilterSelection('firstName', $event, page, itemsPerPage)"/>
+                </th>
+                <th>
+                    <input class="form-control mb-3 mb-lg-0" type="text"
+                      placeholder="Min 3 chars"  formControlName="lastName"
+                      name="lastName" 
+                      (keyup)="onFilterSelection('lastName', $event, page, itemsPerPage)"/>
+                </th>
+              <th>
+                    <input class="form-control mb-3 mb-lg-0" type="text"
+                      placeholder="Min 3 chars"  formControlName="mobile"
+                      name="mobile" 
+                      (keyup)="onFilterSelection('mobile', $event, page, itemsPerPage)"/>
+                </th>
+              <th>
+                  <input class="form-control mb-3 mb-lg-0"  type="text"
+                    placeholder="Min 3 chars" formControlName="jobTitle"
+                    name="jobTitle"  
+                    (keyup)="onFilterSelection('jobTitle', $event, page, itemsPerPage)"/>
+              </th>
+              <th>
+                  <input class="form-control mb-3 mb-lg-0" type="text"
+                    placeholder="Min 3 chars"  formControlName="department"
+                    name="department" 
+                    (keyup)="onFilterSelection('department', $event, page, itemsPerPage)"/>
+              </th>
+              <th>
+                  <input class="form-control mb-3 mb-lg-0" type="text"
+                    formControlName="reraBrn" name="reraBrn"
+                     placeholder="Min 3 chars"
+                    (keyup)="onFilterSelection('reraBrn', $event, page, itemsPerPage)"
+                    style="border-bottom-color: #e1e3ea"/>
+              </th>
+              <th>
+                <div class="d-flex gap-2 w-300px">
+                  <div class="position-relative w-50">
+                    <input type="date" class="form-control mb-3 mb-lg-0" formControlName="CreatedFrom" (change)="onFilterSelection('CreatedFrom', $event, page, itemsPerPage)"/>
+                    <span class="input-date-placeholder" for="CreatedFrom">From</span>
+                  </div>
+                  <div class="position-relative w-50">
+                    <input type="date" class="form-control mb-3 mb-lg-0" formControlName="CreatedTo" (change)="onFilterSelection('CreatedTo', $event, page, itemsPerPage)"/>
+                    <span class="input-date-placeholder" for="filterCreatedTo">To</span>
+                  </div>
+                </div>
+              </th>
+              <th>
+                <ng-select formControlName="CreatedBy" bindLabel="name" (change)="onFilterSelectionDrp('CreatedBy', $event, page, itemsPerPage)">
+                  <!-- <ng-option value="" selected>Select Assign To</ng-option> -->
+                  <ng-option
+                  *ngFor="let user of userList"
+                  [value]="user.userId"
+                  >{{ user.userName }}</ng-option>
+                </ng-select>
+              <th>
+                <div class="d-flex gap-2 w-300px">
+                  <div class="position-relative w-50">
+                    <input type="date" class="form-control mb-3 mb-lg-0" formControlName="UpdatedFrom" (change)="onFilterSelection('UpdatedFrom', $event, page, itemsPerPage)"/>
+                    <span class="input-date-placeholder" for="CreatedFrom">From</span>
+                  </div>
+                  <div class="position-relative w-50">
+                    <input type="date" class="form-control mb-3 mb-lg-0" formControlName="UpdatedTo" (change)="onFilterSelection('UpdatedTo', $event, page, itemsPerPage)"/>
+                    <span class="input-date-placeholder" for="filterCreatedTo">To</span>
+                  </div>
+                </div>
+              </th>
+              <th>
+                <ng-select formControlName="UpdatedBy" bindLabel="name" (change)="onFilterSelectionDrp('UpdatedBy', $event, page, itemsPerPage)">
+                  <!-- <ng-option value="" selected>Select Assign To</ng-option> -->
+                  <ng-option
+                  *ngFor="let user of userList"
+                  [value]="user.userId"
+                  >{{ user.userName }}</ng-option>
+                </ng-select>
+                </th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of userDetails | paginate : {
+                          itemsPerPage: itemsPerPage,currentPage: page,
+                          totalItems: totalRecord }">
+              <th class="w-40px">
+                <div class="form-check form-check-sm form-check-custom form-check-solid p-0">
+                  <input class="form-check-input cursor-pointer" type="checkbox" [(ngModel)]="data.isSelected" [ngModelOptions]="{standalone: true}" value="{{ data.userId }}" data-kt-check="true" data-kt-check-target=".widget-9-check"
+                    data-kt-check="true" data-kt-check-target=".widget-9-check"/>
+                </div>
+              </th>
+                <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_user-details_toggle':'' " (click)="onEditUser(data.userId)">
+                  <span [ngClass]="data.status ? 'text-green' : 'text-red'">{{ data.status ? 'Active' : 'Inactive' }}</span>
+                </th>
+                <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_user-details_toggle':'' " (click)="onEditUser(data.userId)">
+                  {{ data.email }}
+                </th>
+                <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_user-details_toggle':'' " (click)="onEditUser(data.userId)">
+                  {{ data.roleName }}
+                </th>
+                <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_user-details_toggle':'' " (click)="onEditUser(data.userId)">
+                  {{ data.firstName }}
+                </th>
+                <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_user-details_toggle':'' " (click)="onEditUser(data.userId)">
+                  {{ data.lastName }}
+                </th>
+                <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_user-details_toggle':'' " (click)="onEditUser(data.userId)">
+                  {{ data.mobile }}
+                </th>
+                <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_user-details_toggle':'' " (click)="onEditUser(data.userId)">
+                  {{ data.jobTitle }}
+                </th>
+                <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_user-details_toggle':'' " (click)="onEditUser(data.userId)">
+                  {{ data.department }}
+                </th>
+                <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_user-details_toggle':'' " (click)="onEditUser(data.userId)">
+                  {{ data.rerabrn}}
+                </th>
+                <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_user-details_toggle':'' " (click)="onEditUser(data.userId)">{{data?.created | date: "dd/MM/yyyy"}}</th>
+                <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_user-details_toggle':'' " (click)="onEditUser(data.userId)">{{data?.createdByName}}</th>
+                <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_user-details_toggle':'' " (click)="onEditUser(data.userId)">{{data?.updated | date: "dd/MM/yyyy"}}</th>
+                <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_user-details_toggle':'' " (click)="onEditUser(data.userId)">{{data?.updatedByName}}</th>
+              </tr>
+            </tbody>
+          </table> 
+          <div class="text-center mt-5 mb-5"
+            *ngIf="userDetails && userDetails?.length === 0">
+            Record not available
+          </div>
+        </div>
+        <div class="d-flex justify-content-between w-100 flex-column-reverse">
+            <pagination-controls *ngIf="userDetails.length> 0"
+            (pageChange)="renderPage($event)"></pagination-controls>
+            <span class="d-block mb-3">Showing {{ userDetails.length }} of
+              <b>{{ totalItems}}</b> Users</span>
+        </div>
+      </div>
+  </form>
+  

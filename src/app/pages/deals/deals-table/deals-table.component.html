@@ -1,0 +1,1268 @@
+<div id="splash-screen" class="splash-screen" *ngIf="IsLoading">
+  <img src="./assets/media/logos/prophero-small.svg" alt="PropHero logo" />
+  <span>Loading ...</span>
+</div>
+
+<form [formGroup]="searchDealsForm" novalidate="" class="form">
+  <div class="card-header align-items-center p-0 gap-2 gap-md-5">
+    <div class="d-flex w-100 justify-content-between">
+      <div class="d-flex gap-2">
+        <a
+          class="btn btn-sm btn-light-primary"
+          data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
+          (click)="openAdvancedSearch()"
+        >
+          <i class="bi bi-funnel"></i> Advanced Search
+        </a>
+        
+        <a class="btn btn-sm btn-light-primary" (click)="exportDealsData()">
+          <i class="bi bi-upload"></i> Export
+        </a>
+      </div>
+      <a
+        (click)="onAdd()" *ngIf="isAddDealPermission"
+        class="kt_deal_activities_toggle btn btn-sm btn-flex btn-primary fw-bold me-1">
+        <i class="bi bi-plus"></i> Add Deal
+      </a>
+    </div>
+
+    <div class="table-responsive">
+      <!-- begin::Table -->
+      <table id="listings_row" class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+        <!-- begin::Table head -->
+        <thead class="fw-bold">
+          <th class="w-40px">
+            <div class="form-check form-check-sm form-check-custom form-check-solid p-0">
+              <input class="form-check-input cursor-pointer" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check" 
+              [(ngModel)]="isSelectAllDeals" [ngModelOptions]="{standalone: true}" (change)="SelectAllDeals($event)"/>
+            </div>
+          </th>
+
+          <ng-container *ngFor="let column of columnOrder">
+          <!--Basic Details-->
+          <th *ngIf="column.isVisible && column.column == 'Reference'" class="min-w-120px" (click)="OnSort('Reference')"> Reference </th>
+          <th *ngIf="column.isVisible && column.column == 'Status'" class="min-w-120px" (click)="OnSort('Status')"> Status </th>
+          <th *ngIf="column.isVisible && column.column == 'Sub Status'" class="min-w-120px" (click)="OnSort('Substatus')"> Sub Status </th>
+          <th *ngIf="column.isVisible && column.column == 'Assigned To'" class="min-w-120px" (click)="OnSort('AssignedTo')"> Assigned To </th>
+          <th *ngIf="column.isVisible && column.column == 'Purpose'" class="min-w-120px" (click)="OnSort('Purpose')"> Purpose </th>
+          <th *ngIf="column.isVisible && column.column == 'Transaction Type'" class="min-w-120px" (click)="OnSort('TransactionType')"> Transaction Type </th>
+
+
+          <!-- Listng -->
+          <th *ngIf="column.isVisible && column.column == 'Listing Reference'" class="min-w-120px" (click)="OnSort('ListingReference')"> Listing Reference </th>
+          <th *ngIf="column.isVisible && column.column == 'Property Type'" class="min-w-120px" (click)="OnSort('ListingPropertyType')"> Property Type </th>
+          <th *ngIf="column.isVisible && column.column == 'Beds'" class="min-w-120px" (click)="OnSort('ListingBeds')"> Beds </th>
+          <th *ngIf="column.isVisible && column.column == 'Emirate'" class="min-w-120px" (click)="OnSort('ListingEmirate')"> Emirate </th>
+          <th *ngIf="column.isVisible && column.column == 'Location'" class="min-w-120px" (click)="OnSort('ListingLocation')"> Location </th>
+          <th *ngIf="column.isVisible && column.column == 'Sub Location'" class="min-w-120px" (click)="OnSort('ListingSubLocation')"> Sub Location </th>
+          <th *ngIf="column.isVisible && column.column == 'Price'" class="min-w-120px" (click)="OnSort('ListingPrice')"> Price </th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Contact Reference'" class="min-w-120px" (click)="OnSort('OwnerContactRef')"> Owner Contact Reference </th>
+          <th *ngIf="column.isVisible && column.column == 'Owner First Name'" class="min-w-120px" (click)="OnSort('OwnerFirstName')"> Owner First Name </th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Last Name'" class="min-w-120px" (click)="OnSort('OwnerLastName')"> Owner Last Name </th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Personal Mobile'" class="min-w-120px" (click)="OnSort('OwnerPersonalMobile')"> Owner Personal Mobile </th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Work Mobile'" class="min-w-120px" (click)="OnSort('OwnerWorkMobile')"> Owner Work Mobile </th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Other Mobile'" class="min-w-120px" (click)="OnSort('OwnerOtherMobile')"> Owner Other Mobile </th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Personal Phone'" class="min-w-120px" (click)="OnSort('OwnerPersonalPhone')"> Owner Personal Phone </th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Work Phone'" class="min-w-120px" (click)="OnSort('OwnerWorkPhone')"> Owner Work Phone </th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Other Phone'" class="min-w-120px" (click)="OnSort('OwnerOtherPhone')"> Owner Other Phone </th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Personal Email'" class="min-w-120px" (click)="OnSort('OwnerPersonalEmail')"> Owner Personal Email </th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Work Email'" class="min-w-120px" (click)="OnSort('OwnerWorkEmail')"> Owner Work Email </th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Other Email'" class="min-w-120px" (click)="OnSort('OwnerOtherEmail')"> Owner Other Email </th>
+
+          <!-- Lead -->
+          <th *ngIf="column.isVisible && column.column == 'Lead Reference'" class="min-w-120px" (click)="OnSort('LeadRef')"> Lead Reference </th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant First Name'" class="min-w-120px" (click)="OnSort('LeadFirstName')"> Buyer/Tenant First Name </th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Last Name'" class="min-w-120px" (click)="OnSort('LeadLastName')"> Buyer/Tenant Last Name </th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Personal Mobile'" class="min-w-120px" (click)="OnSort('LeadPersonalMobile')"> Buyer/Tenant Personal Mobile </th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Work Mobile'" class="min-w-120px" (click)="OnSort('LeadWorkMobile')"> Buyer/Tenant Work Mobile </th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Other Mobile'" class="min-w-120px" (click)="OnSort('LeadOtherMobile')"> Buyer/Tenant Other Mobile </th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Personal Phone'" class="min-w-120px" (click)="OnSort('LeadPersonalPhone')"> Buyer/Tenant Personal Phone </th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Work Phone'" class="min-w-120px" (click)="OnSort('LeadWorkPhone')"> Buyer/Tenant Work Phone </th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Other Phone'" class="min-w-120px" (click)="OnSort('LeadOtherPhone')"> Buyer/Tenant Other Phone </th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Personal Email'" class="min-w-120px" (click)="OnSort('LeadPersonalEmail')"> Buyer/Tenant Personal Email </th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Work Email'" class="min-w-120px" (click)="OnSort('LeadWorkEmail')"> Buyer/Tenant Work Email </th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Other Email'" class="min-w-120px" (click)="OnSort('LeadOtherEmail')"> Buyer/Tenant Other Email </th>
+
+
+          <th *ngIf="column.isVisible && column.column == 'Source'" class="min-w-120px" (click)="OnSort('Source')"> Source </th>
+          <th *ngIf="column.isVisible && column.column == 'Estimated Deal Date'" class="min-w-120px" (click)="OnSort('EstimatedDealDate')"> Estimated Deal Date </th>
+          <th *ngIf="column.isVisible && column.column == 'Actual Deal Date'" class="min-w-120px" (click)="OnSort('ActualDealDate')"> Actual Deal Date </th>
+          <th *ngIf="column.isVisible && column.column == 'Deal Price'" class="min-w-120px" (click)="OnSort('DealPrice')"> Deal Price </th>
+          <th *ngIf="column.isVisible && column.column == 'Include VAT'" class="min-w-120px" (click)="OnSort('IncludeVAT')"> Include VAT </th>
+          <th *ngIf="column.isVisible && column.column == 'VAT Amount'" class="min-w-120px" (click)="OnSort('VATAmount')"> VAT Amount </th>
+          <th *ngIf="column.isVisible && column.column == 'Total (inc. VAT)'" class="min-w-120px" (click)="OnSort('TotalVATAmount')"> Total (inc. VAT) </th>
+          <th *ngIf="column.isVisible && column.column == 'Deposit'" class="min-w-120px" (click)="OnSort('Deposit')"> Deposit </th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Agency Fee'" class="min-w-120px" (click)="OnSort('OwnerAgencyFee')"> Owner Agency Fee </th>
+          <th *ngIf="column.isVisible && column.column == 'Lead Agency Fee'" class="min-w-120px" (click)="OnSort('LeadAgencyFee')"> Lead Agency Fee </th>
+          <th *ngIf="column.isVisible && column.column == 'Gross Commission'" class="min-w-120px" (click)="OnSort('GrossCommision')"> Gross Commission </th>
+          <th *ngIf="column.isVisible && column.column == 'Include Commission VAT'" class="min-w-120px" (click)="OnSort('IncludeCommissionVAT')">Include Commission VAT</th>
+          <th *ngIf="column.isVisible && column.column == 'Commission VAT Amount'" class="min-w-120px" (click)="OnSort('CommissionVATAmount')">Commission VAT Amount</th>
+          <th *ngIf="column.isVisible && column.column == 'Total (inc. Commission VAT)'" class="min-w-120px" (click)="OnSort('TotalCommissionVATAmount')">Total (inc. Commission VAT)</th>
+          <th *ngIf="column.isVisible && column.column == 'External Referral'" class="min-w-120px" (click)="OnSort('ExternalReferral')">External Referral</th>
+          <th *ngIf="column.isVisible && column.column == 'External Referral Type'" class="min-w-120px" (click)="OnSort('ExternalReferralType')">External Referral Type</th>
+          <th *ngIf="column.isVisible && column.column == 'Exteranl Referral Name'" class="min-w-120px" (click)="OnSort('ExternalReferralName')">External Referral Name</th>
+          <th *ngIf="column.isVisible && column.column == 'External Referral Commission %'" class="min-w-120px" (click)="OnSort('ExternalReferralCommissionPercentage')">External Referral Commission %</th>
+          <th *ngIf="column.isVisible && column.column == 'External Referral Commission Amount'" class="min-w-120px" (click)="OnSort('ExternalReferralCommissionAmount')">External Referral Commission Amount</th>
+          <th *ngIf="column.isVisible && column.column == 'Your Company Commission %'" class="min-w-120px" (click)="OnSort('YourCompanyCommissionPercentage')">Your Company Commission %</th>
+          <th *ngIf="column.isVisible && column.column == 'Your Company Commission Amount'" class="min-w-120px" (click)="OnSort('YourCompanyCommissionAmount')">Your Company Commission Amount</th>
+          <th *ngIf="column.isVisible && column.column == 'Agent'" class="min-w-120px" (click)="OnSort('Agent')">Agent</th>
+          <th *ngIf="column.isVisible && column.column == 'Commission %'" class="min-w-120px" (click)="OnSort('CommissionPercentage')">Commission %</th>
+          <th *ngIf="column.isVisible && column.column == 'Commission Amount'" class="min-w-120px" (click)="OnSort('CommissionAmount')">Commission Amount</th>
+          <th *ngIf="column.isVisible && column.column == 'Cheques'" class="min-w-120px" (click)="OnSort('Cheques')">Cheques</th>
+          <th *ngIf="column.isVisible && column.column == 'Tenancy Start Date'" class="min-w-120px" (click)="OnSort('TenancyStartDate')">Tenancy Start Date</th>
+          <th *ngIf="column.isVisible && column.column == 'Tenancy Renewal Date'" class="min-w-120px" (click)="OnSort('TenancyRenewalDate')">Tenancy Renewal Date</th>
+          <th *ngIf="column.isVisible && column.column == 'Reminder'" class="min-w-120px" (click)="OnSort('Reminder')">Reminder</th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer Type'" class="min-w-120px" (click)="OnSort('BuyerType')">Buyer Type</th>
+          <th *ngIf="column.isVisible && column.column == 'Finance Type'" class="min-w-120px" (click)="OnSort('FinanceType')">Finance Type</th>
+          <th *ngIf="column.isVisible && column.column == 'Created'" class="min-w-120px" (click)="OnSort('Created')"> Created  </th>
+          <th *ngIf="column.isVisible && column.column == 'Created By'" class="min-w-120px" (click)="OnSort('CreatedBy')"> Created By </th>
+          <th *ngIf="column.isVisible && column.column == 'Updated'" class="min-w-120px" (click)="OnSort('Updated')"> Updated  </th>
+          <th *ngIf="column.isVisible && column.column == 'Updated By'"  class="min-w-120px" (click)="OnSort('UpdatedBy')"> Updated By </th>
+        </ng-container>
+        </thead>
+        <!-- end::Table head -->
+
+        <!-- begin::Table Filter -->
+        <thead id="filter">
+          <th></th>
+          <ng-container *ngFor="let column of columnOrder">
+          <th *ngIf="column.isVisible && column.column == 'Reference'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterRef" (keyup)="MinCharSearch($event,'Ref')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Status'">
+            <ng-select formControlName="filterStatus" bindLabel="name" (change)="filterDeals()">
+                      <ng-option *ngFor="let status of StatusList" [value]="status.id">{{ status.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Sub Status'">
+            <ng-select formControlName="filterSubStatus" bindLabel="name" (change)="filterDeals()">
+                      <ng-option *ngFor="let status of SubStatusList" [value]="status.id">{{ status.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Assigned To'">
+            <ng-select formControlName="filterAssignedTo" bindLabel="name" (change)="filterDeals()">
+                      <ng-option *ngFor="let assignee of AssignedToList" [value]="assignee.id">{{ assignee.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Purpose'">
+            <ng-select formControlName="filterPurpose" bindLabel="name" (change)="filterDeals()">
+                      <ng-option *ngFor="let purpose of PurposeList" [value]="purpose.id">{{ purpose.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Transaction Type'">
+            <ng-select formControlName="filterTransaction" bindLabel="name" (change)="filterDeals()">
+                      <ng-option *ngFor="let transactionType of TransactionTypeLIst" [value]="transactionType.id">{{ transactionType.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+
+          <!-- Listing -->
+          <th *ngIf="column.isVisible && column.column == 'Listing Reference'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterListingRef" (keyup)="MinCharSearch($event,'ListingRef')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Property Type'">
+            <ng-select formControlName="filterListingPropertyType" bindLabel="name" (change)="filterDeals()">
+                      <ng-option *ngFor="let propertyType of PropertyTypeList" [value]="propertyType.id">{{ propertyType.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+          
+          <th *ngIf="column.isVisible && column.column == 'Beds'">
+            <ng-select formControlName="filterListingBeds" bindLabel="name" (change)="filterDeals()">
+                      <ng-option *ngFor="let bed of BedsList" [value]="bed.id">{{ bed.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+          
+          <th *ngIf="column.isVisible && column.column == 'Emirate'">
+            <ng-select formControlName="filterListingEmirate" bindLabel="name" (change)="filterDeals()">
+                      <ng-option *ngFor="let emirate of EmirateList" [value]="emirate.id">{{ emirate.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Location'">
+            <ng-select formControlName="filterListingLocation" bindLabel="name" (change)="filterDeals()">
+                      <ng-option *ngFor="let emirate of LocationList" [value]="emirate.id">{{ emirate.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Sub Location'">
+            <ng-select formControlName="filterListingSubLocation" bindLabel="name" (change)="filterDeals()">
+                      <ng-option *ngFor="let emirate of SubLocationList" [value]="emirate.id">{{ emirate.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Price'">
+            <div class="d-flex gap-2 w-200px">
+              <input placeholder="From" formControlName="minListingPrice" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'minListingPrice')"/>
+              <input placeholder="To" formControlName="maxListingPrice" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'maxListingPrice')"/>
+            </div>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Contact Reference'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterListingContactRef" (keyup)="MinCharSearch($event,'ListingContactRef')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Owner First Name'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterListingOwnerFirstName" (keyup)="MinCharSearch($event,'ListingOwnerFirstName')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Last Name'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterListingOwnerLastName" (keyup)="MinCharSearch($event,'ListingOwnerLastName')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Personal Mobile'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterOwnerPersonalMobile" (keyup)="MinCharSearch($event,'OwnerPersonalMobile')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Work Mobile'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterOwnerWorkMobile" (keyup)="MinCharSearch($event,'OwnerWorkMobile')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Other Mobile'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterOwnerOtherMobile" (keyup)="MinCharSearch($event,'OwnerOtherMobile')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Personal Phone'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterOwnerPersonalPhone" (keyup)="MinCharSearch($event,'OwnerPersonalPhone')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Work Phone'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterOwnerWorkPhone" (keyup)="MinCharSearch($event,'OwnerWorkPhone')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Other Phone'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterOwnerOtherPhone" (keyup)="MinCharSearch($event,'OwnerOtherPhone')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Personal Email'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterOwnerPersonalEmail" (keyup)="MinCharSearch($event,'OwnerPersonalEmail')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Work Email'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterOwnerWorkEmail" (keyup)="MinCharSearch($event,'OwnerWorkEmail')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Other Email'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterOwnerOtherEmail" (keyup)="MinCharSearch($event,'OwnerOtherEmail')"/></th>
+
+
+          <!-- Lead -->
+          <th *ngIf="column.isVisible && column.column == 'Lead Reference'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterLeadRef" (keyup)="MinCharSearch($event,'LeadRef')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant First Name'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterLeadFirstName" (keyup)="MinCharSearch($event,'LeadFirstName')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Last Name'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterLeadLastName" (keyup)="MinCharSearch($event,'LeadLastName')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Personal Mobile'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterLeadPersonalMobile" (keyup)="MinCharSearch($event,'LeadPersonalMobile')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Work Mobile'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterLeadWorkMobile" (keyup)="MinCharSearch($event,'LeadWorkMobile')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Other Mobile'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterLeadOtherMobile" (keyup)="MinCharSearch($event,'LeadOtherMobile')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Personal Phone'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterLeadPersonalPhone" (keyup)="MinCharSearch($event,'LeadPersonalPhone')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Work Phone'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterLeadWorkPhone" (keyup)="MinCharSearch($event,'LeadWorkPhone')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Other Phone'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterLeadOtherPhone" (keyup)="MinCharSearch($event,'LeadOtherPhone')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Personal Email'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterLeadPersonalEmail" (keyup)="MinCharSearch($event,'LeadPersonalEmail')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Work Email'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterLeadWorkEmail" (keyup)="MinCharSearch($event,'LeadWorkEmail')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Other Email'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterLeadOtherEmail" (keyup)="MinCharSearch($event,'LeadOtherEmail')"/></th>
+
+
+
+          <th *ngIf="column.isVisible && column.column == 'Source'">
+            <ng-select formControlName="filterSource" bindLabel="name" (change)="filterDeals()">
+                      <ng-option *ngFor="let source of SourceList" [value]="source.id">{{ source.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+          
+          <th *ngIf="column.isVisible && column.column == 'Estimated Deal Date'">
+            <div class="d-flex gap-2 w-300px">
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0" formControlName="filterEstimatedDealDateFrom" (change)="filterDeals()"/>
+                <span class="input-date-placeholder" for="filterUpdatedFrom">From</span>
+              </div>
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0" formControlName="filterEstimatedDealDateTo" (change)="filterDeals()"/>
+                <span class="input-date-placeholder" for="filterUpdatedTo">To</span>
+              </div>
+            </div><!--./d-flex-->
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Actual Deal Date'">
+            <div class="d-flex gap-2 w-300px">
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0" formControlName="filterActualDealDateFrom" (change)="filterDeals()"/>
+                <span class="input-date-placeholder" for="filterUpdatedFrom">From</span>
+              </div>
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0" formControlName="filterActualDealDateTo" (change)="filterDeals()"/>
+                <span class="input-date-placeholder" for="filterUpdatedTo">To</span>
+              </div>
+            </div><!--./d-flex-->
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Deal Price'">
+            <div class="d-flex gap-2 w-200px">
+              <input placeholder="From" formControlName="minDealPrice" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'minDealPrice')"/>
+              <input placeholder="To" formControlName="maxDealPrice" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'maxDealPrice')"/>
+            </div>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Include VAT'">
+            <ng-select formControlName="filterIncludeVAT" bindLabel="name" (change)="filterDeals()">
+              <ng-option [value]="1">Yes</ng-option>
+              <ng-option [value]="0">No</ng-option>
+            </ng-select>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'VAT Amount'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterVATAmount" mask="0*.00" [dropSpecialCharacters]="false" (keyup)="MinCharSearch($event,'VATAmount')"/></th>
+          
+          <th *ngIf="column.isVisible && column.column == 'Total (inc. VAT)'">
+            <div class="d-flex gap-2 w-200px">
+              <input placeholder="From" formControlName="minTotalVATPrice" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'minTotalVATPrice')"/>
+              <input placeholder="To" formControlName="maxTotalVATPrice" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'maxTotalVATPrice')"/>
+            </div>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Deposit'"><input type="text" placeholder="" class="form-control mb-3 mb-lg-0" formControlName="filterDeposit" mask="0*.00" [dropSpecialCharacters]="false" (keyup)="MinCharSearch($event,'Deposit')"/></th>
+
+          <th *ngIf="column.isVisible && column.column == 'Owner Agency Fee'">
+            <div class="d-flex gap-2 w-200px">
+              <input placeholder="From" formControlName="minOwnerAgencyFee" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'minOwnerAgencyFee')"/>
+              <input placeholder="To" formControlName="maxOwnerAgencyFee" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'maxOwnerAgencyFee')"/>
+            </div>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Lead Agency Fee'">
+            <div class="d-flex gap-2 w-200px">
+              <input placeholder="From" formControlName="minLeadAgencyFee" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'minLeadAgencyFee')"/>
+              <input placeholder="To" formControlName="maxLeadAgencyFee" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'maxLeadAgencyFee')"/>
+            </div>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Gross Commission'">
+            <div class="d-flex gap-2 w-200px">
+              <input placeholder="From" formControlName="minGrossCommission" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'minGrossCommission')"/>
+              <input placeholder="To" formControlName="maxGrossCommission" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'maxGrossCommission')"/>
+            </div>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Include Commission VAT'">
+            <ng-select formControlName="filterIncludeCommissionVAT" bindLabel="name" (change)="filterDeals()">
+              <ng-option [value]="1">Yes</ng-option>
+              <ng-option [value]="0">No</ng-option>
+            </ng-select>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Commission VAT Amount'"><input type="text" placeholder="" class="form-control mb-3 mb-lg-0" formControlName="filterCommissionVATAmount" mask="0*.00" [dropSpecialCharacters]="false" (keyup)="MinCharSearch($event,'CommissionVATAmount')"/></th>
+          
+          <th *ngIf="column.isVisible && column.column == 'Total (inc. Commission VAT)'">
+            <div class="d-flex gap-2 w-200px">
+              <input placeholder="From" formControlName="mintotalcommissionVATAmount" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'mintotalcommissionVATAmount')"/>
+              <input placeholder="To" formControlName="maxtotalcommissionVATAmount" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'maxtotalcommissionVATAmount')"/>
+            </div>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'External Referral'">
+            <ng-select formControlName="filterExternalReferral" bindLabel="name" (change)="filterDeals()">
+              <ng-option [value]="1">Yes</ng-option>
+              <ng-option [value]="0">No</ng-option>
+            </ng-select>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'External Referral Type'">
+            <ng-select formControlName="filterExternalReferralType" bindLabel="name" (change)="filterDeals()">
+              <ng-option [value]="1">Agent</ng-option>
+              <ng-option [value]="2">Individual</ng-option>
+            </ng-select>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Exteranl Referral Name'"><input type="text" placeholder="" class="form-control mb-3 mb-lg-0" formControlName="filterExternalReferralName" (keyup)="MinCharSearch($event,'ExternalReferralName')"/></th>
+          
+          <th *ngIf="column.isVisible && column.column == 'External Referral Commission %'">
+            <div class="d-flex gap-2 w-200px">
+              <input placeholder="From" formControlName="minExternalReferralCommisionPer" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'minExternalReferralCommisionPer')"/>
+              <input placeholder="To" formControlName="maxExternalReferralCommisionPer" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'maxExternalReferralCommisionPer')"/>
+            </div>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'External Referral Commission Amount'">
+            <div class="d-flex gap-2 w-200px">
+              <input placeholder="From" formControlName="minExternalReferralCommisionAmount" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'minExternalReferralCommisionAmount')"/>
+              <input placeholder="To" formControlName="maxExternalReferralCommisionAmount" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'maxExternalReferralCommisionAmount')"/>
+            </div>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Your Company Commission %'">
+            <div class="d-flex gap-2 w-200px">
+              <input placeholder="From" formControlName="minYourCompanyCommisionPer" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'minYourCompanyCommisionPer')"/>
+              <input placeholder="To" formControlName="maxYourCompanyCommisionPer" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'maxYourCompanyCommisionPer')"/>
+            </div>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Your Company Commission Amount'">
+            <div class="d-flex gap-2 w-200px">
+              <input placeholder="From" formControlName="minYourCompanyCommisionAmount" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'minYourCompanyCommisionAmount')"/>
+              <input placeholder="To" formControlName="maxYourCompanyCommisionAmount" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'maxYourCompanyCommisionAmount')"/>
+            </div>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Agent'">
+            <ng-select formControlName="filterAgent" bindLabel="name" (change)="filterDeals()">
+                      <ng-option *ngFor="let agent of AgentList" [value]="agent.id">{{ agent.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Commission %'">
+            <div class="d-flex gap-2 w-200px">
+              <input placeholder="From" formControlName="minCommisionPer" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'minCommisionPer')"/>
+              <input placeholder="To" formControlName="maxCommisionPer" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'maxCommisionPer')"/>
+            </div>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Commission Amount'">
+            <div class="d-flex gap-2 w-200px">
+              <input placeholder="From" formControlName="minCommisionAmount" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'minCommisionAmount')"/>
+              <input placeholder="To" formControlName="maxCommisionAmount" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" (keyup)="MinCharSearch($event,'maxCommisionAmount')"/>
+            </div>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Cheques'">
+            <ng-select formControlName="filterCheque" bindLabel="name" (change)="filterDeals()">
+                      <ng-option *ngFor="let cheque of ChequeList" [value]="cheque.id">{{ cheque.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Tenancy Start Date'">
+            <div class="d-flex gap-2 w-300px">
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0" formControlName="filterTenancyStartDateFrom" (change)="filterDeals()"/>
+                <span class="input-date-placeholder" for="filterUpdatedFrom">From</span>
+              </div>
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0" formControlName="filterTenancyStartDateTo" (change)="filterDeals()"/>
+                <span class="input-date-placeholder" for="filterUpdatedTo">To</span>
+              </div>
+            </div><!--./d-flex-->
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Tenancy Renewal Date'">
+            <div class="d-flex gap-2 w-300px">
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0" formControlName="filterTenancyRenewalDateFrom" (change)="filterDeals()"/>
+                <span class="input-date-placeholder" for="filterUpdatedFrom">From</span>
+              </div>
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0" formControlName="filterTenancyRenewalDateTo" (change)="filterDeals()"/>
+                <span class="input-date-placeholder" for="filterUpdatedTo">To</span>
+              </div>
+            </div><!--./d-flex-->
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Reminder'">
+            <ng-select formControlName="filterReminder" bindLabel="name" (change)="filterDeals()">
+                      <ng-option *ngFor="let reminder of reminderList" [value]="reminder.id">{{ reminder.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+
+
+          <th *ngIf="column.isVisible && column.column == 'Buyer Type'">
+            <ng-select formControlName="filterBuyerType" bindLabel="name" (change)="filterDeals()">
+                      <ng-option *ngFor="let buyerType of buyerTypeList" [value]="buyerType.id">{{ buyerType.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Finance Type'">
+            <ng-select formControlName="filterFinanceType" bindLabel="name" (change)="filterDeals()">
+                      <ng-option *ngFor="let financeType of fincanceTypeList" [value]="financeType.id">{{ financeType.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Created'">
+            <div class="d-flex gap-2 w-300px">
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0" formControlName="filterCreatedFrom" (change)="filterDeals()"/>
+                <span class="input-date-placeholder" for="filterCreatedFrom">From</span>
+              </div>
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0" formControlName="filterCreatedTo" (change)="filterDeals()"/>
+                <span class="input-date-placeholder" for="filterCreatedTo">To</span>
+              </div>
+            </div>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Created By'">
+            <ng-select formControlName="filterCreatedBy" bindLabel="name" (change)="filterDeals()">
+              <!-- <ng-option value="" selected>Select Assign To</ng-option> -->
+              <ng-option
+              *ngFor="let user of userList"
+              [value]="user.userId"
+              >{{ user.userName }}</ng-option>
+            </ng-select>
+            </th>
+          <th *ngIf="column.isVisible && column.column == 'Updated'">
+            <div class="d-flex gap-2 w-300px">
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0" formControlName="filterUpdatedFrom" (change)="filterDeals()"/>
+                <span class="input-date-placeholder" for="filterUpdatedFrom">From</span>
+              </div>
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0" formControlName="filterUpdatedTo" (change)="filterDeals()"/>
+                <span class="input-date-placeholder" for="filterUpdatedTo">To</span>
+              </div>
+            </div><!--./d-flex-->
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Updated By'">
+            <ng-select formControlName="filterUpdatedBy" bindLabel="name" (change)="filterDeals()">
+              <!-- <ng-option value="" selected>Select Assign To</ng-option> -->
+              <ng-option
+              *ngFor="let user of userList"
+              [value]="user.userId"
+              >{{ user.userName }}</ng-option>
+            </ng-select>
+            </th>
+          </ng-container>
+        
+          </thead>
+        
+        <!-- end::Table Filter -->
+
+        <!-- begin::Table Body -->
+        <tbody *ngIf="DealDetailsList.length > 0">
+          <tr *ngFor="let data of DealDetailsList | paginate : { id:'deals_data_table', itemsPerPage: pageSize, currentPage: pageNumber, totalItems: totalRecord}" >
+            <th class="w-40px align-middle">
+              <div class="form-check form-check-sm form-check-custom form-check-solid p-0">
+                <input class="form-check-input cursor-pointer" type="checkbox"[(ngModel)]="data.isSelected" [ngModelOptions]="{standalone: true}" [checked]="selectedDealId == data?.id" value="{{ data.Id }}" data-kt-check="true" data-kt-check-target=".widget-9-check" (change)="SelectDealsDataTable($event,data.id)"/>
+              </div>
+            </th>
+            <ng-container *ngFor="let column of columnOrder">
+            <th *ngIf="column.isVisible && column.column == 'Reference'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.ref}}</th>
+            <th *ngIf="column.isVisible && column.column == 'Status'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)"><span [ngClass]="data?.statusId == 1? 'text-blue': data?.statusId == 2?'text-grey':''">{{data?.status}}</span></th>
+            <th *ngIf="column.isVisible && column.column == 'Sub Status'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)"><span [ngClass]="data?.subStatusId == 1 || data?.subStatusId == 2 || data?.subStatusId == 3 || data?.subStatusId == 4 || data?.subStatusId == 5 ? 'text-blue': data?.subStatusId == 6 ? 'text-green' : data?.subStatusId == 7 ? 'text-red' : data?.subStatusId == 8 ? 'text-orange':''">{{data?.subStatus}}</span></th>
+            <th *ngIf="column.isVisible && column.column == 'Assigned To'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">
+              <div class="d-flex gap-2 align-items-center">
+                <ngx-avatar *ngIf="data?.profileImage == null || data?.profileImage == ''" size="26" class="avatar" [name]="data?.assignedTo"></ngx-avatar>
+                <img *ngIf="data?.profileImage != null && data?.profileImage != ''" [src]="imgUrl + data?.profileImage" alt="Image Preview" [style.border-radius.px]="50" [style.width.px]="26" [style.height.px]="26">
+              <!-- <ngx-avatar size="26" class="avatar" [name]="data?.assignedTo"></ngx-avatar> -->
+              {{data?.assignedTo}}
+            </div>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Purpose'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.purpose}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Transaction Type'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.transactionType}}</th>
+
+          <!-- Listing -->
+          <th *ngIf="column.isVisible && column.column == 'Listing Reference'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.listingReference}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Property Type'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.propertyType}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Beds'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.beds}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Emirate'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.emirate}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Location'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.location}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Sub Location'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.sublocation}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Price'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.price}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Contact Reference'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.contactRef}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Owner First Name'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.ownerFirstName}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Last Name'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.ownerLastName}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Personal Mobile'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{getMobile(1,data?.ownerMobile)}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Work Mobile'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{getMobile(2,data?.ownerMobile)}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Other Mobile'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{getMobile(3,data?.ownerMobile)}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Other Mobile'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{getPhone(1,data?.ownerPhone)}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Work Phone'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{getPhone(2,data?.ownerPhone)}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Other Phone'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{getPhone(3,data?.ownerPhone)}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Personal Email'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{getEmail(1,data?.ownerEmail)}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Work Email'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{getEmail(2,data?.ownerEmail)}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Other Email'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{getEmail(3,data?.ownerEmail)}}</th>
+
+          <!-- Lead -->
+          <th *ngIf="column.isVisible && column.column == 'Lead Reference'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.leadReference}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant First Name'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.leadFirstName}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Last Name'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.leadLastName}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Personal Mobile'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{getMobile(1,data?.leadMobile)}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Work Mobile'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{getMobile(2,data?.leadMobile)}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Other Mobile'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{getMobile(3,data?.leadMobile)}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Personal Phone'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{getPhone(1,data?.leadPhone)}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Work Phone'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{getPhone(2,data?.leadPhone)}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Other Phone'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{getPhone(3,data?.leadPhone)}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Personal Email'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{getEmail(1,data?.leadEmail)}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Work Email'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{getEmail(2,data?.leadEmail)}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer/Tenant Other Email'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{getEmail(3,data?.leadEmail)}}</th>
+
+          <th *ngIf="column.isVisible && column.column == 'Source'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.source}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Estimated Deal Date'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.estimatedDealDate | date: "dd/MM/yyyy"}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Actual Deal Date'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.actualDealDate | date: "dd/MM/yyyy"}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Deal Price'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.dealPrice}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Include VAT'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.includeVAT ? 'Yes':'No'}}</th>
+          <th *ngIf="column.isVisible && column.column == 'VAT Amount'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.vatAmount}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Total (inc. VAT)'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.totalVATAmount}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Deposit'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.deposit}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Owner Agency Fee'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.ownerAgencyFee}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Lead Agency Fee'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.leadAgencyFee}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Gross Commission'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.grossCommission}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Include Commission VAT'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.includeCommissionVAT ? 'Yes':'No'}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Commission VAT Amount'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.commissionVATAmount}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Total (inc. Commission VAT)'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.totalcommissionVATAmount}}</th>
+          <th *ngIf="column.isVisible && column.column == 'External Referral'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.externalReferral? 'Yes':'No'}}</th>
+          <th *ngIf="column.isVisible && column.column == 'External Referral Type'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.externalReferralType}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Exteranl Referral Name'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.externalReferralName}}</th>
+          <th *ngIf="column.isVisible && column.column == 'External Referral Commission %'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.externalReferralCommissionPercentage}}</th>
+          <th *ngIf="column.isVisible && column.column == 'External Referral Commission Amount'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.externalReferralCommissionAmount}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Your Company Commission %'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.yourCompanyCommissionPercentage}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Your Company Commission Amount'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.yourCompanyCommissionAmount}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Agent'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">
+            <div class="d-flex gap-2 align-items-center">
+              <ngx-avatar *ngIf="data?.agentProfileImage == null || data?.agentProfileImage == ''" size="26" class="avatar" [name]="data?.agent"></ngx-avatar>
+                <img *ngIf="data?.agentProfileImage != null && data?.agentProfileImage != ''" [src]="imgUrl + data?.agentProfileImage" alt="Image Preview" [style.border-radius.px]="50" [style.width.px]="26" [style.height.px]="26">
+            <!-- <ngx-avatar size="26" class="avatar" [name]="data?.agent"></ngx-avatar> -->
+            {{data?.agent}}
+          </div></th>
+          <th *ngIf="column.isVisible && column.column == 'Commission %'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.commissionPercentage}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Commission Amount'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.commissionAmount}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Cheques'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.cheque}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Tenancy Start Date'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.tenancyStartDate | date: "dd/MM/yyyy"}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Tenancy Renewal Date'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.tenancyRenewalDate | date: "dd/MM/yyyy"}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Reminder'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.reminder}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Buyer Type'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.buyerType}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Finance Type'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.financeType}}</th>
+          <th *ngIf="column.isVisible && column.column == 'Created'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.created | date: "dd/MM/yyyy"}}</th>
+            <th *ngIf="column.isVisible && column.column == 'Created By'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.createdBy}}</th>
+            <th *ngIf="column.isVisible && column.column == 'Updated'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.updated | date: "dd/MM/yyyy"}}</th>
+            <th *ngIf="column.isVisible && column.column == 'Updated By'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_deal_activities_toggle':'' "  (click)="openDeals(data?.id)">{{data?.updatedBy}}</th>
+          
+            </ng-container>
+          </tr>
+        </tbody>
+        <!-- end::Table Body -->
+      </table>
+      <div class="text-center mt-5 mb-5" *ngIf="DealDetailsList && DealDetailsList?.length == 0"> Record not available </div>
+      <!-- end::Table -->
+   
+    </div>
+    <div class="d-flex justify-content-between w-100 flex-column-reverse">
+      
+      <pagination-controls *ngIf="DealDetailsList.length > 0" (pageChange)="renderPage($event)" id="deals_data_table"></pagination-controls>
+      <span class="d-flex justify-content-between mb-3">
+        <div class="d-flex align-items-center">
+          <span>
+            Showing {{DealDetailsList?.length}} of <b>{{totalRecord}}</b> Deals
+      </span>
+      </div>
+      <div>
+        <a
+        class="btn btn-sm btn-light-primary"
+        data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
+        (click)="openColumnSettings()"
+      >
+        <i class="bi bi-gear"></i> Column Settings
+      </a>
+      </div>
+        </span>
+      <!-- <span class="d-block mb-3">Showing {{DealDetailsList?.length}} of <b>{{totalRecord}}</b> Deals</span> -->
+    </div>
+  </div>
+</form>
+<!-- <button class="kt_deal_activities_toggle" type="button" (click)="openDeals(7)">Edit</button> -->
+
+
+<ng-template #advanceSearch>
+  <form [formGroup]="advanceSearchDealsForm" novalidate="" class="form">
+  <div class="modal-content advance-filter-modal">
+    <div class="modal-header py-3">
+      <!--begin::Modal title-->
+      <h4 class="m-0">Advanced Search</h4>
+      <!--end::Modal title-->
+      <div
+        class="btn btn-sm btn-icon btn-active-color-primary"
+        (click)="closeAdvanceSearch()"
+      >
+        <i class="ki-duotone ki-cross fs-1">
+          <span class="path1"></span>
+          <span class="path2"></span>
+        </i>
+      </div>
+    </div>
+    <div class="modal-body">
+      <!--begin::Form-->
+      <div class="advance-filter">
+        <div class="row mb-6">
+          <ng-container *ngFor="let column of columnOrder">
+          <label *ngIf="column.isVisible && column.column == 'Reference'" class="col-lg-3 col-form-label fw-bold fs-6">Reference</label>
+          <div *ngIf="column.isVisible && column.column == 'Reference'" class="col-lg-3">
+            <input type="text" class="form-control mb-3 mb-lg-0" formControlName="filterRef"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Status'" class="col-lg-3 col-form-label fw-bold fs-6">Status</label>
+          <div *ngIf="column.isVisible && column.column == 'Status'" class="col-lg-3">
+            <ng-select formControlName="filterStatus" bindLabel="name">
+              <ng-option *ngFor="let status of StatusList" [value]="status.id">{{ status.name
+                }}</ng-option>
+            </ng-select>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Sub Status'" class="col-lg-3 col-form-label fw-bold fs-6">Sub Status</label>
+          <div *ngIf="column.isVisible && column.column == 'Sub Status'" class="col-lg-3">
+            <ng-select formControlName="filterSubStatus" bindLabel="name">
+              <ng-option *ngFor="let status of SubStatusList" [value]="status.id">{{ status.name
+                }}</ng-option>
+    </ng-select>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Assigned To'" class="col-lg-3 col-form-label fw-bold fs-6">Assigned To</label>
+          <div *ngIf="column.isVisible && column.column == 'Assigned To'" class="col-lg-3">
+            <ng-select formControlName="filterAssignedTo" bindLabel="name">
+              <ng-option *ngFor="let assignee of AssignedToList" [value]="assignee.id">{{ assignee.name
+                }}</ng-option>
+    </ng-select>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Purpose'" class="col-lg-3 col-form-label fw-bold fs-6">Purpose</label>
+          <div *ngIf="column.isVisible && column.column == 'Purpose'" class="col-lg-3">
+            <ng-select formControlName="filterPurpose" bindLabel="name">
+              <ng-option *ngFor="let purpose of PurposeList" [value]="purpose.id">{{ purpose.name
+                }}</ng-option>
+    </ng-select>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Transaction Type'" class="col-lg-3 col-form-label fw-bold fs-6">Transaction Type</label>
+          <div *ngIf="column.isVisible && column.column == 'Transaction Type'" class="col-lg-3">
+            <ng-select formControlName="filterTransaction" bindLabel="name">
+              <ng-option *ngFor="let transactionType of TransactionTypeLIst" [value]="transactionType.id">{{ transactionType.name
+                }}</ng-option>
+    </ng-select>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Listing Reference'" class="col-lg-3 col-form-label fw-bold fs-6">Listing Reference</label>
+          <div *ngIf="column.isVisible && column.column == 'Listing Reference'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterListingRef"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Property Type'" class="col-lg-3 col-form-label fw-bold fs-6">Property Type</label>
+          <div *ngIf="column.isVisible && column.column == 'Property Type'" class="col-lg-3">
+            <ng-select formControlName="filterListingPropertyType" bindLabel="name">
+              <ng-option *ngFor="let propertyType of PropertyTypeList" [value]="propertyType.id">{{ propertyType.name
+                }}</ng-option>
+    </ng-select>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Beds'" class="col-lg-3 col-form-label fw-bold fs-6">Beds</label>
+          <div *ngIf="column.isVisible && column.column == 'Beds'" class="col-lg-3">
+            <ng-select formControlName="filterListingBeds" bindLabel="name">
+              <ng-option *ngFor="let bed of BedsList" [value]="bed.id">{{ bed.name
+                }}</ng-option>
+    </ng-select>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Emirate'" class="col-lg-3 col-form-label fw-bold fs-6">Emirate</label>
+          <div *ngIf="column.isVisible && column.column == 'Emirate'" class="col-lg-3">
+            <ng-select formControlName="filterListingEmirate" bindLabel="name">
+              <ng-option *ngFor="let emirate of EmirateList" [value]="emirate.id">{{ emirate.name
+                }}</ng-option>
+    </ng-select>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Location'" class="col-lg-3 col-form-label fw-bold fs-6">Location</label>
+          <div *ngIf="column.isVisible && column.column == 'Location'" class="col-lg-3">
+            <ng-select formControlName="filterListingLocation" bindLabel="name">
+              <ng-option *ngFor="let emirate of LocationList" [value]="emirate.id">{{ emirate.name
+                }}</ng-option>
+    </ng-select>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Sub Location'" class="col-lg-3 col-form-label fw-bold fs-6">Sub Location</label>
+          <div *ngIf="column.isVisible && column.column == 'Sub Location'" class="col-lg-3">
+            <ng-select formControlName="filterListingSubLocation" bindLabel="name">
+              <ng-option *ngFor="let emirate of SubLocationList" [value]="emirate.id">{{ emirate.name
+                }}</ng-option>
+    </ng-select>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Price'" class="col-lg-3 col-form-label fw-bold fs-6">Price</label>
+          <div *ngIf="column.isVisible && column.column == 'Price'" class="col-lg-3">
+            <div class="d-flex gap-2">
+              <input placeholder="From" formControlName="minListingPrice" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0"/>
+              <input placeholder="To" formControlName="maxListingPrice" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0"/>
+            </div>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Owner Contact Reference'" class="col-lg-3 col-form-label fw-bold fs-6">Owner Contact Reference</label>
+          <div *ngIf="column.isVisible && column.column == 'Owner Contact Reference'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterListingContactRef"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Owner First Name'" class="col-lg-3 col-form-label fw-bold fs-6">Owner First Name</label>
+          <div *ngIf="column.isVisible && column.column == 'Owner First Name'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterListingOwnerFirstName"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Owner Last Name'" class="col-lg-3 col-form-label fw-bold fs-6">Owner Last Name</label>
+          <div *ngIf="column.isVisible && column.column == 'Owner Last Name'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterListingOwnerLastName"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Owner Personal Mobile'" class="col-lg-3 col-form-label fw-bold fs-6">Owner Personal Mobile</label>
+          <div *ngIf="column.isVisible && column.column == 'Owner Personal Mobile'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterOwnerPersonalMobile"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Owner Work Mobile'" class="col-lg-3 col-form-label fw-bold fs-6">Owner Work Mobile</label>
+          <div *ngIf="column.isVisible && column.column == 'Owner Work Mobile'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterOwnerWorkMobile"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Owner Other Mobile'" class="col-lg-3 col-form-label fw-bold fs-6">Owner Other Mobile</label>
+          <div *ngIf="column.isVisible && column.column == 'Owner Other Mobile'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterOwnerOtherMobile"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Owner Other Mobile'" class="col-lg-3 col-form-label fw-bold fs-6">Owner Personal Phone</label>
+          <div *ngIf="column.isVisible && column.column == 'Owner Other Mobile'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterOwnerPersonalPhone"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Owner Work Phone'" class="col-lg-3 col-form-label fw-bold fs-6">Owner Work Phone</label>
+          <div *ngIf="column.isVisible && column.column == 'Owner Work Phone'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterOwnerWorkPhone"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Owner Other Phone'" class="col-lg-3 col-form-label fw-bold fs-6">Owner Other Phone</label>
+          <div *ngIf="column.isVisible && column.column == 'Owner Other Phone'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterOwnerOtherPhone"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Owner Personal Email'" class="col-lg-3 col-form-label fw-bold fs-6">Owner Personal Email</label>
+          <div *ngIf="column.isVisible && column.column == 'Owner Personal Email'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterOwnerPersonalEmail"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Owner Work Email'" class="col-lg-3 col-form-label fw-bold fs-6">Owner Work Email</label>
+          <div *ngIf="column.isVisible && column.column == 'Owner Work Email'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterOwnerWorkEmail"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Owner Other Email'" class="col-lg-3 col-form-label fw-bold fs-6">Owner Other Email</label>
+          <div *ngIf="column.isVisible && column.column == 'Owner Other Email'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterOwnerOtherEmail"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Lead Reference'" class="col-lg-3 col-form-label fw-bold fs-6">Lead Reference</label>
+          <div *ngIf="column.isVisible && column.column == 'Lead Reference'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterLeadRef"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Buyer/Tenant First Name'" class="col-lg-3 col-form-label fw-bold fs-6">Buyer/Tenant First Name</label>
+          <div *ngIf="column.isVisible && column.column == 'Buyer/Tenant First Name'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterLeadFirstName"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Buyer/Tenant Last Name'" class="col-lg-3 col-form-label fw-bold fs-6">Buyer/Tenant Last Name</label>
+          <div *ngIf="column.isVisible && column.column == 'Buyer/Tenant Last Name'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterLeadLastName"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Buyer/Tenant Personal Mobile'" class="col-lg-3 col-form-label fw-bold fs-6">Buyer/Tenant Personal Mobile</label>
+          <div *ngIf="column.isVisible && column.column == 'Buyer/Tenant Personal Mobile'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterLeadPersonalMobile"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Buyer/Tenant Work Mobile'" class="col-lg-3 col-form-label fw-bold fs-6">Buyer/Tenant Work Mobile</label>
+          <div *ngIf="column.isVisible && column.column == 'Buyer/Tenant Work Mobile'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterLeadWorkMobile"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Buyer/Tenant Other Mobile'" class="col-lg-3 col-form-label fw-bold fs-6">Buyer/Tenant Other Mobile</label>
+          <div *ngIf="column.isVisible && column.column == 'Buyer/Tenant Other Mobile'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterLeadOtherMobile" />
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Buyer/Tenant Personal Phone'" class="col-lg-3 col-form-label fw-bold fs-6">Buyer/Tenant Personal Phone</label>
+          <div *ngIf="column.isVisible && column.column == 'Buyer/Tenant Personal Phone'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterLeadPersonalPhone" />
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Buyer/Tenant Work Phone'" class="col-lg-3 col-form-label fw-bold fs-6">Buyer/Tenant Work Phone</label>
+          <div *ngIf="column.isVisible && column.column == 'Buyer/Tenant Work Phone'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterLeadWorkPhone"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Buyer/Tenant Other Phone'" class="col-lg-3 col-form-label fw-bold fs-6">Buyer/Tenant Other Phone</label>
+          <div *ngIf="column.isVisible && column.column == 'Buyer/Tenant Other Phone'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterLeadOtherPhone"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Buyer/Tenant Personal Email'" class="col-lg-3 col-form-label fw-bold fs-6">Buyer/Tenant Personal Email</label>
+          <div *ngIf="column.isVisible && column.column == 'Buyer/Tenant Personal Email'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterLeadPersonalEmail"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Buyer/Tenant Work Email'" class="col-lg-3 col-form-label fw-bold fs-6">Buyer/Tenant Work Email</label>
+          <div *ngIf="column.isVisible && column.column == 'Buyer/Tenant Work Email'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterLeadWorkEmail"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Buyer/Tenant Other Email'" class="col-lg-3 col-form-label fw-bold fs-6">Buyer/Tenant Other Email</label>
+          <div *ngIf="column.isVisible && column.column == 'Buyer/Tenant Other Email'" class="col-lg-3">
+            <input type="text"  class="form-control mb-3 mb-lg-0" formControlName="filterLeadOtherEmail"/>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Source'" class="col-lg-3 col-form-label fw-bold fs-6">Source</label>
+          <div *ngIf="column.isVisible && column.column == 'Source'" class="col-lg-3">
+            <ng-select formControlName="filterSource" bindLabel="name">
+              <ng-option *ngFor="let source of SourceList" [value]="source.id">{{ source.name
+                }}</ng-option>
+    </ng-select>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Estimated Deal Date'" class="col-lg-3 col-form-label fw-bold fs-6">Estimated Deal Date</label>
+          <div *ngIf="column.isVisible && column.column == 'Estimated Deal Date'" class="col-lg-3">
+            <div class="d-flex gap-2">
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0"  formControlName="filterEstimatedDealDateFrom"/>
+                <span class="input-date-placeholder" for="filterUpdatedFrom">From</span>
+              </div>
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0"  formControlName="filterEstimatedDealDateTo"/>
+                <span class="input-date-placeholder" for="filterUpdatedTo">To</span>
+              </div>
+            </div>
+          </div>
+          
+          <label *ngIf="column.isVisible && column.column == 'Actual Deal Date'" class="col-lg-3 col-form-label fw-bold fs-6">Actual Deal Date</label>
+          <div *ngIf="column.isVisible && column.column == 'Actual Deal Date'" class="col-lg-3">
+            <div class="d-flex gap-2">
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0"  formControlName="filterActualDealDateFrom"/>
+                <span class="input-date-placeholder" for="filterUpdatedFrom">From</span>
+              </div>
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0"  formControlName="filterActualDealDateTo"/>
+                <span class="input-date-placeholder" for="filterUpdatedTo">To</span>
+              </div>
+            </div>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Deal Price'" class="col-lg-3 col-form-label fw-bold fs-6">Deal Price</label>
+          <div *ngIf="column.isVisible && column.column == 'Deal Price'" class="col-lg-3">
+            <div class="d-flex gap-2">
+              <input placeholder="From" formControlName="minDealPrice" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" />
+              <input placeholder="To" formControlName="maxDealPrice" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0"/>
+            </div>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Include VAT'" class="col-lg-3 col-form-label fw-bold fs-6">Include VAT</label>
+          <div *ngIf="column.isVisible && column.column == 'Include VAT'" class="col-lg-3">
+            <ng-select formControlName="filterIncludeVAT" bindLabel="name">
+              <ng-option [value]="1">Yes</ng-option>
+              <ng-option [value]="0">No</ng-option>
+            </ng-select>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'VAT Amount'" class="col-lg-3 col-form-label fw-bold fs-6">VAT Amount</label>
+          <div *ngIf="column.isVisible && column.column == 'VAT Amount'" class="col-lg-3">
+            <div class="input-group mb-5">
+              <span class="input-group-text" id="basic-addon1">
+                {{this.companySettings?.currency}}
+              </span>
+              <input type="text"  class="form-control mb-3 mb-lg-0" mask="0*.00" [dropSpecialCharacters]="false" formControlName="filterVATAmount" />
+            </div>
+            
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Total (inc. VAT)'" class="col-lg-3 col-form-label fw-bold fs-6">Total (inc. VAT)</label>
+          <div *ngIf="column.isVisible && column.column == 'Total (inc. VAT)'" class="col-lg-3">
+            <div class="d-flex gap-2">
+              <input placeholder="From" formControlName="minTotalVATPrice" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0"/>
+              <input placeholder="To" formControlName="maxTotalVATPrice" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" />
+            </div>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Deposit'" class="col-lg-3 col-form-label fw-bold fs-6">Deposit</label>
+          <div *ngIf="column.isVisible && column.column == 'Deposit'" class="col-lg-3">
+            <div class="input-group mb-5">
+              <span class="input-group-text" id="basic-addon1">
+                {{this.companySettings?.currency}}
+              </span>
+              <input type="text" placeholder="" class="form-control mb-3 mb-lg-0" formControlName="filterDeposit" mask="0*.00" [dropSpecialCharacters]="false"/>
+            </div>
+            
+            
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Owner Agency Fee'" class="col-lg-3 col-form-label fw-bold fs-6">Owner Agency Fee</label>
+          <div *ngIf="column.isVisible && column.column == 'Owner Agency Fee'" class="col-lg-3">
+            <div class="d-flex gap-2">
+              <input placeholder="From" formControlName="minOwnerAgencyFee" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0"/>
+              <input placeholder="To" formControlName="maxOwnerAgencyFee" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0"/>
+            </div>
+          </div>
+          
+          <label *ngIf="column.isVisible && column.column == 'Lead Agency Fee'" class="col-lg-3 col-form-label fw-bold fs-6">Lead Agency Fee</label>
+          <div *ngIf="column.isVisible && column.column == 'Lead Agency Fee'" class="col-lg-3">
+            <div class="d-flex gap-2">
+              <input placeholder="From" formControlName="minLeadAgencyFee" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0"/>
+              <input placeholder="To" formControlName="maxLeadAgencyFee" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" />
+            </div>
+          </div>
+          
+          <label *ngIf="column.isVisible && column.column == 'Gross Commission'" class="col-lg-3 col-form-label fw-bold fs-6">Gross Commission</label>
+          <div *ngIf="column.isVisible && column.column == 'Gross Commission'" class="col-lg-3">
+            <div class="d-flex gap-2">
+              <input placeholder="From" formControlName="minGrossCommission" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" />
+              <input placeholder="To" formControlName="maxGrossCommission" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" />
+            </div>
+          </div>
+          
+          <label *ngIf="column.isVisible && column.column == 'Include Commission VAT'" class="col-lg-3 col-form-label fw-bold fs-6">Include Commission VAT</label>
+          <div *ngIf="column.isVisible && column.column == 'Include Commission VAT'" class="col-lg-3">
+            <ng-select formControlName="filterIncludeCommissionVAT" bindLabel="name">
+              <ng-option [value]="1">Yes</ng-option>
+              <ng-option [value]="0">No</ng-option>
+            </ng-select>
+          </div>
+          
+          <label *ngIf="column.isVisible && column.column == 'Commission VAT Amount'" class="col-lg-3 col-form-label fw-bold fs-6">Commission VAT Amount</label>
+          <div *ngIf="column.isVisible && column.column == 'Commission VAT Amount'" class="col-lg-3">
+            <div class="input-group mb-5">
+              <span class="input-group-text" id="basic-addon1">
+                {{this.companySettings?.currency}}
+              </span>
+              <input type="text" placeholder="" class="form-control mb-3 mb-lg-0" formControlName="filterCommissionVATAmount" mask="0*.00" [dropSpecialCharacters]="false"/>
+            </div>
+            
+          </div>
+          
+          <label *ngIf="column.isVisible && column.column == 'Total (inc. Commission VAT)'" class="col-lg-3 col-form-label fw-bold fs-6">Total (inc. Commission VAT)</label>
+          <div *ngIf="column.isVisible && column.column == 'Total (inc. Commission VAT)'" class="col-lg-3">
+            <div class="d-flex gap-2">
+              <input placeholder="From" formControlName="mintotalcommissionVATAmount" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0"/>
+              <input placeholder="To" formControlName="maxtotalcommissionVATAmount" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0"/>
+            </div>
+          </div>
+          
+          <label *ngIf="column.isVisible && column.column == 'External Referral'" class="col-lg-3 col-form-label fw-bold fs-6">External Referral</label>
+          <div *ngIf="column.isVisible && column.column == 'External Referral'" class="col-lg-3">
+            <ng-select formControlName="filterExternalReferral" bindLabel="name">
+              <ng-option [value]="1">Yes</ng-option>
+              <ng-option [value]="0">No</ng-option>
+            </ng-select>
+          </div>
+          
+          <label *ngIf="column.isVisible && column.column == 'External Referral Type'" class="col-lg-3 col-form-label fw-bold fs-6">External Referral Type</label>
+          <div *ngIf="column.isVisible && column.column == 'External Referral Type'" class="col-lg-3">
+            <ng-select formControlName="filterExternalReferralType" bindLabel="name">
+              <ng-option [value]="1">Agent</ng-option>
+              <ng-option [value]="2">Individual</ng-option>
+            </ng-select>
+          </div>
+          
+          <label *ngIf="column.isVisible && column.column == 'Exteranl Referral Name'" class="col-lg-3 col-form-label fw-bold fs-6">External Referral Name</label>
+          <div *ngIf="column.isVisible && column.column == 'Exteranl Referral Name'" class="col-lg-3">
+            <input type="text" placeholder="" class="form-control mb-3 mb-lg-0" formControlName="filterExternalReferralName"/>
+          </div>
+          
+          <label *ngIf="column.isVisible && column.column == 'External Referral Commission %'" class="col-lg-3 col-form-label fw-bold fs-6">External Referral Commission %</label>
+          <div *ngIf="column.isVisible && column.column == 'External Referral Commission %'" class="col-lg-3">
+            <div class="d-flex gap-2">
+              <input placeholder="From" formControlName="minExternalReferralCommisionPer" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0"/>
+              <input placeholder="To" formControlName="maxExternalReferralCommisionPer" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" />
+            </div>
+          </div>
+          
+          <label *ngIf="column.isVisible && column.column == 'External Referral Commission Amount'" class="col-lg-3 col-form-label fw-bold fs-6">External Referral Commission Amount</label>
+          <div *ngIf="column.isVisible && column.column == 'External Referral Commission Amount'" class="col-lg-3">
+            <div class="d-flex gap-2">
+              <input placeholder="From" formControlName="minExternalReferralCommisionAmount" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0"/>
+              <input placeholder="To" formControlName="maxExternalReferralCommisionAmount" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0"/>
+            </div>
+          </div>
+          
+          <label *ngIf="column.isVisible && column.column == 'Your Company Commission %'" class="col-lg-3 col-form-label fw-bold fs-6">Your Company Commission %</label>
+          <div *ngIf="column.isVisible && column.column == 'Your Company Commission %'" class="col-lg-3">
+            <div class="d-flex gap-2">
+              <input placeholder="From" formControlName="minYourCompanyCommisionPer" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" />
+              <input placeholder="To" formControlName="maxYourCompanyCommisionPer" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0"/>
+            </div>
+          </div>
+          
+          <label *ngIf="column.isVisible && column.column == 'Your Company Commission Amount'" class="col-lg-3 col-form-label fw-bold fs-6">Your Company Commission Amount</label>
+          <div *ngIf="column.isVisible && column.column == 'Your Company Commission Amount'" class="col-lg-3">
+            <div class="d-flex gap-2">
+              <input placeholder="From" formControlName="minYourCompanyCommisionAmount" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0"/>
+              <input placeholder="To" formControlName="maxYourCompanyCommisionAmount" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0"/>
+            </div>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Agent'" class="col-lg-3 col-form-label fw-bold fs-6">Agent</label>
+          <div *ngIf="column.isVisible && column.column == 'Agent'" class="col-lg-3">
+            <ng-select formControlName="filterAgent" bindLabel="name">
+              <ng-option *ngFor="let agent of AgentList" [value]="agent.id">{{ agent.name
+                }}</ng-option>
+    </ng-select>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Commission %'" class="col-lg-3 col-form-label fw-bold fs-6">Commission %</label>
+          <div *ngIf="column.isVisible && column.column == 'Commission %'" class="col-lg-3">
+            <div class="d-flex gap-2">
+              <input placeholder="From" formControlName="minCommisionPer" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0"/>
+              <input placeholder="To" formControlName="maxCommisionPer" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0" />
+            </div>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Commission Amount'" class="col-lg-3 col-form-label fw-bold fs-6">Commission Amount</label>
+          <div *ngIf="column.isVisible && column.column == 'Commission Amount'" class="col-lg-3">
+            <div class="d-flex gap-2">
+              <input placeholder="From" formControlName="minCommisionAmount" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0"/>
+              <input placeholder="To" formControlName="maxCommisionAmount" mask="0*.00" [dropSpecialCharacters]="false" class="form-control mb-3 mb-lg-0"/>
+            </div>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Cheques'" class="col-lg-3 col-form-label fw-bold fs-6">Cheques</label>
+          <div *ngIf="column.isVisible && column.column == 'Cheques'" class="col-lg-3">
+            <ng-select formControlName="filterCheque" bindLabel="name">
+              <ng-option *ngFor="let cheque of ChequeList" [value]="cheque.id">{{ cheque.name
+                }}</ng-option>
+    </ng-select>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Tenancy Start Date'" class="col-lg-3 col-form-label fw-bold fs-6">Tenancy Start Date</label>
+          <div *ngIf="column.isVisible && column.column == 'Tenancy Start Date'" class="col-lg-3">
+            <div class="d-flex gap-2">
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0"  formControlName="filterTenancyStartDateFrom"/>
+                <span class="input-date-placeholder" for="filterUpdatedFrom">From</span>
+              </div>
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0"  formControlName="filterTenancyStartDateTo"/>
+                <span class="input-date-placeholder" for="filterUpdatedTo">To</span>
+              </div>
+            </div>
+          </div>
+
+          <label *ngIf="column.isVisible && column.column == 'Tenancy Renewal Date'" class="col-lg-3 col-form-label fw-bold fs-6">Tenancy Renewal Date</label>
+          <div *ngIf="column.isVisible && column.column == 'Tenancy Renewal Date'" class="col-lg-3">
+            <div class="d-flex gap-2">
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0"  formControlName="filterTenancyRenewalDateFrom"/>
+                <span class="input-date-placeholder" for="filterUpdatedFrom">From</span>
+              </div>
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0"  formControlName="filterTenancyRenewalDateTo"/>
+                <span class="input-date-placeholder" for="filterUpdatedTo">To</span>
+              </div>
+            </div>
+          </div>
+          
+          <label *ngIf="column.isVisible && column.column == 'Reminder'" class="col-lg-3 col-form-label fw-bold fs-6">Reminder</label>
+          <div *ngIf="column.isVisible && column.column == 'Reminder'" class="col-lg-3">
+            <ng-select formControlName="filterReminder" bindLabel="name">
+              <ng-option *ngFor="let reminder of reminderList" [value]="reminder.id">{{ reminder.name
+                }}</ng-option>
+    </ng-select>
+          </div>
+          
+          <label *ngIf="column.isVisible && column.column == 'Buyer Type'" class="col-lg-3 col-form-label fw-bold fs-6">Buyer Type</label>
+          <div *ngIf="column.isVisible && column.column == 'Buyer Type'" class="col-lg-3">
+            <ng-select formControlName="filterBuyerType" bindLabel="name">
+              <ng-option *ngFor="let buyerType of buyerTypeList" [value]="buyerType.id">{{ buyerType.name
+                }}</ng-option>
+    </ng-select>
+          </div>
+          
+          <label *ngIf="column.isVisible && column.column == 'Finance Type'" class="col-lg-3 col-form-label fw-bold fs-6">Finance Type</label>
+          <div *ngIf="column.isVisible && column.column == 'Finance Type'" class="col-lg-3">
+            <ng-select formControlName="filterFinanceType" bindLabel="name" >
+              <ng-option *ngFor="let financeType of fincanceTypeList" [value]="financeType.id">{{ financeType.name
+                }}</ng-option>
+    </ng-select>
+          </div>
+          
+          <label *ngIf="column.isVisible && column.column == 'Created'" class="col-lg-3 col-form-label fw-bold fs-6">Created</label>
+          <div *ngIf="column.isVisible && column.column == 'Created'" class="col-lg-3">
+            <div class="d-flex gap-2">
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0"  formControlName="filterCreatedFrom"/>
+                <span class="input-date-placeholder" for="filterCreatedFrom">From</span>
+              </div>
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0"  (change)="onDateSelected($event, 10)" formControlName="filterCreatedTo"/>
+                <span class="input-date-placeholder" for="filterCreatedTo">To</span>
+              </div>
+            </div>
+          </div>
+          
+          <label *ngIf="column.isVisible && column.column == 'Created By'" class="col-lg-3 col-form-label fw-bold fs-6">Created By</label>
+          <div *ngIf="column.isVisible && column.column == 'Created By'" class="col-lg-3">
+            <ng-select formControlName="filterCreatedBy" bindLabel="name" >
+              <ng-option
+              *ngFor="let user of userList"
+              [value]="user.userId"
+              >{{ user.userName }}</ng-option>
+            </ng-select>
+          </div>
+          
+          <label *ngIf="column.isVisible && column.column == 'Updated'" class="col-lg-3 col-form-label fw-bold fs-6">Updated</label>
+          <div *ngIf="column.isVisible && column.column == 'Updated'" class="col-lg-3">
+            <div class="d-flex gap-2">
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0"  formControlName="filterUpdatedFrom"/>
+                <span class="input-date-placeholder" for="filterUpdatedFrom">From</span>
+              </div>
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0"  formControlName="filterUpdatedTo"/>
+                <span class="input-date-placeholder" for="filterUpdatedTo">To</span>
+              </div>
+            </div>
+          </div>
+          
+          <label *ngIf="column.isVisible && column.column == 'Updated By'" class="col-lg-3 col-form-label fw-bold fs-6">Updated By</label>
+          <div *ngIf="column.isVisible && column.column == 'Updated By'" class="col-lg-3">
+            <ng-select formControlName="filterUpdatedBy" bindLabel="name">
+              <ng-option
+              *ngFor="let user of userList"
+              [value]="user.userId"
+              >{{ user.userName }}</ng-option>
+            </ng-select>
+          </div>
+        </ng-container>
+        </div>
+      </div>
+    </div>
+    <!--end::Form-->
+    <div class="modal-footer">
+      <button
+        type="reset"
+        class="btn btn-sm btn-light btn-active-light-primary me-2"
+        data-kt-menu-dismiss="true"
+        (click)="ResetAdvanceSearch()"
+      >
+        Reset
+      </button>
+      <button
+        type="submit"
+        class="btn btn-sm btn-primary"
+        data-kt-menu-dismiss="true"
+        (click)="ApplyAdvanceSearch()"
+      >
+        Apply
+      </button>
+    </div>
+  </div>
+  </form>
+</ng-template>
+
+<ng-template #columnSettingmodal>
+  <div class="modal-content advance-filter-modal">
+    <div class="modal-header py-3">
+      <!--begin::Modal title-->
+      <h4 class="m-0">Manage Columns</h4>
+      <!--end::Modal title-->
+      <div
+        class="btn btn-sm btn-icon btn-active-color-primary"
+        (click)="closeColumnSettings()"
+      >
+        <i class="ki-duotone ki-cross fs-1">
+          <span class="path1"></span>
+          <span class="path2"></span>
+        </i>
+      </div>
+    </div>
+    <div class="modal-body">
+      <!--begin::Form-->
+      <div class="advance-filter">
+        <div cdkDropList class="column-list" (cdkDropListDropped)="drop($event)">
+          <div class="column-box" *ngFor="let column of tempcolumnOrder" cdkDragLockAxis="y" cdkDrag >
+            <input type="checkbox" [(ngModel)]="column.isVisible">
+            <span class="ml-2">{{column.column}}</span>
+          </div>
+        </div>
+        <!-- <div class="row " cdkDropList (cdkDropListDropped)="drop($event)">
+          <div class="col-lg-12 dragColumn mb-6" *ngFor="let column of tempcolumnOrder" cdkDrag>
+            <input type="checkbox" [(ngModel)]="column.isVisible">
+            <span>{{column.column}}</span>
+          </div>
+        </div> -->
+      </div>
+    </div>
+    <!--end::Form-->
+    <div class="modal-footer">
+      <button
+        type="reset"
+        class="btn btn-sm btn-light btn-active-light-primary me-2"
+        data-kt-menu-dismiss="true"
+        (click)="closeColumnSettings()"
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        class="btn btn-sm btn-primary"
+        data-kt-menu-dismiss="true"
+        (click)="saveColumnSettings()"
+      >
+        Apply
+      </button>
+    </div>
+  </div>
+</ng-template>

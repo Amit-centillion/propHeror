@@ -1,0 +1,5 @@
+#startDate:not(.ph-date-selected), #endDate:not(.ph-date-selected) {
+    &::-webkit-datetime-edit {
+        display: none;
+    }
+}

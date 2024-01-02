@@ -1,0 +1,9 @@
+#estimatedDealDate:not(.ph-date-selected),
+#actualDealDate:not(.ph-date-selected),
+#tenancyStartDate:not(.ph-date-selected),
+#tenancyRenewalDate:not(.ph-date-selected)
+ {
+    &::-webkit-datetime-edit {
+        display: none;
+    }
+}

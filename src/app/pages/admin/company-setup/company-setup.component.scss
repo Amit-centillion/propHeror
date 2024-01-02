@@ -1,0 +1,9 @@
+th:not(:first-child) {
+    color: #000 !important;
+    padding-right: 25px;
+    cursor: pointer;
+    background-position: center right 8px;
+    background-size: 14px;
+    background-repeat: no-repeat;
+    background-image: none !important;
+}

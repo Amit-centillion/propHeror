@@ -1,0 +1,38 @@
+<div *ngIf="notesData.length > 0" id="display-notes-length" >
+<div class="card card-bordered w-100 mb-4" *ngFor="let n of notesData" >   
+  <!--begin::Body-->
+  <div class="card-body">    
+      <!--begin::Wrapper-->
+      <div class="w-100 d-flex flex-stack mb-8">
+          <!--begin::Container-->
+          <div class="d-flex align-items-center " >
+              <!--begin::Info-->
+              <div class="d-flex flex-column fw-semibold fs-5 text-gray-600 text-dark">    
+                  <!--begin::Text-->
+                  <div class="d-flex align-items-center" hidden>    
+                      <!--begin::Username-->
+                      <a class="text-gray-800 fw-bold text-hover-primary fs-5 me-3">{{n.createdBy}}</a>
+                      <!--end::Username-->
+                      <span class="m-0"></span>               
+                  </div>
+                  <!--end::Text-->
+
+                  <!--begin::Date-->
+                  <span class="text-muted fw-semibold fs-6">{{ n.createdDate  | date : "dd/MM/yyyy hh:mm:ss a " }}</span>     
+                  <!--end::Date--> 
+              </div>
+              <!--end::Info-->
+          </div>
+          <!--end::Container-->               
+      </div>
+      <!--end::Wrapper-->        
+
+      <!--begin::Desc-->
+      <p class="fw-normal fs-5 text-gray-700 m-0">
+        {{ n.notes }}
+      </p> 
+      <!--end::Desc-->   
+  </div>
+  <!--end::Body-->                      
+</div>
+</div>

@@ -1,0 +1,6 @@
+#dobDate:not(.ph-date-selected) {
+    &::-webkit-datetime-edit {
+        display: none;
+    }
+}
+

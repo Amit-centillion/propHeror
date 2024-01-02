@@ -1,0 +1,93 @@
+<div class="card mb-5 mb-xl-10">
+    <!-- <div class="card-header cursor-pointer" role="button"> -->
+        <!--begin::Card title-->
+      <!--   <div class="card-title m-0">
+            <h3 class="fw-bold m-0">Company Info</h3>
+        </div> -->
+        <!--end::Card title-->
+    <!-- </div> -->
+    <div class="card-body pt-9 pb-0">
+
+        <form [formGroup]="companyInfoForm">
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label required fw-semibold fs-6">Company Name</label>
+                <div class="col-lg-6">
+                    <input type="text" formControlName="companyName" class="form-control form-control-lg mb-3 " [class.border-error]=" submitted &&
+                    (f['companyName'].errors &&
+                    (f['companyName'].dirty ||
+                      f['companyName'].touched))">
+                    <div
+                    *ngIf="
+                      submitted &&
+                      (f['companyName'].errors &&
+                      (f['companyName'].dirty ||
+                        f['companyName'].touched))
+                    "
+                    class="required-feedback"
+                  >
+                    <div class="error-text">
+                        Company Name is required
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label  fw-semibold fs-6">RERA ORN (Office Registration No.)</label>
+                <div class="col-lg-6">
+                    <input type="text" formControlName="reraorn" class="form-control form-control-lg mb-3 ">
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label  fw-semibold fs-6">TRN (Tax Registration No.)</label>
+                <div class="col-lg-6">
+                    <input type="text" formControlName="trn" class="form-control form-control-lg mb-3 ">
+                </div>
+            </div>
+
+            
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label  fw-semibold fs-6">Address</label>
+                <div class="col-lg-6">
+                    <input type="text" formControlName="address" class="form-control form-control-lg mb-3 ">
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label  fw-semibold fs-6">Phone</label>
+                <div class="col-lg-6">
+                    <input type="text" (keypress)="isNumber($event)" formControlName="phone" class="form-control form-control-lg mb-3 ">
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label  fw-semibold fs-6">Email</label>
+                <div class="col-lg-6">
+                    <input type="text" formControlName="email" class="form-control form-control-lg mb-3 ">
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label  fw-semibold fs-6">Website</label>
+                <div class="col-lg-6">
+                    <input type="text" formControlName="website" class="form-control form-control-lg mb-3 ">
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label  fw-semibold fs-6">Company Profile</label>
+                <div class="col-lg-6">
+                    <input type="text" formControlName="companyProfile" class="form-control form-control-lg mb-3 ">
+                </div>
+            </div>
+            
+        </form>
+
+        
+</div><!--./card-body-->
+<div class="card-footer d-flex justify-content-end py-6 px-9">
+    <button (click)="save()" class="btn btn-primary">Save</button>
+</div>
+</div><!--./card-->

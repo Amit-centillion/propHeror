@@ -1,0 +1,77 @@
+<div id="splash-screen" class="splash-screen" *ngIf="IsLoading">
+  <img src="./assets/media/logos/prophero-small.svg" alt="PropHero logo" />
+  <span>Loading ...</span>
+</div>
+<div class="card card--zoomed-out">
+    <div class="mx-auto w-100 mw-900px">
+      
+      <div class="card-header border-0 pt-5">
+        <form [formGroup]="reportForm" class="d-flex flex-wrap w-100">
+        <!-- begin::Title-->
+        <h3 class="d-flex align-items-center gap-4">
+          <div class="card-title">
+            <span class="card-label fw-bolder fs-3 mb-1">Top 10 Agents by</span>
+          </div>
+
+          <ng-select class="ph-head-filter fs-6 fw-normal" [clearable]="false" style="width: 235px" formControlName="filterBy" bindLabel="text" (change)="changeFilterBy()">
+            <!-- <ng-option value="" selected>Select Assign To</ng-option> -->
+                    <ng-option *ngFor="let filter of FilterByList" [value]="filter.id">{{ filter.text
+                      }}</ng-option>
+          </ng-select>
+          
+        </h3>
+        <!-- end::Title-->
+        <!-- begin::Toolbar-->
+          <div class="card-toolbar ms-auto">
+            <!-- begin::Menu-->
+            <div class="d-flex">
+              <h4 class="pt-2 pe-3">Created Date</h4>
+              <ng-select class="ph-head-filter" [clearable]="false" style="width: 235px" formControlName="filterCreatedDate" bindLabel="text" (change)="changeCreatedDate($event)">
+                <!-- <ng-option value="" selected>Select Assign To</ng-option> -->
+                        <ng-option *ngFor="let filter of CreatedDateFilter" [value]="filter.id">{{ filter.text
+                          }}</ng-option>
+              </ng-select>
+              <div *ngIf="reportForm.get('filterCreatedDate')?.value == 7" class="d-flex gap-2 w-300px ms-2">
+                <div class="position-relative w-50">
+                  <input type="date" class="form-control mb-3 mb-lg-0" formControlName="fromDate" (change)="changeDate()"/>
+                  <!-- <span class="input-date-placeholder" for="filterCreatedFrom">From</span> -->
+                </div>
+                <div *ngIf="reportForm.get('filterCreatedDate')?.value == 7" class="position-relative w-50" (change)="changeDate()">
+                  <input type="date" class="form-control mb-3 mb-lg-0" formControlName="toDate"/>
+                  <!-- <span class="input-date-placeholder" for="filterCreatedTo">To</span> -->
+                </div>
+              </div>
+            </div>
+            <!-- end::Menu-->
+          </div>
+          </form>
+          <!-- end::Toolbar-->
+      </div>
+      <!-- end::Header-->
+      
+      <!-- begin::Body-->
+      <div class="card-body">
+        <!-- begin::Chart-->
+        <div #chartRef id="kt_charts_widget_1_chart" [style.height]="'400px'">
+          <apx-chart
+            [series]="chartOptions.series"
+            [chart]="chartOptions.chart"
+            [xaxis]="chartOptions.xaxis"
+            [yaxis]="chartOptions.yaxis"
+            [dataLabels]="chartOptions.dataLabels"
+            [stroke]="chartOptions.stroke"
+            [legend]="chartOptions.legend"
+            [fill]="chartOptions.fill"
+            [states]="chartOptions.states"
+            [tooltip]="chartOptions.tooltip"
+            [colors]="chartOptions.colors"
+            [markers]="chartOptions.markers"
+            [plotOptions]="chartOptions.plotOptions"
+          ></apx-chart>
+        </div>
+
+        <!-- end::Chart-->
+      </div>
+    </div><!--./mw 900px-->
+</div>
+

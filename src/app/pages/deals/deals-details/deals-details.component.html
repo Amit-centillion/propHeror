@@ -1,0 +1,2208 @@
+<div id="splash-screen" class="splash-screen" *ngIf="IsLoading">
+  <img src="./assets/media/logos/prophero-small.svg" alt="PropHero logo" />
+  <span>Loading ...</span>
+</div>
+
+<div id="kt_deals-details" class="bg-body" data-kt-drawer="true" data-kt-drawer-name="deals-details"
+  data-kt-drawer-activate="true" data-kt-drawer-overlay="false" data-kt-drawer-width="{default:'300px', 'lg': '900px'}"
+  data-kt-drawer-direction="end" data-kt-drawer-toggle=".kt_deal_activities_toggle"
+  data-kt-drawer-close="#kt_deals-details_close" #container>
+  <div class="card shadow-none rounded-0 w-100">
+    <form>
+    <div class="card-header" id="kt_activities_header">
+      <div>
+        <div class="card-title fw-bold text-dark">
+          <span *ngIf="isAdd">New Deal</span>
+          <span *ngIf="!isAdd">{{DealDetails?.reference}}</span>
+          
+          <div class="ms-2" *ngIf="!isAdd">
+            <!--begin::Dropview toggle-->
+            <a
+              class="btn btn-icon btn-sm"
+              data-kt-menu-trigger="{default: 'hover'}"
+              data-kt-menu-attach="parent"
+              data-kt-menu-placement="bottom-start"
+            >
+              <i class="bi bi-clock fs-3"></i>
+            </a>
+            <!--end::Dropview toggle-->
+
+            <!--begin::Dropview-->
+            <div
+              class="menu menu-sub menu-sub-dropdown p-4"
+              data-kt-menu="true"
+            >
+              <small>
+                Created: {{ DealDetails?.created | date : "dd/MM/yyyy hh:mm:ss a " }}<br />
+                Updated: {{ DealDetails?.updated | date : "dd/MM/yyyy hh:mm:ss a" }}<br />
+               
+              </small>
+            </div>
+            <!--end::Dropview-->
+          </div>
+        </div>
+        <div class="card-toolbar">
+          <button type="button" class="btn btn-sm btn-icon btn-active-light-primary" id="kt_deals-details_close"
+            (click)="closeDeals()">
+            <app-keenicon name="cross" class="fs-1"></app-keenicon>
+          </button>
+        </div>
+      </div>
+      <div class="d-flex align-items-center">
+        <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bold">
+          <!--begin::Nav item-->
+          <li class="nav-item">
+            <a class="nav-link text-active-primary ms-0 me-10 py-5 active cursor-pointer"
+              [class.active]="selectedTab === 'tab1'" (click)="selectTab('tab1')">
+              Details
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a
+              class="nav-link text-active-primary ms-0 me-10 py-5 cursor-pointer"
+              [class.active]="selectedTab === 'tab2'"
+              (click)="selectTab('tab2')"
+            >
+              Notes
+            </a>
+          </li>
+
+
+        </ul>
+        <div class="d-flex align-items-center" *ngIf="selectedTab === 'tab1'">
+          <button (click)="onCancel()" class="btn btn-sm btn-light btn-active-light-primary me-3" *ngIf="isEdit">
+            Cancel
+          </button>
+          <button *ngIf="isAdd || isEdit" (click)="onSubmit()" class="btn btn-sm btn-primary">
+            Save
+          </button>
+          <button *ngIf="isView && isEditDealPermission" (click)="onEdit()" class="btn btn-sm btn-primary">
+            Edit
+          </button>
+        </div>
+
+      </div>
+    </div>
+    <div class="card-body position-relative p-0" id="kt_activities_body">
+      <div *ngIf="selectedTab == 'tab1'">
+      <ul class="accordian-shortcuts">
+        <li id="sec_1_1">
+          <button (click)="scrollToElement('sec1'); basic = true" [ngClass]="isSave && BasicDetailsForm.invalid ? 'border-error' : ''">
+            <i class="bi bi-house"></i>
+          </button>
+          <span class="reveal">Basic Details</span>
+        </li>
+        <li id="sec_2_1">
+          <button (click)="scrollToElement('sec2'); transaction = true" [ngClass]="isSave && TransactionDetailsForm.invalid ? 'border-error' : ''">
+            <i class="bi bi-credit-card"></i>
+          </button>
+          <span class="reveal">Transaction Details</span>
+        </li>
+        <li id="sec_4_1">
+          <button (click)="scrollToElement('sec3'); commission = true" [ngClass]="isSave && CommissionDetailsForm.invalid ? 'border-error' : ''">
+            <i class="bi bi-people"></i>
+          </button>
+          <span class="reveal">Commission Details</span>
+        </li>
+        <li id="sec_2_1">
+          <button (click)="scrollToElement('sec4'); additionalDetails = true" [ngClass]="isSave && AdditionalDetailform.invalid ? 'border-error' : ''">
+            <i class="bi bi-list-task"></i>
+          </button>
+          <span class="reveal">Additional Details</span>
+        </li>
+       
+        
+       
+      </ul>
+      <div class="accordion" id="kt_accordion_1" #container>
+        <div class="accordian-item" id="sec0">
+          <div class="accordion-body">
+            <form [formGroup]="StatusForm">
+    
+              <div class="row mb-6 ">
+                <label class="col-lg-3 col-form-label fw-bold fs-6">Status</label>
+                <div class="col-lg-6">
+                  <div>
+                    <ng-select formControlName="statusId" bindLabel="statusId" id="statusId" [clearable]="false" (change)="onChangeStatus($event)"
+                    [ngClass]="StatusForm.get('statusId')?.value == 1? 'ph-status-dropdown text-blue':StatusForm.get('statusId')?.value == 2?'ph-status-dropdown text-grey':''">
+                      <ng-option *ngFor="let status of AllDealStatusType" [value]="status.id">{{ status.name }}</ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+              </div>
+    
+              <div class="row mb-6">
+                <label class="col-lg-3 col-form-label fw-bold fs-6">Sub Status</label>
+                <div class="col-lg-6">
+                  <div>
+                    <ng-select formControlName="subStatusId" bindLabel="subStatusId" id="subStatusId" [clearable]="false"
+                    [ngClass]="StatusForm.get('subStatusId')?.value == 1 || StatusForm.get('subStatusId')?.value == 2 || StatusForm.get('subStatusId')?.value == 3 || StatusForm.get('subStatusId')?.value == 4 || StatusForm.get('subStatusId')?.value == 5? 'ph-status-dropdown text-blue':StatusForm.get('subStatusId')?.value == 6?'ph-status-dropdown text-green':StatusForm.get('subStatusId')?.value == 7 ? 'ph-status-dropdown text-red' : StatusForm.get('subStatusId')?.value == 8 ? 'ph-status-dropdown text-orange' : ''" >
+                      <ng-option *ngFor="let sub of AllDealSubStatusType" [value]="sub.id">{{ sub.name }}</ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+              </div>
+    
+            </form>
+          </div>
+        </div>
+        <div class="accordion-item" id="sec1">
+          <h2 class="accordion-header" id="kt_accordion_1_header_1">
+            <button class="accordion-button fs-4 fw-semibold" type="button" (click)="basic = !basic"
+              [class.collapsed]="!basic" [ngClass]="isSave && BasicDetailsForm.invalid ? 'border-error' : ''">
+              Basic Details
+            </button>
+          </h2>
+          <div id="kt_accordion_1_body_1" class="accordion-collapse collapse" [class.show]="basic">
+            <div class="accordion-body">
+              <form [formGroup]="BasicDetailsForm">
+                <div class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6 required">Assigned To</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <ng-select formControlName="agentId" bindLabel="agentId" id="agentId"  [ngClass]="isSave && assignedto.invalid ? 'border-error' : ''">
+                        <ng-option *ngFor="let assignee of AgentLeadList" [value]="assignee.id">
+                          <span class="d-flex gap-2 align-items-center">
+                            <ngx-avatar *ngIf="assignee.profileImage == null || assignee.profileImage == ''" size="26" class="avatar" [name]="assignee?.name"></ngx-avatar>
+                            <img *ngIf="assignee.profileImage != null && assignee.profileImage != ''" [src]="assignee.profileImage" alt="Image Preview" [style.border-radius.px]="50" [style.width.px]="26" [style.height.px]="26">
+                            {{ assignee.name }}</span></ng-option>
+                      </ng-select>
+                      <div *ngIf="isSave && assignedto.invalid" class="required-feedback">
+                        <div class="error-text">
+                          Assigned To is required
+                        </div>
+                    </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6 required">Purpose</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <ng-select formControlName="purposeId" bindLabel="purposeId" id="purposeId" (change)="changePurpose($event)"  [ngClass]="isSave && purpose.invalid ? 'border-error' : ''">
+                        <ng-option *ngFor="let car of AllDealPurposeList" [value]="car.id">{{ car.name }}</ng-option>
+                      </ng-select>
+                      <div *ngIf="isSave && purpose.invalid" class="required-feedback">
+                        <div class="error-text">
+                          Purpose is required
+                        </div>
+                    </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Transaction Type</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <ng-select formControlName="transactionTypeId" bindLabel="transactionTypeId"
+                        id="transactionTypeId">
+                        <ng-option *ngFor="let t of TransactionTypeList" [value]="t.id">{{ t.name }}</ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-6">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6 required">Listing</label>
+                    <div class="col-lg-6">
+                      <div  class="m-0">
+                        <button [ngClass]="isSave && listingId.invalid ? 'border-error' : ''" [disabled]="isView" (click)="openListingModal()" class="btn btn-bg-light btn-icon-primary btn-text-primary">
+                          <i class="bi bi-check2-square"></i> Select Listing
+                        </button>
+                      </div>
+                      <input type="hidden" formControlName="listingId">
+                      <div *ngIf="isSave && listingId.invalid" class="required-feedback">
+                        <div class="error-text">Listing is required</div>
+                      </div>   
+
+                     
+                    </div>
+                    
+                </div>
+                <div *ngIf="selectedListingId != 0">
+                  <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6">Listing Reference</label>
+                    <div class="col-lg-6 d-flex align-items-center">
+                      {{selectedListingRef}}
+                    </div>
+                  </div>
+
+
+                  <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6">Property Type</label>
+                    <div class="col-lg-6 d-flex align-items-center">
+                      {{selectedListingpropertyType}}
+                    </div>
+                  </div>
+
+                  <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6">Beds</label>
+                    <div class="col-lg-6 d-flex align-items-center">
+                      {{selectedListingBed}}
+                    </div>
+                  </div>
+
+                  <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6">Emirate</label>
+                    <div class="col-lg-6 d-flex align-items-center">
+                      {{selectedListingEmirate}}
+                    </div>
+                  </div>
+
+                  <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6">Location</label>
+                    <div class="col-lg-6 d-flex align-items-center">
+                      {{selectedListingLocation}}
+                    </div>
+                  </div>
+
+                  <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6">Sub Location</label>
+                    <div class="col-lg-6 d-flex align-items-center">
+                      {{selectedListingSubLocation}}
+                    </div>
+                  </div>
+
+                  <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6">Price</label>
+                    <div class="col-lg-6 d-flex align-items-center">
+                      {{selectedListingPrice}}
+                    </div>
+                  </div>
+
+                  <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6">Owner Contact Reference</label>
+                    <div class="col-lg-6 d-flex align-items-center">
+                      {{selectedListingOwnerContactReference}}
+                    </div>
+                  </div>
+
+                  <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6">Owner First Name</label>
+                    <div class="col-lg-6 d-flex align-items-center">
+                      {{selectedListingOwnerFirstName}}
+                    </div>
+                  </div>
+
+                  <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6">Owner Last Name</label>
+                    <div class="col-lg-6 d-flex align-items-center">
+                      {{selectedListingOwnerLastName}}
+                    </div>
+                  </div>
+
+                  <div class="row mb-6">
+                    <carousel class="ph-carousel" id="ownerContact">
+                      <slide>
+                        <!-- Slide 1 content -->
+                        <div class="row mb-6">
+                          <label class="col-lg-3 col-form-label fw-bold fs-6">Owner Mobile (Personal)</label>
+                          <div class="col-lg-6 d-flex align-items-center">
+                            {{selectedListingOwnerPersonalMobile}}
+                          </div>
+                        </div><!--./row-->
+                        <div class="row mb-6">
+                          <label class="col-lg-3 col-form-label fw-bold fs-6">Owner Phone (Personal)</label>
+                          <div class="col-lg-6 d-flex align-items-center">
+                            {{selectedListingOwnerPersonalPhone}}
+                          </div>
+                        </div><!--./row-->
+                        <div class="row mb-6">
+                          <label class="col-lg-3 col-form-label fw-bold fs-6">Owner Email (Personal)</label>
+                          <div class="col-lg-6 d-flex align-items-center">
+                            {{selectedListingOwnerPersonalEmail}}
+                          </div>
+                        </div>
+                        <!--./row-->
+                      </slide>
+                      <slide>
+                        <!-- Slide 2 content -->
+                        <div class="row mb-6">
+                          <label class="col-lg-3 col-form-label fw-bold fs-6">Owner Mobile (Work)</label>
+                          <div class="col-lg-6 d-flex align-items-center">
+                            {{selectedListingOwnerWorkMobile}}
+                          </div>
+                        </div><!--./row-->
+                        <div class="row mb-6">
+                          <label class="col-lg-3 col-form-label fw-bold fs-6">Owner Phone (Work)</label>
+                          <div class="col-lg-6 d-flex align-items-center">
+                            {{selectedListingOwnerWorkPhone}}
+                          </div>
+                        </div><!--./row-->
+                        <div class="row mb-6">
+                          <label class="col-lg-3 col-form-label fw-bold fs-6">Owner Email (Work)</label>
+                          <div class="col-lg-6 d-flex align-items-center">
+                           {{ selectedListingOwnerWorkEmail}}
+                          </div>
+                        </div><!--./row-->
+                      </slide>
+                      <slide>
+                        <!-- Slide 3 content -->
+                        <div class="row mb-6">
+                          <label class="col-lg-3 col-form-label fw-bold fs-6">Owner Mobile (Other)</label>
+                          <div class="col-lg-6 d-flex align-items-center">
+                            {{selectedListingOwnerOtherMobile}}
+                          </div>
+                        </div><!--./row-->
+                        <div class="row mb-6">
+                          <label class="col-lg-3 col-form-label fw-bold fs-6">Owner Phone (Other)</label>
+                          <div class="col-lg-6 d-flex align-items-center">
+                            {{selectedListingOwnerOtherPhone}}
+                          </div>
+                        </div><!--./row-->
+                        <div class="row mb-6">
+                          <label class="col-lg-3 col-form-label fw-bold fs-6">Owner Email (Other)</label>
+                          <div class="col-lg-6 d-flex align-items-center">
+                            {{selectedListingOwnerOtherEmail}}
+                          </div>
+                        </div><!--./row-->
+                      </slide>
+                    </carousel>
+                  </div>
+                 
+            </div>
+                <div class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6 required">Lead</label>
+                  <div class="col-lg-6">
+
+                    <div  class="m-0">
+                      <button [ngClass]="isSave && leadId.invalid ? 'border-error' : ''" [disabled]="isView" (click)="openLeadModal()" class="btn btn-bg-light btn-icon-primary btn-text-primary">
+                        <i class="bi bi-check2-square"></i> Select Lead
+                      </button>
+                    </div>
+                    <input type="hidden" formControlName="leadId">
+                    <div *ngIf="isSave && leadId.invalid" class="required-feedback">
+                      <div class="error-text">Lead is required</div>
+                    </div> 
+                  </div>
+                </div>
+
+                <div *ngIf="selectedLeadId != 0">
+                  <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6">Lead Reference</label>
+                    <div class="col-lg-6 d-flex align-items-center">
+                      {{selectedLeadRef}}
+                    </div>
+                  </div>
+
+                  <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6">{{BasicDetailsForm.get('purposeId')?.value == 1 ? "Buyer": BasicDetailsForm.get('purposeId')?.value == 2 ? "Tenanat" : "Lead" }} First Name</label>
+                    <div class="col-lg-6 d-flex align-items-center">
+                      {{selectedLeadFirstName}}
+                    </div>
+                  </div>
+
+                  <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6">{{BasicDetailsForm.get('purposeId')?.value == 1 ? "Buyer": BasicDetailsForm.get('purposeId')?.value == 2 ? "Tenanat" : "Lead" }} Last Name</label>
+                    <div class="col-lg-6 d-flex align-items-center">
+                      {{selectedLeadLastName}}
+                    </div>
+                  </div>
+
+                  <div class="row mb-6">
+                  <carousel class="ph-carousel" id="ownerContact">
+                    <slide>
+                      <!-- Slide 1 content -->
+                      <div class="row mb-6">
+                        <label class="col-lg-3 col-form-label fw-bold fs-6"> {{BasicDetailsForm.get('purposeId')?.value == 1 ? "Buyer": BasicDetailsForm.get('purposeId')?.value == 2 ? "Tenanat" : "Lead" }} Mobile (Personal)</label>
+                        <div class="col-lg-6 d-flex align-items-center">
+                          {{PeronsalMobile}}
+                        </div>
+                      </div><!--./row-->
+                      <div class="row mb-6">
+                        <label class="col-lg-3 col-form-label fw-bold fs-6"> {{BasicDetailsForm.get('purposeId')?.value == 1 ? "Buyer": BasicDetailsForm.get('purposeId')?.value == 2 ? "Tenanat" : "Lead" }} Phone (Personal)</label>
+                        <div class="col-lg-6 d-flex align-items-center">
+                          {{PersonalPhone}}
+                        </div>
+                      </div><!--./row-->
+                      <div class="row mb-6">
+                        <label class="col-lg-3 col-form-label fw-bold fs-6">{{BasicDetailsForm.get('purposeId')?.value == 1 ? "Buyer": BasicDetailsForm.get('purposeId')?.value == 2 ? "Tenanat" : "Lead" }} Email (Personal)</label>
+                        <div class="col-lg-6 d-flex align-items-center">
+                          {{PersonalEmail}}
+                        </div>
+                      </div>
+                      <!--./row-->
+                    </slide>
+                    <slide>
+                      <!-- Slide 2 content -->
+                      <div class="row mb-6">
+                        <label class="col-lg-3 col-form-label fw-bold fs-6">{{BasicDetailsForm.get('purposeId')?.value == 1 ? "Buyer": BasicDetailsForm.get('purposeId')?.value == 2 ? "Tenanat" : "Lead" }} Mobile (Work)</label>
+                        <div class="col-lg-6 d-flex align-items-center">
+                          {{WorkMobile}}
+                        </div>
+                      </div><!--./row-->
+                      <div class="row mb-6">
+                        <label class="col-lg-3 col-form-label fw-bold fs-6">{{BasicDetailsForm.get('purposeId')?.value == 1 ? "Buyer": BasicDetailsForm.get('purposeId')?.value == 2 ? "Tenanat" : "Lead" }} Phone (Work)</label>
+                        <div class="col-lg-6 d-flex align-items-center">
+                          {{WorkPhone}}
+                        </div>
+                      </div><!--./row-->
+                      <div class="row mb-6">
+                        <label class="col-lg-3 col-form-label fw-bold fs-6">{{BasicDetailsForm.get('purposeId')?.value == 1 ? "Buyer": BasicDetailsForm.get('purposeId')?.value == 2 ? "Tenanat" : "Lead" }} Email (Work)</label>
+                        <div class="col-lg-6 d-flex align-items-center">
+                          {{WorkEmail}}
+                        </div>
+                      </div><!--./row-->
+                    </slide>
+                    <slide>
+                      <!-- Slide 3 content -->
+                      <div class="row mb-6">
+                        <label class="col-lg-3 col-form-label fw-bold fs-6">{{BasicDetailsForm.get('purposeId')?.value == 1 ? "Buyer": BasicDetailsForm.get('purposeId')?.value == 2 ? "Tenanat" : "Lead" }} Mobile (Other)</label>
+                        <div class="col-lg-6 d-flex align-items-center">
+                          {{OtherMobile}}
+                        </div>
+                      </div><!--./row-->
+                      <div class="row mb-6">
+                        <label class="col-lg-3 col-form-label fw-bold fs-6">{{BasicDetailsForm.get('purposeId')?.value == 1 ? "Buyer": BasicDetailsForm.get('purposeId')?.value == 2 ? "Tenanat" : "Lead" }} Phone (Other)</label>
+                        <div class="col-lg-6 d-flex align-items-center">
+                          {{OtherPhone}}
+                        </div>
+                      </div><!--./row-->
+                      <div class="row mb-6">
+                        <label class="col-lg-3 col-form-label fw-bold fs-6">{{BasicDetailsForm.get('purposeId')?.value == 1 ? "Buyer": BasicDetailsForm.get('purposeId')?.value == 2 ? "Tenanat" : "Lead" }} Email (Other)</label>
+                        <div class="col-lg-6 d-flex align-items-center">
+                          {{OtherEmail}}
+                        </div>
+                      </div><!--./row-->
+                    </slide>
+                  </carousel>
+                </div>
+                 
+            </div>
+
+                <div class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Source</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <ng-select formControlName="sourceId" bindLabel="sourceId" id="sourceId">
+                        <ng-option *ngFor="let t of AllSourceList" [value]="t.id">{{ t.name }}</ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Estimated Deal Date</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <input type="date" id="estimatedDealDate" class="form-control form-control-lg mb-3 mb-lg-0"
+                        formControlName="estimatedDealDate" 
+                        [ngClass]="{'ph-date-selected': BasicDetailsForm.controls['estimatedDealDate'].value !== null}"/>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Actual Deal Date</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <input type="date" id="actualDealDate" class="form-control form-control-lg mb-3 mb-lg-0"
+                        formControlName="actualDealDate" 
+                        [ngClass]="{'ph-date-selected': BasicDetailsForm.controls['actualDealDate'].value !== null}"/>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item" id="sec2">
+          <h2 class="accordion-header" id="kt_accordion_2_header_2">
+            <button class="accordion-button fs-4 fw-semibold" type="button" (click)="transaction = !transaction"
+              [class.collapsed]="!transaction" [ngClass]="isSave && TransactionDetailsForm.invalid ? 'border-error' : ''">
+              Transaction Details
+            </button>
+          </h2>
+          <div id="kt_accordion_2_body_2" class="accordion-collapse collapse" [class.show]="transaction">
+            <div class="accordion-body">
+              <form [formGroup]="TransactionDetailsForm">
+                <div class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Deal Price</label>
+                  <div class="col-lg-6">
+                    <div class="input-group mb-5">
+                      <span class="input-group-text" id="basic-addon1">
+                        {{this.companySettings?.currency}}
+                      </span>
+                      <input type="text" id="commisionAED" class="form-control form-control-lg mb-3 mb-lg-0" mask="0*.00"
+                      [dropSpecialCharacters]="false"
+                        formControlName="dealPrice" (keyup)="onChangeDealPrice($event)"/>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-6">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Include VAT</label>
+                  <div class="col-lg-6 d-flex align-items-center">
+                    <div class="form-check form-switch form-switch-sm form-check-custom form-check-solid">
+                      <input class="form-check-input" id="managed" type="checkbox" formControlName="includeVAT" (change)="onChangeIncludeVAT($event)"/>
+                    </div>
+                  </div>
+                </div>
+
+                <div *ngIf="
+                      this.TransactionDetailsForm.get('includeVAT')?.value ===
+                      true
+                    " class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">VAT Amount</label>
+                  <div class="col-lg-6">
+                    <div class="input-group mb-5">
+                      <span class="input-group-text" id="basic-addon1">
+                        {{this.companySettings?.currency}}
+                      </span>
+                      <input type="text" id="commisionAED" class="form-control form-control-lg mb-3 mb-lg-0"
+                        formControlName="vatAmount" mask="0*.00"
+                        [dropSpecialCharacters]="false" />
+                    </div>
+                  </div>
+                </div>
+
+                <div *ngIf="
+                      this.TransactionDetailsForm.get('includeVAT')?.value ===
+                      true
+                    " class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Total(Incl. VAT)</label>
+                  <div class="col-lg-6">
+                    <div class="input-group mb-5">
+                      <span class="input-group-text" id="basic-addon1">
+                        {{this.companySettings?.currency}}
+                      </span>
+                      <input type="text" id="commisionAED" class="form-control form-control-lg mb-3 mb-lg-0"
+                        formControlName="includeTotal" mask="0*.00"
+                        [dropSpecialCharacters]="false"/>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Deposit</label>
+                  <div class="col-lg-6">
+                    <div class="input-group mb-5">
+                      <span class="input-group-text" id="basic-addon1">
+                        {{this.companySettings?.currency}}
+                      </span>
+                      <input type="text" id="commisionAED" class="form-control form-control-lg mb-3 mb-lg-0"
+                        formControlName="deposit" mask="0*.00"
+                        [dropSpecialCharacters]="false"/>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item" id="sec3">
+          <h2 class="accordion-header" id="kt_accordion_2_header_2">
+            <button class="accordion-button fs-4 fw-semibold" type="button" (click)="commission = !commission"
+              [class.collapsed]="!commission" [ngClass]="isSave && CommissionDetailsForm.invalid ? 'border-error' : ''">
+              Commission Details
+            </button>
+          </h2>
+          <div id="kt_accordion_2_body_2" class="accordion-collapse collapse" [class.show]="commission">
+            <div class="accordion-body">
+              <form [formGroup]="CommissionDetailsForm">
+                <div class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Owner Agency Fee</label>
+                  <div class="col-lg-6">
+                    <div class="input-group mb-5">
+                      <span class="input-group-text" id="basic-addon1">
+                        {{this.companySettings?.currency}}
+                      </span>
+                      <input type="text" id="commisionAED" class="form-control form-control-lg mb-3 mb-lg-0"
+                        formControlName="ownerAgencyFee" mask="0*.00"
+                        [dropSpecialCharacters]="false"/>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Lead Agency Fee</label>
+                  <div class="col-lg-6">
+                    <div class="input-group mb-5">
+                      <span class="input-group-text" id="basic-addon1">
+                        {{this.companySettings?.currency}}
+                      </span>
+                      <input type="text" id="commisionAED" class="form-control form-control-lg mb-3 mb-lg-0"
+                        formControlName="leadAgencyFee" mask="0*.00"
+                        [dropSpecialCharacters]="false"/>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Gross Commission</label>
+                  <div class="col-lg-6">
+                    <div class="input-group mb-5">
+                      <span class="input-group-text" id="basic-addon1">
+                        {{this.companySettings?.currency}}
+                      </span>
+                      <input type="text" id="commisionAED" class="form-control form-control-lg mb-3 mb-lg-0"
+                        formControlName="grossCommission" mask="0*.00"
+                        [dropSpecialCharacters]="false" (keyup)="onChangeGrossCommission($event)"/>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Include Commission VAT</label>
+                    <div class="col-lg-6 d-flex align-items-center">
+                      <div class="form-check form-switch form-switch-sm form-check-custom form-check-solid">
+                        <input class="form-check-input" id="managed" type="checkbox"
+                          formControlName="includeCommissionVAT" (change)="onChangeIncludeCommissionVAT($event)"/>
+                      </div>
+                    </div>
+                </div>
+
+                <div *ngIf="this.CommissionDetailsForm.get('includeCommissionVAT')?.value === true" class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Commission VAT Amount</label>
+                  <div class="col-lg-6">
+                    <div class="input-group mb-5">
+                      <span class="input-group-text" id="basic-addon1">
+                        {{this.companySettings?.currency}}
+                      </span>
+                      <input type="text" id="commisionAED" class="form-control form-control-lg mb-3 mb-lg-0"
+                        formControlName="CommissionVATamount" mask="0*.00"
+                        [dropSpecialCharacters]="false"/>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div *ngIf="this.CommissionDetailsForm.get('includeCommissionVAT')?.value === true" class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Total (Gross Commission + Commission VAT)</label>
+                  <div class="col-lg-6">
+                    <div class="input-group mb-5">
+                      <span class="input-group-text" id="basic-addon1">
+                        {{this.companySettings?.currency}}
+                      </span>
+                      <input type="text" id="commisionAED" class="form-control form-control-lg mb-3 mb-lg-0"
+                        formControlName="totalGrossCommission" mask="0*.00"
+                        [dropSpecialCharacters]="false"/>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">External Referral</label>
+                    <div class="col-lg-6 d-flex align-items-center">
+                      <div class="form-check form-switch form-switch-sm form-check-custom form-check-solid">
+                        <input class="form-check-input" id="managed" type="checkbox" formControlName="externalRef" (change)="onChangeExternalReferral($event)"/>
+                      </div>
+                    </div>
+                </div>
+
+                <div *ngIf="this.CommissionDetailsForm.get('externalRef')?.value === true" class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">External Referral Type</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <ng-select formControlName="extRefType" bindLabel="agentId" id="agentId" >
+                        <ng-option *ngFor="let a of ExternalReferralTypeList" [value]="a.id">{{ a.name }}</ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                  
+                </div>
+
+                <div *ngIf="this.CommissionDetailsForm.get('externalRef')?.value === true" class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">External Referral Name</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <input class="form-control form-control-lg mb-3 mb-lg-0" type="text"
+                        formControlName="externalReferralName" />
+                    </div>
+                  </div>
+                </div>
+
+                <div *ngIf="this.CommissionDetailsForm.get('externalRef')?.value === true" class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">External Referral Commission</label>
+                  <div class="col-lg-3">
+                    <div class="input-group mb-5">
+                      <span class="input-group-text" id="basic-addon1">
+                        %
+                      </span>
+                      <input type="text" id="commisionAED" class="form-control form-control-lg mb-3 mb-lg-0"
+                        formControlName="externalReferralCommission" mask="0*.00" (keyup)="changePercentageexternalReferralCommission($event)"
+                        [dropSpecialCharacters]="false"/>
+                    </div>
+
+                  </div>
+                  <div class="col-lg-3">
+                    <div class="input-group mb-5">
+                      <span class="input-group-text" id="basic-addon1">
+                        {{this.companySettings?.currency}}
+                      </span>
+                      <input class="form-control form-control-lg mb-3 mb-lg-0" type="text"
+                        formControlName="externalReferralCommissionText" mask="0*.00" (keyup)="changeTextexternalReferralCommission($event)"
+                        [dropSpecialCharacters]="false"/>
+                    </div>
+
+
+                  </div>
+                </div>
+
+                <div *ngIf="this.CommissionDetailsForm.get('externalRef')?.value === true" class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Your Company Commission
+                  </label>
+                  <div class="col-lg-3">
+                    <div class="input-group mb-5">
+                      <span class="input-group-text" id="basic-addon1">
+                        %
+                      </span>
+                      <input type="text" id="commisionAED" class="form-control form-control-lg mb-3 mb-lg-0"
+                        formControlName="yourCompanyCommission" mask="0*.00" (keyup)="changePercentagecompanyCommission($event)"
+                        [dropSpecialCharacters]="false"/>
+                    </div>
+
+                  </div>
+                  <div class="col-lg-3">
+
+                    <div class="input-group mb-5">
+                      <span class="input-group-text" id="basic-addon1">
+                        {{this.companySettings?.currency}}
+                      </span>
+                      <input class="form-control form-control-lg mb-3 mb-lg-0" type="text"
+                        formControlName="yourCompanyCommissionText" mask="0*.00" (keyup)="changeTextcompanyCommission($event)"
+                        [dropSpecialCharacters]="false"/>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Agent</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <ng-select formControlName="agentId" bindLabel="agentId" id="agentId" >
+                        <ng-option *ngFor="let assignee of AgentLeadList" [value]="assignee.id">
+                          <span class="d-flex gap-2 align-items-center">
+                            <ngx-avatar *ngIf="assignee.profileImage == null || assignee.profileImage == ''" size="26" class="avatar" [name]="assignee?.name"></ngx-avatar>
+                            <img *ngIf="assignee.profileImage != null && assignee.profileImage != ''" [src]="assignee.profileImage" alt="Image Preview" [style.border-radius.px]="50" [style.width.px]="26" [style.height.px]="26">
+                            {{ assignee.name }}</span></ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-6 ">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Commission
+                  </label>
+                  <div class="col-lg-3">
+                    <div class="input-group mb-5">
+                      <span class="input-group-text" id="basic-addon1">
+                        %
+                      </span>
+                      <input type="text" id="commisionAED" class="form-control form-control-lg mb-3 mb-lg-0"
+                        formControlName="agentCommission" mask="0*.00" (keyup)="changePercentageagentCommission($event)"
+                        [dropSpecialCharacters]="false"/>
+                    </div>
+
+                  </div>
+                  <div class="col-lg-3">
+
+                    <div class="input-group mb-5">
+                      <span class="input-group-text" id="basic-addon1">
+                        {{this.companySettings?.currency}}
+                      </span>
+                      <input class="form-control form-control-lg mb-3 mb-lg-0" type="text"
+                        formControlName="agentCommissionText" mask="0*.00" (keyup)="changeTextagentCommission($event)"
+                        [dropSpecialCharacters]="false"/>
+                    </div>
+
+                  </div>
+                </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item" id="sec4">
+          <h2 class="accordion-header" id="kt_accordion_2_header_2">
+            <button class="accordion-button fs-4 fw-semibold" type="button"
+              (click)="additionalDetails = !additionalDetails" [class.collapsed]="!additionalDetails" [ngClass]="isSave && AdditionalDetailform.invalid ? 'border-error' : ''">
+              Additional Details
+            </button>
+          </h2>
+          <div id="kt_accordion_2_body_2" class="accordion-collapse collapse" [class.show]="additionalDetails">
+            <div class="accordion-body">
+              <form [formGroup]="AdditionalDetailform">
+                <div class="row mb-6 " *ngIf="BasicDetailsForm.get('purposeId')?.value == 2">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Cheques</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <ng-select formControlName="cheques" bindLabel="name" id="statusId">
+                        <ng-option *ngFor="let cheques of AllCheques" [value]="cheques.id">{{ cheques.name
+                          }}</ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-6 " *ngIf="BasicDetailsForm.get('purposeId')?.value == 2">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Tenancy Start Date</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <input type="date" id="tenancyStartDate" class="form-control form-control-lg mb-3 mb-lg-0"
+                        formControlName="tenancyStartDate" [ngClass]="{'ph-date-selected': AdditionalDetailform.controls['tenancyStartDate'].value !== null}" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-6 " *ngIf="BasicDetailsForm.get('purposeId')?.value == 2">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Tenancy Renewal Date</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <input type="date" id="tenancyRenewalDate" class="form-control form-control-lg mb-3 mb-lg-0"
+                        formControlName="tenancyRenewalDate" [ngClass]="{'ph-date-selected': AdditionalDetailform.controls['tenancyRenewalDate'].value !== null}" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-6 " *ngIf="BasicDetailsForm.get('purposeId')?.value == 2">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Reminder</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <ng-select formControlName="reminder" bindLabel="name" id="statusId">
+                        <ng-option *ngFor="let reminder of ReminderList" [value]="reminder.id">{{ reminder.name
+                          }}</ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-6 " *ngIf="BasicDetailsForm.get('purposeId')?.value == 1">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Buyer Type</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <ng-select formControlName="buyerType" bindLabel="name" id="statusId">
+                        <ng-option *ngFor="let buyerType of BuyerTypeList" [value]="buyerType.id">{{ buyerType.name
+                          }}</ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-6 " *ngIf="BasicDetailsForm.get('purposeId')?.value == 1">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Finance Type</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <ng-select formControlName="financeType" bindLabel="name" id="statusId">
+                        <ng-option *ngFor="let financeType of FinanceTypeList" [value]="financeType.id">{{
+                          financeType.name }}</ng-option>
+                      </ng-select>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div *ngIf="selectedTab == 'tab2'">
+        <div class="accordian-body py-5" style="padding-left: 40px">
+          <div class="row mb-4">
+            <div class="col-lg-6" *ngIf="!isAdd">
+              <form [formGroup]="DealNotesForm">
+              <textarea
+                id="notes-add-for-display"
+                formControlName="Notes"
+                class="form-control form-control-lg mb-3"
+                [ngClass]="isSaveNotes && Notes.invalid ? 'border-error' : ''"
+                type="text"
+                placeholder="Enter Notes"
+                rows="4"
+              ></textarea>
+  
+              <div *ngIf="isSaveNotes && Notes.invalid" class="required-feedback">
+                <div class="error-text">
+                  Notes is required
+                </div>
+              </div>
+              
+              <button (click)="SaveDealNotes()" class="btn btn-sm btn-primary">
+                Submit
+              </button>
+            </form>
+            </div>
+          </div>
+        </div>
+        
+        <div
+          class="p-4"
+          id="notes-add-for-display-1"
+          *ngIf="!isAdd && DealNotes.length > 0"
+        >
+        <div id="display-notes-length" >
+          <div class="card card-bordered w-100 mb-4" *ngFor="let n of DealNotes" >   
+            <div class="card-body">    
+                <div class="w-100 d-flex flex-stack mb-8">
+                    <div class="d-flex align-items-center " >
+                        <div class="d-flex flex-column fw-semibold fs-5 text-gray-600 text-dark">    
+                            <div class="d-flex align-items-center" hidden>    
+                                <a class="text-gray-800 fw-bold text-hover-primary fs-5 me-3">{{n?.createdBy}}</a>
+                                <span class="m-0"></span>               
+                            </div>
+          
+                            <span class="text-muted fw-semibold fs-6">{{ n?.createdDate  | date : "dd/MM/yyyy hh:mm:ss a " }}</span>     
+                        </div>
+                    </div>
+                </div>
+          
+                <p class="fw-normal fs-5 text-gray-700 m-0">
+                  {{ n.notes }}
+                </p> 
+            </div>
+          </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </form>
+    
+  </div>
+</div>
+
+<ng-template #ViewListing>
+  <form [formGroup]="form" novalidate="" class="form">
+      <div class="modal-content advance-filter-modal">
+        <div class="modal-header py-3">
+          <!--begin::Modal title-->
+          <h4 class="m-0">Select Listing</h4>
+          <!--end::Modal title-->
+          <div
+            class="btn btn-sm btn-icon btn-active-color-primary"
+            (click)="closeViewList()"
+          >
+            <i class="ki-duotone ki-cross fs-1"
+              ><span class="path1"></span><span class="path2"></span
+            ></i>
+          </div>
+        </div>
+        <div class="modal-body p-0">
+          <div class="table-responsive">
+            <!-- begin::Table -->
+            <table
+            id="listings_row"
+            class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4"
+          >
+            <!-- begin::Table head -->
+            <thead class="fw-bold">
+              <th class="w-40px">
+                <!-- <div
+                  class="form-check form-check-sm form-check-custom form-check-solid p-0"
+                >
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value="1"
+                    data-kt-check="true"
+                    data-kt-check-target=".widget-9-check"
+                  />
+                </div> -->
+              </th>
+
+              <!--Reference & Status-->
+              <th
+                class="min-w-120px"
+                (click)="
+                  listingData('Ref', !form.value.sortDirection, page, itemsPerPage)
+                "
+              >
+                Reference
+              </th>
+              <th
+                class="min-w-120px"
+                (click)="
+                  listingData(
+                    'Status',
+                    !form.value.sortDirection,
+                    page,
+                    itemsPerPage
+                  )
+                "
+              >
+                Status
+              </th>
+              
+              <!--BasicDetails-->
+              <th
+                class="min-w-120px"
+                (click)="
+                  listingData(
+                    'Agent',
+                    !form.value.sortDirection,
+                    page,
+                    itemsPerPage
+                  )
+                "
+              >
+                Assigned To
+              </th>
+
+              <!--Agent Email: hiding it for now -->
+              
+              <!--./hiding-->
+
+              <th
+                class="min-w-120px"
+                (click)="
+                  listingData(
+                    'Usage',
+                    !form.value.sortDirection,
+                    page,
+                    itemsPerPage
+                  )
+                "
+              >
+                Usage
+              </th>
+              <th
+                class="min-w-120px"
+                (click)="
+                  listingData(
+                    'Purpose',
+                    !form.value.sortDirection,
+                    page,
+                    itemsPerPage
+                  )
+                "
+              >
+                Purpose
+              </th>
+              <th
+                class="min-w-120px"
+                (click)="
+                  listingData(
+                    'Category',
+                    !form.value.sortDirection,
+                    page,
+                    itemsPerPage
+                  )
+                "
+              >
+                Property Type
+              </th>
+              
+              <th
+                class="min-w-120px"
+                (click)="
+                  listingData('Beds', !form.value.sortDirection, page, itemsPerPage)
+                "
+              >
+                Beds
+              </th>
+
+              <th class="min-w-120px" (click)="listingData('BUA', !form.value.sortDirection, page, itemsPerPage)">Built-up Area</th>
+              
+            
+              
+            
+            
+              
+            
+              <!--Address-->
+              <th
+                class="min-w-120px"
+                (click)="
+                  listingData(
+                    'Emirate',
+                    !form.value.sortDirection,
+                    page,
+                    itemsPerPage
+                  )
+                "
+              >
+                Emirate
+              </th>
+              <th
+                class="min-w-120px"
+                (click)="
+                  listingData(
+                    'Location',
+                    !form.value.sortDirection,
+                    page,
+                    itemsPerPage
+                  )
+                "
+              >
+                Location
+              </th>
+              <th
+                class="min-w-120px"
+                (click)="
+                  listingData(
+                    'SubLocation',
+                    !form.value.sortDirection,
+                    page,
+                    itemsPerPage
+                  )
+                "
+              >
+                Sub Location
+              </th>
+              
+              <th
+                class="min-w-120px"
+                (click)="
+                  listingData('Unit', !form.value.sortDirection, page, itemsPerPage)
+                "
+              >
+                Unit No.
+              </th>
+              
+
+              <!--Pricing-->
+            
+
+              <th
+                class="min-w-120px"
+                (click)="
+                  listingData(
+                    'Price',
+                    !form.value.sortDirection,
+                    page,
+                    itemsPerPage
+                  )
+                "
+              >
+                Price
+              </th>
+              
+
+              
+              
+              
+              <!--Contact Details-->
+              <th
+                class="min-w-120px"
+                (click)="
+                  listingData(
+                    'OwnerFirstname',
+                    !form.value.sortDirection,
+                    page,
+                    itemsPerPage
+                  )
+                "
+              >
+                Owner First Name
+              </th>
+              <th
+                class="min-w-120px"
+                (click)="
+                  listingData(
+                    'OwnerLastname',
+                    !form.value.sortDirection,
+                    page,
+                    itemsPerPage
+                  )
+                "
+              >
+                Owner Last Name
+              </th>
+              
+            
+            </thead>
+            <!-- end::Table head -->
+
+            <!-- begin::Table Filter -->
+            <thead id="filter">
+              <th></th>
+
+              <!--Reference & Status-->
+              <th>
+                <input
+                  placeholder="Min. 3 chars"
+                  formControlName="reference"
+                  class="form-control mb-3 mb-lg-0"
+                  (keyup)="
+                    onFilterSelection('reference', $event, page, itemsPerPage)
+                  "
+                />
+              </th>
+              <th>
+                <ng-select
+                  formControlName="status"
+                  bindLabel="name"
+                  (change)="
+                    onFilterSelectionDrp('status', $event, page, itemsPerPage)
+                  "
+                >
+                  <ng-option *ngFor="let car of statusList" [value]="car.id">{{
+                    car.name
+                  }}</ng-option>
+                </ng-select>
+              </th>
+            
+              <!--BasicDetails-->
+              <th>
+                <!-- <input
+                    formControlName="agent"
+                    class="form-control mb-3 mb-lg-0"
+                    (keyup)="onFilterSelection('agent', $event, page, itemsPerPage
+    )"
+                  /> -->
+                <ng-select
+                  formControlName="assignedToId"
+                  bindLabel="name"
+                  (change)="
+                    onFilterSelectionDrp('assignedToId', $event, page, itemsPerPage)
+                  "
+                >
+                  <ng-option *ngFor="let car of assignToList" [value]="car.id">{{
+                    car.name
+                  }}</ng-option>
+                </ng-select>
+              </th>
+
+              <!--Agent Email: hiding it for now -->
+            
+              <!--./hiding-->
+
+              <th>
+                <ng-select
+                  formControlName="usageId"
+                  bindLabel="name"
+                  (change)="
+                    onFilterSelectionDrp('usageId', $event, page, itemsPerPage)
+                  "
+                >
+                  <ng-option *ngFor="let car of usageList" [value]="car.id">{{
+                    car.name
+                  }}</ng-option>
+                </ng-select>
+              </th>
+
+              <th>
+                <ng-select
+                  formControlName="purposeId"
+                  bindLabel="name"
+                  (change)="
+                    onFilterSelectionDrp('purposeId', $event, page, itemsPerPage)
+                  "
+                >
+                  <ng-option *ngFor="let car of purposeList" [value]="car.id">{{
+                    car.name
+                  }}</ng-option>
+                </ng-select>
+              </th>
+
+              <th>
+                <ng-select
+                  formControlName="propertyTypeId"
+                  bindLabel="name"
+                  (change)="
+                    onFilterSelectionDrp(
+                      'propertyTypeId',
+                      $event,
+                      page,
+                      itemsPerPage
+                    )
+                  "
+                >
+                  <ng-option
+                    *ngFor="let car of propertyTypeList"
+                    [value]="car.id"
+                    >{{ car.name }}</ng-option
+                  >
+                </ng-select>
+              </th>
+              
+              <th>
+                <ng-select
+                  formControlName="bedsId"
+                  bindLabel="name"
+                  (change)="
+                    onFilterSelectionDrp('bedsId', $event, page, itemsPerPage)
+                  "
+                >
+                  <ng-option *ngFor="let car of bedList" [value]="car.id">{{
+                    car.name
+                  }}</ng-option>
+                </ng-select>
+              </th>
+
+              <th>
+                <div class="d-flex gap-2 w-200px">
+                  <input
+                    placeholder="From"
+                    formControlName="minBUA"
+                    class="form-control mb-3 mb-lg-0"
+                    mask="0*.00"
+                    [dropSpecialCharacters]="false"
+                    (keyup)="
+                    onFilterSelectionDecimal('minBUA', $event, page, itemsPerPage)
+                    "
+                  />
+                  <input
+                    placeholder="To"
+                    formControlName="maxBUA"
+                    mask="0*.00"
+                    [dropSpecialCharacters]="false"
+                    class="form-control mb-3 mb-lg-0"
+                    (keyup)="
+                    onFilterSelectionDecimal('maxBUA', $event, page, itemsPerPage)
+                    "
+                  />
+                </div>
+              </th>
+              
+              
+              <!--Address-->
+              <th>
+                <ng-select
+                  formControlName="emiratesId"
+                  bindLabel="name"
+                  (change)="
+                    onFilterSelectionDrp('emiratesId', $event, page, itemsPerPage)
+                  "
+                >
+                  <ng-option *ngFor="let car of emiratesList" [value]="car.id">{{
+                    car.name
+                  }}</ng-option>
+                </ng-select>
+              </th>
+              <th>
+                <ng-select
+                  formControlName="locationId"
+                  bindLabel="name"
+                  (change)="
+                    onFilterSelectionDrp('locationId', $event, page, itemsPerPage)
+                  "
+                >
+                  <ng-option *ngFor="let car of locationList" [value]="car.id">{{
+                    car.name
+                  }}</ng-option>
+                </ng-select>
+              </th>
+              <th>
+                <ng-select
+                  formControlName="subLocationId"
+                  (change)="
+                    onFilterSelectionDrp(
+                      'subLocationId',
+                      $event,
+                      page,
+                      itemsPerPage
+                    )
+                  "
+                >
+                  <ng-option *ngFor="let car of subLocationList" [value]="car.id">{{
+                    car.name
+                  }}</ng-option>
+                </ng-select>
+              </th>
+              
+              <th>
+                <input
+                  formControlName="unitNumber"
+                  class="form-control mb-3 mb-lg-0"
+                  (keyup)="
+                  onFilterSelection1st('unitNumber', $event, page, itemsPerPage)
+                  "
+                />
+              </th>
+            
+              <th>
+                <div class="d-flex gap-2 w-200px">
+                  <input
+                    placeholder="From"
+                    formControlName="minPrice"
+                    class="form-control mb-3 mb-lg-0"
+                    (keyup)="
+                      onFilterSelectionDecimal(
+                        'minPrice',
+                        $event,
+                        page,
+                        itemsPerPage
+                      )
+                    "
+                  />
+                  <input
+                    placeholder="To"
+                    formControlName="maxPrice"
+                    class="form-control mb-3 mb-lg-0"
+                    (keyup)="
+                      onFilterSelectionDecimal(
+                        'maxPrice',
+                        $event,
+                        page,
+                        itemsPerPage
+                      )
+                    "
+                  />
+                </div>
+              </th>
+              
+              <th>
+                <input
+                  placeholder="Min. 3 chars"
+                  formControlName="ownerFirstName"
+                  type="text"
+                  class="form-control mb-3 mb-lg-0"
+                  (keyup)="
+                    onFilterSelection('ownerFirstName', $event, page, itemsPerPage)
+                  "
+                />
+              </th>
+              <th>
+                <input
+                  placeholder="Min. 3 chars"
+                  formControlName="ownerLastName"
+                  type="text"
+                  class="form-control mb-3 mb-lg-0"
+                  (keyup)="
+                    onFilterSelection('ownerLastName', $event, page, itemsPerPage)
+                  "
+                />
+              </th>
+              
+            </thead>
+            <!-- end::Table Filter -->
+            <!-- begin::Table Body -->
+            <tbody *ngIf="listingDetails.length > 0">
+              <tr
+                *ngFor="
+                  let data of listingDetails
+                    | paginate
+                      : {
+                          id:'deals_listingDetails',
+                          itemsPerPage: itemsPerPage,
+                          currentPage: page,
+                          totalItems: totalRecord
+                        }
+                " 
+              >
+                <th class="w-40px align-middle">
+                  <div
+                    class="form-check form-check-sm form-check-custom form-check-solid p-0"
+                  >
+                  <input class="form-check-input cursor-pointer" type="radio" name="Contact" [checked]="selectedListingId == data?.id" value="{{ data.id }}"
+                  (change)="onSelectListingId(data)" />
+                  </div>
+                </th>
+                <th class="kt_activities_toggle align-middle" >{{ data.reference }}</th>
+                <th class="kt_activities_toggle align-middle" ><span [ngClass]="data.statusName == 'Draft'? 'text-blue':data.statusName == 'Published'?'text-green': 'text-orange'">{{ data.statusName }}</span></th>
+                <th class="kt_activities_toggle align-middle" ><div class="d-flex gap-2 align-items-center">
+                  <ngx-avatar *ngIf="data?.profileImage == null || data?.profileImage == ''" size="26" class="avatar" [name]="data?.agentName"></ngx-avatar>
+                <img *ngIf="data?.profileImage != null && data?.profileImage != ''" [src]="imgUrl + data?.profileImage" alt="Image Preview" [style.border-radius.px]="50" [style.width.px]="26" [style.height.px]="26">
+                  <!-- <ngx-avatar size="26" class="avatar" [name]="data?.agentName"></ngx-avatar> -->
+                  {{ data.agentName }}</div></th>
+                <!--Agent Email: hiding it for now-->
+                <!--./hiding it-->
+                <th class="kt_activities_toggle align-middle" >
+                  {{ data.usageName }}
+                </th>
+                <th class="kt_activities_toggle align-middle" >
+                  {{ data.purposeName }}
+                </th>
+                <th class="kt_activities_toggle align-middle" >
+                  {{ data.propertytypeName }}
+                </th>
+                
+                <th class="kt_activities_toggle align-middle" >
+                  {{ data.bedsName }}
+                </th>
+
+                <th class="kt_activities_toggle align-middle" >
+                  {{ data.buildUpArea }}
+                </th>
+                
+                <th class="kt_activities_toggle align-middle" >
+                  {{ data.emiratesName }}
+                </th>
+                <th class="kt_activities_toggle align-middle" >
+                  {{ data.locationName }}
+                </th>
+                <th class="kt_activities_toggle align-middle" >
+                  {{ data.subLocationName }}
+                </th>
+                
+                <th class="kt_activities_toggle align-middle" >
+                  {{ data.unitNumber }}
+                </th>
+                
+                <th class="kt_activities_toggle align-middle" >
+                  {{ data.price }}
+                </th>
+                
+                <th class="kt_activities_toggle align-middle" >
+                  {{ data.ownerFirstname }}
+                </th>
+                <th class="kt_activities_toggle align-middle" >
+                  {{ data.ownerLastname }}
+                </th>
+                
+              </tr>
+            </tbody>
+            <!-- end::Table Body -->
+          </table>
+            <div
+              class="text-center mt-5 mb-5"
+              *ngIf="listingDetails && listingDetails?.length == 0"
+            >
+              Record not available
+            </div>
+            <!-- end::Table -->
+          </div>
+          <!-- end::Table container -->
+        </div>
+        <div class="modal-footer py-3">
+          <div class="d-flex justify-content-between flex-column-reverse me-auto">
+            <pagination-controls *ngIf="listingDetails.length > 0" (pageChange)="renderPage($event)" id="deals_listingDetails"></pagination-controls>
+            <span class="d-block mb-3">Showing {{ listingDetails.length }} of <b>{{ totalRecord }}</b> Listings</span>
+          </div>
+
+          <button class="btn btn-sm btn-light btn-active-light-primary me-3" (click)="closeListing()"> Cancel </button>
+          <button
+          (click)="saveListing()"
+          [disabled]="tempSelectedListingRef == null"
+          class="btn btn-sm btn-flex btn-primary fw-bold me-1"
+          id=""
+        >
+          <i class="bi bi-right"></i> Apply
+          </button>
+        </div>
+      </div>
+  </form>
+</ng-template>
+
+
+<ng-template #ViewLead>
+  <form novalidate="" [formGroup]="ContactBasicForm" class="form">
+      <div class="modal-content advance-filter-modal">
+    
+        <div class="modal-content">
+          <div class="modal-header py-3">
+            <!--begin::Modal title-->
+            <h4 class="m-0">Select Lead</h4>
+            <!--end::Modal title-->
+            <div
+              class="btn btn-sm btn-icon btn-active-color-primary"
+              (click)="closeViewLead()"
+            >
+              <i class="ki-duotone ki-cross fs-1"
+                ><span class="path1"></span><span class="path2"></span
+              ></i>
+            </div>
+          </div>
+          <div class="modal-body p-0">
+            <div class="table-responsive">
+              <!-- begin::Table -->
+              <table
+                id="listings_row"
+                class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4"
+              >
+                <!-- begin::Table head -->
+                <thead class="fw-bold">
+                  <th class="w-40px">
+                    <!-- <div
+                      class="form-check form-check-sm form-check-custom form-check-solid p-0"
+                    >
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value="1"
+                        data-kt-check="true"
+                        data-kt-check-target=".widget-9-check"
+                      />
+                    </div> -->
+                  </th>
+                  <th
+                  class="min-w-120px"
+                  (click)="
+                    leadData(
+                      'Ref',
+                      !ContactBasicForm.value.sortDirection,
+                      leadpage,
+                      leaditemsPerPage
+                    )
+                  "
+                >
+                    Reference
+                  </th>
+                  <th
+                    class="min-w-120px"
+                    (click)="
+                      leadData(
+                        'Status',
+                        !ContactBasicForm.value.sortDirection,
+                        leadpage,
+                        leaditemsPerPage
+                      )
+                    "
+                  >
+                  Status
+                </th>
+                <th
+                  class="min-w-120px"
+                  (click)="
+                    leadData(
+                      'SubStatus',
+                      !ContactBasicForm.value.sortDirection,
+                      leadpage,
+                      leaditemsPerPage
+                    )
+                  "
+                >
+                  Sub Status
+                </th>
+      
+                <th
+                    class="min-w-120px"
+                    (click)="
+                      leadData(
+                        'Agent',
+                        !ContactBasicForm.value.sortDirection,
+                        leadpage,
+                        leaditemsPerPage
+                      )
+                    "
+                  >
+                  Assigned To
+                  </th>
+                
+                  <th
+                    class="min-w-120px"
+                    (click)="
+                      leadData(
+                        'FirstName',
+                        !ContactBasicForm.value.sortDirection,
+                        leadpage,
+                        leaditemsPerPage
+                      )
+                    "
+                  >
+                  First Name
+                </th>
+                <th
+                  class="min-w-120px"
+                  (click)="
+                    leadData(
+                      'LastName',
+                      !ContactBasicForm.value.sortDirection,
+                      leadpage,
+                      leaditemsPerPage
+                    )
+                  "
+                >
+                  Last Name
+                </th>
+      
+                <th
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'PersonalMobile',
+                !ContactBasicForm.value.sortDirection,
+                leadpage,
+                leaditemsPerPage
+              )
+            "
+              >
+              
+              Personal Mobile
+            </th>
+            <th
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'WorkMobile',
+                !ContactBasicForm.value.sortDirection,
+                leadpage,
+                leaditemsPerPage
+              )
+            "
+              >
+              Work Mobile
+            </th>
+            <th
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'OtherMobile',
+                !ContactBasicForm.value.sortDirection,
+                leadpage,
+                leaditemsPerPage
+              )
+            "
+              >
+              Other Mobile
+            </th>
+            <th
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'PersonalPhone',
+                !ContactBasicForm.value.sortDirection,
+                leadpage,
+                leaditemsPerPage
+              )
+            "
+              >
+              Personal Phone
+            </th>
+            <th
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'WorkPhone',
+                !ContactBasicForm.value.sortDirection,
+                leadpage,
+                leaditemsPerPage
+              )
+            "
+              >
+              Work Phone
+            </th>
+            <th
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'OtherPhone',
+                !ContactBasicForm.value.sortDirection,
+                leadpage,
+                leaditemsPerPage
+              )
+            "
+              >
+              Other Phone
+            </th>
+            <th
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'PersonalEmail',
+                !ContactBasicForm.value.sortDirection,
+                leadpage,
+                leaditemsPerPage
+              )
+            "
+              >
+              Personal Email
+            </th>
+            <th
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'WorkEmail',
+                !ContactBasicForm.value.sortDirection,
+                leadpage,
+                leaditemsPerPage
+              )
+            "
+              >
+              Work Email
+            </th>
+            <th
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'OtherEmail',
+                !ContactBasicForm.value.sortDirection,
+                leadpage,
+                leaditemsPerPage
+              )
+            "
+              >
+              Other Email
+            </th>
+                
+          <th
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'LeadType',
+                !ContactBasicForm.value.sortDirection,
+                leadpage,
+                leaditemsPerPage
+              )
+            "
+            >
+                Lead Type
+                  </th>
+                  
+                  
+                  
+                </thead>
+        
+                <!-- begin::Table Filter -->
+                <thead id="filter">
+                  <th></th>
+                  <th>
+                      <input
+                        class="form-control mb-3 mb-lg-0"
+                        type="text"
+                        placeholder="Min 3 chars"
+                        formControlName="reference"
+                        name="Reference"
+                        style="min-width: 40px !important"
+                        (keyup)="
+                          onFilterLeadSelection('reference', $event, leadpage, leaditemsPerPage)
+                        "
+                      />
+                  </th>
+                      <th>
+                      <ng-select
+                        formControlName="statusId"
+                        bindLabel="name"
+                        (change)="
+                          onFilterLeadSelectionDrp('statusId', $event, leadpage, leaditemsPerPage)
+                        "
+                      >
+                        <ng-option
+                          *ngFor="let status of AllStatusType"
+                          [value]="status.id"
+                          >{{ status.name }}</ng-option
+                        >
+                      </ng-select>
+                  </th>
+                  <th>
+                      <ng-select
+                        formControlName="subStatusId"
+                        bindLabel="name"
+                        (change)="
+                          onFilterLeadSelectionDrp(
+                            'subStatusId',
+                            $event,
+                            leadpage,
+                            leaditemsPerPage
+                          )
+                        "
+                      >
+                        <ng-option
+                          *ngFor="let sub of AllSubStatusType"
+                          [value]="sub.id"
+                          >{{ sub.name }}</ng-option
+                        >
+                      </ng-select>
+                  </th>
+      
+                  <th>
+                      <ng-select
+                        formControlName="agentId"
+                        bindLabel="Agent"
+                        (change)="
+                          onFilterLeadSelectionDrp('agentId', $event, leadpage, leaditemsPerPage)
+                        "
+                      >
+                        <ng-option *ngFor="let s of AgentList" [value]="s.id">{{
+                          s.name
+                        }}</ng-option>
+                      </ng-select>
+                  </th>
+                  
+                  <th>
+                      <input
+                        class="form-control mb-3 mb-lg-0"
+                        type="text"
+                        placeholder="Min 3 chars"
+                        formControlName="firstName"
+                        name="Firstname"
+                        style="min-width: 40px !important"
+                        (keyup)="
+                          onFilterLeadSelection('firstName', $event, leadpage, leaditemsPerPage)
+                        "
+                      />
+                  </th>
+                  <th>
+                      <input
+                        class="form-control mb-3 mb-lg-0"
+                        type="text"
+                        placeholder="Min 3 chars"
+                        formControlName="lastName"
+                        name="Lastname"
+                        style="min-width: 40px !important"
+                        (keyup)="
+                          onFilterLeadSelection('lastName', $event, leadpage, leaditemsPerPage)
+                        "
+                      />
+                  </th>
+                  <th>
+                      <input
+                        class="form-control mb-3 mb-lg-0"
+                        type="text"
+                        placeholder="Min 3 chars"
+                        formControlName="personalMobile"
+                        name="personalMobile"
+                        style="min-width: 40px !important"
+                        (keyup)="
+                          onFilterLeadSelection('personalMobile', $event, leadpage, leaditemsPerPage)
+                        "
+                      />
+                  </th>
+                  <th>
+                      <input
+                        class="form-control mb-3 mb-lg-0"
+                        type="text"
+                        placeholder="Min 3 chars"
+                        formControlName="workMobile"
+                        name="workMobile"
+                        style="min-width: 40px !important"
+                        (keyup)="
+                          onFilterLeadSelection('workMobile', $event, leadpage, leaditemsPerPage)
+                        "
+                      />
+                  </th>
+                  <th>
+                      <input
+                        class="form-control mb-3 mb-lg-0"
+                        type="text"
+                        placeholder="Min 3 chars"
+                        formControlName="otherMobile"
+                        name="otherMobile"
+                        style="min-width: 40px !important"
+                        (keyup)="
+                          onFilterLeadSelection('otherMobile', $event, leadpage, leaditemsPerPage)
+                        "
+                      />
+                  </th>
+                  <th>
+                      <input
+                        class="form-control mb-3 mb-lg-0"
+                        type="text"
+                        placeholder="Min 3 chars"
+                        formControlName="personalPhone"
+                        name="personalPhone"
+                        style="min-width: 40px !important"
+                        (keyup)="
+                          onFilterLeadSelection('personalPhone', $event, leadpage, leaditemsPerPage)
+                        "
+                      />
+                  </th>
+                  <th>
+                      <input
+                        class="form-control mb-3 mb-lg-0"
+                        type="text"
+                        placeholder="Min 3 chars"
+                        formControlName="workPhone"
+                        name="workPhone"
+                        style="min-width: 40px !important"
+                        (keyup)="
+                          onFilterLeadSelection('workPhone', $event, leadpage, leaditemsPerPage)
+                        "
+                      />
+                  </th>
+                  <th>
+                      <input
+                        class="form-control mb-3 mb-lg-0"
+                        type="text"
+                        placeholder="Min 3 chars"
+                        formControlName="otherPhone"
+                        name="otherPhone"
+                        style="min-width: 40px !important"
+                        (keyup)="
+                          onFilterLeadSelection('otherPhone', $event, leadpage, leaditemsPerPage)
+                        "
+                      />
+                  </th>
+                  <th>
+                      <input
+                        class="form-control mb-3 mb-lg-0"
+                        type="text"
+                        placeholder="Min 3 chars"
+                        formControlName="personalEmail"
+                        name="personalEmail"
+                        style="min-width: 40px !important"
+                        (keyup)="
+                          onFilterLeadSelection('personalEmail', $event, leadpage, leaditemsPerPage)
+                        "
+                      />
+                  </th>
+                  <th>
+                      <input
+                        class="form-control mb-3 mb-lg-0"
+                        type="text"
+                        placeholder="Min 3 chars"
+                        formControlName="workEmail"
+                        name="workEmail"
+                        style="min-width: 40px !important"
+                        (keyup)="
+                          onFilterLeadSelection('workEmail', $event, leadpage, leaditemsPerPage)
+                        "
+                      />
+                  </th>
+                  <th>
+                      <input
+                        class="form-control mb-3 mb-lg-0"
+                        type="text"
+                        placeholder="Min 3 chars"
+                        formControlName="otherEmail"
+                        name="otherEmail"
+                        style="min-width: 40px !important"
+                        (keyup)="
+                          onFilterLeadSelection('otherEmail', $event, leadpage, leaditemsPerPage)
+                        "
+                      />
+                  </th>
+             
+                  
+                  <th>
+                      <ng-select
+                        formControlName="leadTypeId"
+                        bindLabel="name"
+                        (change)="
+                          onFilterLeadSelectionDrp('leadTypeId', $event, leadpage, leaditemsPerPage)
+                        "
+                      >
+                        <ng-option
+                          *ngFor="let type of LeadTypeList"
+                          [value]="type.id"
+                          >{{ type.name }}</ng-option
+                        >
+                      </ng-select>
+                  </th>
+                  
+                 
+                
+                 
+                </thead>
+                <!-- end::Table Filter -->
+                <tbody>
+                  <tr
+                    *ngFor="
+                      let data of contactDetails
+                        | paginate
+                          : {
+                              id:'deals_contactData',
+                              itemsPerPage: leaditemsPerPage,
+                              currentPage: leadpage,
+                              totalItems: totalItems
+                            }
+                    "
+                  >
+                    <th class="w-40px">
+                      <div
+                        class="form-check form-check-sm form-check-custom form-check-solid p-0"
+                      >
+                      <input class="form-check-input cursor-pointer" type="radio" name="Contact" [checked]="selectedLeadId == data?.id" value="{{ data.id }}"
+                      (change)="onSelectLeadId(data)" />
+                      </div>
+                    </th>
+                    <th class="kt_activities_toggle" >
+                      {{ data?.reference }}
+                    </th>
+                    <th class="kt_activities_toggle align-middle" >
+                      <span [ngClass]="data.statusName == 'Closed'? 'text-grey':data.statusName == 'Open'?'text-blue': ''">{{ data?.statusName }}</span>
+                    </th>
+                   
+                    <th class="kt_activities_toggle" >
+                      <span [ngClass]="data.subStatusName == 'In Progress'||
+              data.subStatusName == 'Viewing Arranged'||
+              data.subStatusName == 'Offer Made'||
+              data.subStatusName == 'Interested'||
+              data.subStatusName == 'Interested To Meet'||
+              data.subStatusName == 'Viewing Done' ||
+              data.subStatusName == 'Successful'
+               ? 'text-green'
+               :data.subStatusName == 'Budget Differs'||
+               data.subStatusName == 'Not Interested'||
+               data.subStatusName == 'Client not Reachable'||
+               data.subStatusName == 'Incorrect Contact Details'||
+               data.subStatusName == 'Invalid inquiry'||
+               data.subStatusName == 'Price too High'||
+               data.subStatusName == 'Unsuccessful'
+               ?'text-red'
+               : data.subStatusName == 'Not Yet Contacted'||
+               data.subStatusName == 'Called No Reply'||
+               data.subStatusName == 'Follow Up'||
+               data.subStatusName == 'Client to revert'||
+               data.subStatusName == 'Needs More Info'||
+               data.subStatusName == 'Needs Time'||
+               data.subStatusName == 'Look-see'||
+               data.subStatusName == 'SMS sent to Agen'||
+               data.subStatusName == 'Email sent to Agent'||
+               data.subStatusName == 'Client Connected Online To Agent'
+               ? 'text-blue' : ''">{{ data?.subStatusName }}</span>
+                    </th>
+                    <th class="kt_activities_toggle" >
+                      <div class="d-flex gap-2 align-items-center">
+                        <ngx-avatar *ngIf="data?.profileImage == null || data?.profileImage == ''" size="26" class="avatar" [name]="data?.agentName"></ngx-avatar>
+                <img *ngIf="data?.profileImage != null && data?.profileImage != ''" [src]="imgUrl + data?.profileImage" alt="Image Preview" [style.border-radius.px]="50" [style.width.px]="26" [style.height.px]="26">
+                        <!-- <ngx-avatar size="26" class="avatar" [name]="data?.agentName"></ngx-avatar> -->
+                        {{ data.agentName }}</div>
+                    </th>
+                    <th class="kt_activities_toggle" >
+                      {{ data?.firstName }}
+                    </th>
+                    <th class="kt_activities_toggle" >
+                      {{ data?.lastName }}
+                    </th>
+                    <th class="kt_activities_toggle" >
+                      {{getMobile(1,data?.leadMobile)}}
+                    </th>
+                    <th class="kt_activities_toggle" >
+                      {{getMobile(2,data?.leadMobile)}}
+                    </th>
+                    <th class="kt_activities_toggle" >
+                      {{getMobile(3,data?.leadMobile)}}
+                    </th>
+                    <th class="kt_activities_toggle" >
+                      {{getPhone(1,data?.leadPhone)}}
+                    </th>
+                    <th class="kt_activities_toggle" >
+                      {{getPhone(2,data?.leadPhone)}}
+                    </th>
+                    <th class="kt_activities_toggle" >
+                      {{getPhone(3,data?.leadPhone)}}
+                    </th>
+                    <th class="kt_activities_toggle" >
+                      {{getEmail(1,data?.leadEmail)}}
+                    </th>
+                    <th class="kt_activities_toggle" >
+                      {{getEmail(2,data?.leadEmail)}}
+                    </th>
+                    <th class="kt_activities_toggle" >
+                      {{getEmail(3,data?.leadEmail)}}
+                    </th>
+                   
+                    <th class="kt_activities_toggle" >
+                      {{ data?.leadTypeName }}
+                    </th>
+                    
+                   
+                    
+                  </tr>
+                </tbody>
+                <!-- end::Table Body -->
+              </table>
+        
+              <div
+                class="text-center mt-5 mb-5"
+                *ngIf="contactDetails && contactDetails?.length === 0"
+              >
+                Record not available
+              </div>
+              <!-- end::Table -->
+              
+            </div>
+          </div>
+    
+          <div class="modal-footer py-3">
+            <!--Pagination-->
+            <div class="d-flex justify-content-between flex-column-reverse me-auto">
+              <pagination-controls *ngIf="contactDetails.length > 0" (pageChange)="renderleadPage($event)" id="deals_contactData"></pagination-controls>
+              <span class="d-block mb-3">Showing {{ contactDetails.length }} of <b>{{ totalItems }}</b> Leads</span>
+            </div>
+            <!--./Pagination-->
+            <button class="btn btn-sm btn-light btn-active-light-primary me-3" (click)="closeLead()"> Cancel </button>
+            <button
+            (click)="saveLead()"
+            [disabled]="tempSelectedLeadRef == null"
+            class="btn btn-sm btn-flex btn-primary fw-bold me-1"
+            id=""
+          >
+            <i class="bi bi-right"></i> Apply
+            </button>
+          </div>
+        </div>
+      </div>
+  </form>
+</ng-template>

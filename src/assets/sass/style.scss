@@ -1,0 +1,170 @@
+//
+// Theme style
+//
+
+// Initialize
+@import "init";
+
+// Components
+@import "./core/components/components";
+@import "components/components";
+
+// Layout
+@import "./core/layout/base/layout";
+@import "layout/layout";
+
+@import "ph-table";
+@import "ph-detail-view";
+
+body {
+    overflow-x: hidden;
+}
+
+.card.card--zoomed-out {
+    width: calc(100% + 40px);
+    margin: -20px -20px;
+    padding: 10px 10px 0;
+
+    .card-header {
+        min-height: 50px;
+    }
+}
+
+.md-drppicker {
+    z-index: 9999;
+    overflow: auto; // also try overflow-y;
+}
+
+ngx-daterangepicker-material {
+    z-index: 9999;
+    overflow: auto; // also try overflow-y;
+}
+
+.ngx-pagination {
+    padding: 0 0 0 10px;
+
+    .current {
+        background: #2dadbb !important;
+        border-radius: 4px;
+    }
+}
+
+input[type="date"] {
+    position: relative;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+    background-position: right 10px center;
+    background-size: 15px;
+}
+
+/* Style the custom placeholder */
+input[type="date"]+span.input-date-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 0.8rem;
+    transform: translateY(-50%);
+    color: #a1a5b7;
+    font-size: 1.1rem;
+    font-weight: 600;
+    pointer-events: none;
+}
+
+/* Hide the custom placeholder when the input has a value */
+input[type="date"].ng-dirty+span.input-date-placeholder,
+input[type="date"].date-selected+span.input-date-placeholder {
+    display: none;
+}
+
+#filter input[type="date"]:not(.ng-dirty)::-webkit-datetime-edit,
+.advance-filter-modal input[type="date"]:not(.ng-dirty):not(.date-selected)::-webkit-datetime-edit {
+    display: none;
+}
+
+input[type="time"] {
+    position: relative;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+    background-position: right 10px center;
+    background-size: 15px;
+}
+
+.ph-carousel {
+    padding-bottom: 40px;
+
+    .carousel-indicators {
+        margin: 0;
+        justify-content: flex-start;
+        bottom: 0;
+        left: -2px;
+
+        li {
+            width: 15px;
+            height: 15px;
+            border: 0;
+            border-radius: 50%;
+            background: #cdc7c7;
+
+            &.active {
+                background: #2dadbb;
+            }
+        }
+    }
+}
+
+/* Error Highlighted CSS */
+.border-error:not(ng-select) {
+    border: 1px solid red !important;
+}
+.border-error > div {
+    border: 1px solid red !important;
+}
+.error-text {
+    color: red !important;
+}
+
+// .border-error ::ng-deep .ng-select-container,
+input.border-error,
+.border-error button {
+    border: 1px solid red !important;
+}
+.color-808080{
+    color: #808080;
+}
+
+.card-propertyreq {
+    padding: 20px 2.5rem 0px 2.5rem;
+    // border: 2px solid;
+}
+
+.link-hover {
+    color: #0000FF;
+    cursor: pointer;
+  }
+
+.bd-grey {
+    border: 1px solid #ccc !important;
+}
+
+.bd-grey:not(:checked) {
+    background-color: #fff !important;
+}

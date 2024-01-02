@@ -1,0 +1,14 @@
+<ng-container >
+  <p class="menu-link px-10 mt-2">
+    {{roleName}}
+  </p>
+  <div class="separator my-2"></div>
+  <div class="menu-item px-5">
+    <a routerLink="/profile" class="menu-link px-5">
+      My Profile
+    </a>
+  </div>
+  <div class="menu-item px-5">
+    <a (click)="logout()" class="menu-link px-5 cursor-pointer"> Sign Out </a>
+  </div>
+</ng-container>

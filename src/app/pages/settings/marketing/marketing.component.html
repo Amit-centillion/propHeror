@@ -1,0 +1,130 @@
+<div class="card mb-5 mb-xl-10">
+  <!--   <div class="card-header cursor-pointer" role="button">
+        
+        <div class="card-title m-0">
+            <h3 class="fw-bold m-0">Marketing</h3>
+        </div>
+
+    </div> -->
+    <div class="card-body pt-9 pb-0">
+
+        <form [formGroup]="marketingForm">
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label  fw-semibold fs-6">Company Logo</label>
+                <div class="col-lg-6">
+                        <!--begin::Image input-->
+                        <div class="image-input image-input-outline image-input-empty mb-4">
+                            <!--begin::Preview existing avatar *ngIf="companyImagePath != null"-->
+                            <div class="image-input-wrapper w-125px h-125px bgi-position-center" id="imagePreview" >
+                                <img style="object-fit:cover;width: 100%;height: 100%;" [src]="companyImagePath" alt="Image Preview" *ngIf="companyImagePath != null">
+                            </div>
+                            <!--end::Preview existing avatar-->
+    
+                            <!--begin::Label-->
+                            <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-white shadow" data-kt-image-input-action="change">
+                                <i class="ki-duotone ki-pencil fs-7"><span class="path1"></span><span class="path2"></span></i>
+                                <!--begin::Inputs-->
+                                <input type="file" name="avatar" formControlName="companyLogoPath"  id="profilePhoto" accept="image/*" (change)="previewCompanyImage($event)">
+                                <input type="hidden" name="avatar_remove" value="1">
+                                <!--end::Inputs-->
+                            </label>
+                            <!--end::Label-->
+    
+    
+                            <!--begin::Remove-->
+                            <div *ngIf="companyImagePath != null" (click)="DeleteCompanyImage()" class="col-sm-12 text-end p-0">
+                                <a href="javascript:void(0)" class="btn btn-icon-danger btn-text-danger btn-sm px-0">
+                                    <i class="bi bi-trash"></i> Delete
+                                </a>
+                            </div>
+                           
+                            <!--end::Remove-->
+                        </div>
+                        <!--end::Image input-->
+                  
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label  fw-semibold fs-6">Watermark</label>
+                <div class="col-lg-6">
+
+                    <!--begin::Image input-->
+                    <div class="image-input image-input-outline image-input-empty mb-4">
+                        <!--begin::Preview existing avatar *ngIf="companyImagePath != null"-->
+                        <div class="image-input-wrapper w-125px h-125px bgi-position-center" id="waterImagePreview" >
+                            <img style="object-fit:cover;width: 100%;height: 100%;" [src]="watermarkImagePath" alt="Image Preview" *ngIf="watermarkImagePath != null">
+                        </div>
+                        <!--end::Preview existing avatar-->
+
+                        <!--begin::Label-->
+                        <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-white shadow" data-kt-image-input-action="change">
+                            <i class="ki-duotone ki-pencil fs-7"><span class="path1"></span><span class="path2"></span></i>
+                            <!--begin::Inputs-->
+                            <input type="file" name="avatar"formControlName="watermarkPath"  id="profilePhoto"accept="image/*" (change)="previewWatermarkImage($event)">
+                            <input type="hidden" name="avatar_remove" value="1">
+                            <!--end::Inputs-->
+                        </label>
+                        <!--end::Label-->
+
+
+                        <!--begin::Remove-->
+                        <div *ngIf="watermarkImagePath != null" (click)="DeleteWatermarkImage()" class="col-sm-12 text-end p-0">
+                            <a href="javascript:void(0)"  class="btn btn-icon-danger btn-text-danger btn-sm px-0">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </div>
+                       
+                        <!--end::Remove-->
+                    </div>
+                    <!--end::Image input-->
+                 
+                </div>
+            </div>
+
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label  fw-semibold fs-6">Default Listing Image</label>
+                <div class="col-lg-6">
+                    
+                    <!--begin::Image input-->
+                    <div class="image-input image-input-outline image-input-empty mb-4">
+                        <!--begin::Preview existing avatar *ngIf="companyImagePath != null"-->
+                        <div class="image-input-wrapper w-125px h-125px bgi-position-center" id="listImagePreview" >
+                            <img style="object-fit:cover;width: 100%;height: 100%;" [src]="listingImagePath" alt="Image Preview" *ngIf="listingImagePath != null">
+                        </div>
+                        <!--end::Preview existing avatar-->
+
+                        <!--begin::Label-->
+                        <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-white shadow" data-kt-image-input-action="change">
+                            <i class="ki-duotone ki-pencil fs-7"><span class="path1"></span><span class="path2"></span></i>
+                            <!--begin::Inputs-->
+                            <input type="file" name="avatar" formControlName="defaultListingImagePath" accept="image/*" (change)="previewListingImage($event)">
+                            <input type="hidden" name="avatar_remove" value="1">
+                            <!--end::Inputs-->
+                        </label>
+                        <!--end::Label-->
+
+
+                        <!--begin::Remove-->
+                        <div *ngIf="listingImagePath != null" (click)="DeleteListingImage()" class="col-sm-12 text-end p-0">
+                            <a href="javascript:void(0)"  class="btn btn-icon-danger btn-text-danger btn-sm px-0">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </div>
+                       
+                        <!--end::Remove-->
+                    </div>
+                    <!--end::Image input-->
+
+                </div>
+            </div>
+
+    
+        </form>
+
+        
+</div><!--./card-body-->
+<div class="card-footer d-flex justify-content-end py-6 px-9">
+    <button (click)="save()" class="btn btn-primary">Save</button>
+</div>
+</div><!--./card-->

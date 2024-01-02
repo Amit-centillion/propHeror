@@ -1,0 +1,333 @@
+<div id="splash-screen" class="splash-screen" *ngIf="IsLoading">
+  <img src="./assets/media/logos/prophero-small.svg" alt="PropHero logo" />
+  <span>Loading ...</span>
+</div>
+
+<form [formGroup]="searchViewingForm" novalidate="" class="form">
+  <div  class="card-header align-items-center p-0 gap-2 gap-md-5">
+    <!--begin::Actions-->
+    <div class="d-flex w-100 justify-content-between">
+      <div class="d-flex gap-2">
+        <!-- <a class="btn btn-sm btn-light-primary">
+          <i class="bi bi-send"></i> Send SMS
+        </a> -->
+      </div>
+      <!--begin::Drawer toggle-->
+      <a (click)="onAdd()" *ngIf="isAddViewingPermission" class="kt_viewing-details_toggle btn btn-sm btn-flex btn-primary fw-bold me-1">
+        <i class="bi bi-plus fs-2"></i> Add Viewing
+      </a>
+      <!--end::Drawer toggle-->
+    </div>
+    <!--end::Actions-->
+    <!-- begin::Table container -->
+    <!-- <button   id="kt_viewing-details_toggle" (click)="openViewing()">Open Viewing for demo</button> -->
+    <!-- <form [formGroup]="searchContactForm"> -->
+    <div class="table-responsive">
+      <!-- begin::Table -->
+      <table id="listings_row" class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+        <!-- begin::Table head -->
+        <thead class="fw-bold">
+          <th class="w-40px">
+            <div class="form-check form-check-sm form-check-custom form-check-solid p-0">
+              <input class="form-check-input cursor-pointer" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check" />
+            </div>
+          </th>
+
+          <!--Basic Details-->
+          <ng-container *ngFor="let column of columnOrder">
+          <th *ngIf="column.isVisible && column.column == 'Reference'" class="min-w-120px" (click)="OnSort('Reference')"> Reference </th>
+          <th *ngIf="column.isVisible && column.column == 'Status'" class="min-w-120px" (click)="OnSort('Status')"> Status </th>
+          <th *ngIf="column.isVisible && column.column == 'Assigned To'" class="min-w-120px" (click)="OnSort('AssignedTo')">Assigned To</th>
+          <th *ngIf="column.isVisible && column.column == 'Listing Reference'" class="min-w-120px" (click)="OnSort('ListingReference')">Listing Reference</th>
+          <th *ngIf="column.isVisible && column.column == 'Purpose'" class="min-w-120px" (click)="OnSort('Purpose')">Purpose</th>
+          <th *ngIf="column.isVisible && column.column == 'Property Type'" class="min-w-120px" (click)="OnSort('PropertyType')">Property Type</th>
+          <th *ngIf="column.isVisible && column.column == 'Emirate'" class="min-w-120px" (click)="OnSort('Emirate')">Emirate</th>
+          <th *ngIf="column.isVisible && column.column == 'Location'" class="min-w-120px" (click)="OnSort('Location')">Location</th>
+          <th *ngIf="column.isVisible && column.column == 'Sub Location'" class="min-w-120px" (click)="OnSort('SubLocation')">Sub Location</th>
+          <th *ngIf="column.isVisible && column.column == 'Lead Reference'" class="min-w-120px" (click)="OnSort('LeadReference')">Lead Reference</th>
+          <th *ngIf="column.isVisible && column.column == 'Lead First Name'" class="min-w-120px" (click)="OnSort('LeadFirstName')">Lead First Name</th>
+          <th *ngIf="column.isVisible && column.column == 'Lead Last Name'" class="min-w-120px" (click)="OnSort('LeadLastName')">Lead Last Name</th>
+          <th *ngIf="column.isVisible && column.column == 'Start Date'" class="min-w-120px" (click)="OnSort('StartDate')">Start Date</th>
+          <th *ngIf="column.isVisible && column.column == 'End Date'" class="min-w-120px" (click)="OnSort('EndDate')">End Date</th>
+          
+          <th *ngIf="column.isVisible && column.column == 'Created'" class="min-w-120px" (click)="OnSort('Created')">Created</th>
+          <th *ngIf="column.isVisible && column.column == 'Created By'" class="min-w-120px" (click)="OnSort('CreatedBy')">Created By</th>
+          <th *ngIf="column.isVisible && column.column == 'Updated'" class="min-w-120px" (click)="OnSort('Updated')">Updated</th>
+          <th *ngIf="column.isVisible && column.column == 'Updated By'" class="min-w-120px" (click)="OnSort('UpdatedBy')">Updated By</th>
+        </ng-container>
+        </thead>
+        <!-- end::Table head -->
+
+        <!-- begin::Table Filter -->
+        <thead id="filter">
+          <!-- <form [formGroup]="searchContactForm"> -->
+          <th></th>
+          <ng-container *ngFor="let column of columnOrder">
+          <th *ngIf="column.isVisible && column.column == 'Reference'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterReference" (keyup)="MinCharSearch($event,'Reference')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Status'">
+            <ng-select formControlName="filterStatus" bindLabel="name" (change)="filterViewing()">
+              <!-- <ng-option value="" selected>Select Assign To</ng-option> -->
+                      <ng-option *ngFor="let status of statusList" [value]="status.id">{{ status.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+          
+          <th *ngIf="column.isVisible && column.column == 'Assigned To'">
+            <ng-select formControlName="filterAssignedTo" bindLabel="name" (change)="filterViewing()">
+              <!-- <ng-option value="" selected>Select Assign To</ng-option> -->
+                      <ng-option *ngFor="let assignee of assignToList" [value]="assignee.id">{{ assignee.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Listing Reference'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterListingReference" (keyup)="MinCharSearch($event,'ListingReference')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Purpose'">
+            <ng-select formControlName="filterListingPurpose" bindLabel="name" (change)="filterViewing()">
+              <!-- <ng-option value="" selected>Select Assign To</ng-option> -->
+                      <ng-option *ngFor="let purpose of purposeList" [value]="purpose.id">{{ purpose.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Property Type'">
+            <ng-select formControlName="filterListingPropertyType" bindLabel="name" (change)="filterViewing()">
+              <!-- <ng-option value="" selected>Select Assign To</ng-option> -->
+                      <ng-option *ngFor="let propertyType of propertyTypeList" [value]="propertyType.id">{{ propertyType.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Emirate'">
+            <ng-select formControlName="filterListingEmirate" bindLabel="name" (change)="filterViewing()">
+              <!-- <ng-option value="" selected>Select Assign To</ng-option> -->
+                      <ng-option *ngFor="let emirate of EmirateList" [value]="emirate.id">{{ emirate.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Location'">
+            <ng-select formControlName="filterListingLocation" bindLabel="name" (change)="filterViewing()">
+              <!-- <ng-option value="" selected>Select Assign To</ng-option> -->
+                      <ng-option *ngFor="let location of LocationList" [value]="location.id">{{ location.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Sub Location'">
+            <ng-select formControlName="filterListingSubLocation" bindLabel="name" (change)="filterViewing()">
+              <!-- <ng-option value="" selected>Select Assign To</ng-option> -->
+                      <ng-option *ngFor="let subLocation of SubLocationList" [value]="subLocation.id">{{ subLocation.name
+                        }}</ng-option>
+            </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Lead Reference'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterLeadReference" (keyup)="MinCharSearch($event,'LeadReference')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Lead First Name'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterLeadFirstName" (keyup)="MinCharSearch($event,'LeadFirstName')"/></th>
+          <th *ngIf="column.isVisible && column.column == 'Lead Last Name'"><input type="text" placeholder="Min. 3 chars" class="form-control mb-3 mb-lg-0" formControlName="filterLeadLastName" (keyup)="MinCharSearch($event,'LeadLastName')"/></th>
+          
+          <th *ngIf="column.isVisible && column.column == 'Start Date'">
+            <!-- <div class="position-relative">
+              <input type="text" ngxDaterangepickerMd [showClearButton]="true" [locale]="{clearLabel: 'Clear'}"  formControlName="filterDOB" (change)="filterContact()" />
+            </div> -->
+            <!-- <input type="date" formControlName="filterDOB" class="form-control mb-3 mb-lg-0" (change)="filterContact()"/> -->
+            <div class="d-flex gap-2 w-300px">
+              <div class="position-relative w-50">
+                <input type="date" formControlName="filterFromStartDate" class="form-control mb-3 mb-lg-0" (change)="filterViewing()"/>
+                <span class="input-date-placeholder" for="filterFromStartDate">From</span>
+              </div>
+              <div class="position-relative w-50">
+                <input type="date" formControlName="filterToStartDate" class="form-control mb-3 mb-lg-0" (change)="filterViewing()"/>
+                <span class="input-date-placeholder" for="filterToStartDate">To</span>
+              </div>
+            </div>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'End Date'">
+            <!-- <div class="position-relative">
+              <input type="text" ngxDaterangepickerMd [showClearButton]="true" [locale]="{clearLabel: 'Clear'}"  formControlName="filterDOB" (change)="filterContact()" />
+            </div> -->
+            <!-- <input type="date" formControlName="filterDOB" class="form-control mb-3 mb-lg-0" (change)="filterContact()"/> -->
+            <div class="d-flex gap-2 w-300px">
+              <div class="position-relative w-50">
+                <input type="date" formControlName="filterFromEndDate" class="form-control mb-3 mb-lg-0" (change)="filterViewing()"/>
+                <span class="input-date-placeholder" for="filterFromEndDate">From</span>
+              </div>
+              <div class="position-relative w-50">
+                <input type="date" formControlName="filterToEndDate" class="form-control mb-3 mb-lg-0" (change)="filterViewing()"/>
+                <span class="input-date-placeholder" for="filterToEndDate">To</span>
+              </div>
+            </div>
+          </th>
+          
+          <th *ngIf="column.isVisible && column.column == 'Created'">
+            <div class="d-flex gap-2 w-300px">
+              <div class="position-relative w-50">
+                <input type="date" formControlName="filterFromCreatedDate" class="form-control mb-3 mb-lg-0" (change)="filterViewing()"/>
+                <span class="input-date-placeholder" for="filterFromEndDate">From</span>
+              </div>
+              <div class="position-relative w-50">
+                <input type="date" formControlName="filterToCreatedDate" class="form-control mb-3 mb-lg-0" (change)="filterViewing()"/>
+                <span class="input-date-placeholder" for="filterToCreatedDate">To</span>
+              </div>
+            </div>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Created By'">
+            <ng-select formControlName="filterCreatedBy" bindLabel="name" (change)="filterViewing()">
+              <!-- <ng-option value="" selected>Select Assign To</ng-option> -->
+              <ng-option
+              *ngFor="let user of userList"
+              [value]="user.userId"
+              >{{ user.userName }}</ng-option>
+            </ng-select>
+          </th>
+
+          <th *ngIf="column.isVisible && column.column == 'Updated'">
+            <div class="d-flex gap-2 w-300px">
+              <div class="position-relative w-50">
+                <input type="date" formControlName="filterFromUpdatedDate" class="form-control mb-3 mb-lg-0" (change)="filterViewing()"/>
+                <span class="input-date-placeholder" for="filterFromUpdatedDate">From</span>
+              </div>
+              <div class="position-relative w-50">
+                <input type="date" formControlName="filterToUpdatedDate" class="form-control mb-3 mb-lg-0" (change)="filterViewing()"/>
+                <span class="input-date-placeholder" for="filterToUpdatedDate">To</span>
+              </div>
+            </div>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Updated By'">
+            <ng-select formControlName="filterUpdatedBy" bindLabel="name" (change)="filterViewing()">
+              <!-- <ng-option value="" selected>Select Assign To</ng-option> -->
+              <ng-option
+              *ngFor="let user of userList"
+              [value]="user.userId"
+              >{{ user.userName }}</ng-option>
+            </ng-select>
+          </th>
+          </ng-container>
+          <!-- </form> -->
+        </thead>
+        
+        <!-- end::Table Filter -->
+
+        <!-- begin::Table Body -->
+        <tbody *ngIf="ViewingList.length > 0">
+          <tr *ngFor="let data of ViewingList | paginate : { id:'viewingData_table',itemsPerPage: pageSize, currentPage: pageNumber, totalItems: totalRecord}" >
+            <th class="w-40px align-middle">
+              <div class="form-check form-check-sm form-check-custom form-check-solid p-0">
+                <input class="form-check-input cursor-pointer" [checked]="selectedViewingId == data?.id"  type="checkbox" value="{{ data.Id }}" data-kt-check="true" data-kt-check-target=".widget-9-check" />
+              </div>
+            </th>
+            <ng-container *ngFor="let column of columnOrder">
+            <th *ngIf="column.isVisible && column.column == 'Reference'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_viewing-details_toggle':'' " (click)="openViewing(data?.id)">{{data?.reference}}</th>
+            <th *ngIf="column.isVisible && column.column == 'Status'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_viewing-details_toggle':'' " (click)="openViewing(data?.id)"><span [ngClass]="data?.statusId == 1 ? 'text-blue':data?.statusId == 2 ?'text-green':data?.statusId == 3 ? 'text-red' : data?.statusId == 4 ? 'text-grey' : '' ">{{data?.status}}</span></th>
+            
+            <th *ngIf="column.isVisible && column.column == 'Assigned To'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_viewing-details_toggle':'' " (click)="openViewing(data?.id)">
+              <div class="d-flex gap-2 align-items-center">
+                <ngx-avatar *ngIf="data?.profileImage == null || data?.profileImage == ''" size="26" class="avatar" [name]="data?.agentName"></ngx-avatar>
+                <img *ngIf="data?.profileImage != null && data?.profileImage != ''" [src]="imgUrl + data?.profileImage" alt="Image Preview" [style.border-radius.px]="50" [style.width.px]="26" [style.height.px]="26">
+                <!-- <ngx-avatar size="26" class="avatar" [name]="data?.agentName"></ngx-avatar>{{data?.agentName}} -->
+                {{data?.agentName}}
+              </div>  
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Listing Reference'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_viewing-details_toggle':'' " (click)="openViewing(data?.id)">{{data?.listingReference}}</th>
+            <th *ngIf="column.isVisible && column.column == 'Purpose'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_viewing-details_toggle':'' " (click)="openViewing(data?.id)">{{data?.purpose}}</th>
+            <th *ngIf="column.isVisible && column.column == 'Property Type'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_viewing-details_toggle':'' " (click)="openViewing(data?.id)">{{data?.propertyType}}</th>
+            <th *ngIf="column.isVisible && column.column == 'Emirate'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_viewing-details_toggle':'' " (click)="openViewing(data?.id)">{{data?.emirate}}</th>
+            <th *ngIf="column.isVisible && column.column == 'Location'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_viewing-details_toggle':'' " (click)="openViewing(data?.id)">{{data?.location}}</th>
+            <th *ngIf="column.isVisible && column.column == 'Sub Location'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_viewing-details_toggle':'' " (click)="openViewing(data?.id)">{{data?.subLocation}}</th>
+            <th *ngIf="column.isVisible && column.column == 'Lead Reference'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_viewing-details_toggle':'' " (click)="openViewing(data?.id)">{{data?.leadReference}}</th>
+            <th *ngIf="column.isVisible && column.column == 'Lead First Name'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_viewing-details_toggle':'' " (click)="openViewing(data?.id)">{{data?.leadFirstName}}</th>
+            <th *ngIf="column.isVisible && column.column == 'Lead Last Name'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_viewing-details_toggle':'' " (click)="openViewing(data?.id)">{{data?.leadLastName}}</th>
+            <th *ngIf="column.isVisible && column.column == 'Start Date'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_viewing-details_toggle':'' " (click)="openViewing(data?.id)">{{data?.startDate | date: "dd/MM/yyyy"}}</th>
+            <th *ngIf="column.isVisible && column.column == 'End Date'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_viewing-details_toggle':'' " (click)="openViewing(data?.id)">{{data?.endDate | date: "dd/MM/yyyy"}}</th>
+            
+            <th *ngIf="column.isVisible && column.column == 'Created'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_viewing-details_toggle':'' " (click)="openViewing(data?.id)">{{data?.created | date: "dd/MM/yyyy"}}</th>
+            <th *ngIf="column.isVisible && column.column == 'Created By'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_viewing-details_toggle':'' " (click)="openViewing(data?.id)">{{data?.createdBy}}</th>
+            
+            <th *ngIf="column.isVisible && column.column == 'Updated'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_viewing-details_toggle':'' " (click)="openViewing(data?.id)">{{data?.updated | date: "dd/MM/yyyy"}}</th>
+            <th *ngIf="column.isVisible && column.column == 'Updated By'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_viewing-details_toggle':'' " (click)="openViewing(data?.id)">{{data?.updatedBy}}</th>
+          </ng-container>
+          </tr>
+        </tbody>
+        <!-- end::Table Body -->
+      </table>
+     
+      <div class="text-center mt-5 mb-5" *ngIf="ViewingList && ViewingList?.length == 0"> Record not available </div>
+      <!-- end::Table -->
+      <!-- <span class="align-middle" [ngClass]="isDraweropen == false ? 'kt_viewing-details_toggle':'' " (click)="openViewing(1)">Edit</span> -->
+    </div>
+    <div class="d-flex justify-content-between w-100 flex-column-reverse">
+      
+      <pagination-controls *ngIf="ViewingList.length > 0" (pageChange)="renderPage($event)" id="viewingData_table"></pagination-controls>
+      <span class="d-flex justify-content-between mb-3">
+        <div class="d-flex align-items-center">
+          <span>
+        Showing {{ViewingList?.length}} of
+        <b>{{totalRecord}}</b> Viewings
+      </span>
+      </div>
+      <div>
+        <a
+        class="btn btn-sm btn-light-primary"
+        data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
+        (click)="openColumnSettings()"
+      >
+        <i class="bi bi-gear"></i> Column Settings
+      </a>
+      </div>
+        </span>
+      <!-- <span class="text-end">
+      
+      </span> -->
+    </div>
+<!-- </form> -->
+  </div>
+    
+</form>
+
+<ng-template #columnSettingmodal>
+  <div class="modal-content advance-filter-modal">
+    <div class="modal-header py-3">
+      <!--begin::Modal title-->
+      <h4 class="m-0">Manage Columns</h4>
+      <!--end::Modal title-->
+      <div
+        class="btn btn-sm btn-icon btn-active-color-primary"
+        (click)="closeColumnSettings()"
+      >
+        <i class="ki-duotone ki-cross fs-1">
+          <span class="path1"></span>
+          <span class="path2"></span>
+        </i>
+      </div>
+    </div>
+    <div class="modal-body">
+      <!--begin::Form-->
+      <div class="advance-filter">
+        <div cdkDropList class="column-list" (cdkDropListDropped)="drop($event)">
+          <div class="column-box" *ngFor="let column of tempcolumnOrder" cdkDragLockAxis="y" cdkDrag >
+            <input type="checkbox" [(ngModel)]="column.isVisible">
+            <span class="ml-2">{{column.column}}</span>
+          </div>
+        </div>
+        <!-- <div class="row " cdkDropList (cdkDropListDropped)="drop($event)">
+          <div class="col-lg-12 dragColumn mb-6" *ngFor="let column of tempcolumnOrder" cdkDrag>
+            <input type="checkbox" [(ngModel)]="column.isVisible">
+            <span>{{column.column}}</span>
+          </div>
+        </div> -->
+      </div>
+    </div>
+    <!--end::Form-->
+    <div class="modal-footer">
+      <button
+        type="reset"
+        class="btn btn-sm btn-light btn-active-light-primary me-2"
+        data-kt-menu-dismiss="true"
+        (click)="closeColumnSettings()"
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        class="btn btn-sm btn-primary"
+        data-kt-menu-dismiss="true"
+        (click)="saveColumnSettings()"
+      >
+        Apply
+      </button>
+    </div>
+  </div>
+</ng-template>

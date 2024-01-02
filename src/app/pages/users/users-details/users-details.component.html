@@ -1,0 +1,195 @@
+<div id="splash-screen" class="splash-screen" *ngIf="IsLoading">
+  <img src="./assets/media/logos/prophero-small.svg" alt="PropHero logo" />
+  <span>Loading ...</span>
+</div>
+<div id="kt_user-details" class="bg-body" data-kt-drawer="true" data-kt-drawer-name="user-details"
+  data-kt-drawer-activate="true" data-kt-drawer-overlay="false" data-kt-drawer-width="{default:'300px', 'lg': '900px'}"
+  data-kt-drawer-direction="end" data-kt-drawer-toggle=".kt_user-details_toggle"
+  data-kt-drawer-close="#kt_user-details_close" #container>
+  <div class="card shadow-none rounded-0 w-100">
+    <form [formGroup]="BasicUserDetails">
+    <div class="card-header" id="kt_activities_header">
+      <div>
+        <div class="card-title fw-bold text-dark">
+          <span *ngIf="!isEdit">New User</span>
+          <span *ngIf="isEdit">{{firstName + ' ' + lastName}}</span>
+        </div>
+        <div class="card-toolbar">
+          <button type="button" class="btn btn-sm btn-icon btn-active-light-primary me-n5" id="kt_user-details_close" (click)="closeUser()">
+            <app-keenicon name="cross" class="fs-1"></app-keenicon>
+          </button>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center">
+        <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bold">
+          <li class="nav-item">
+            <a class="nav-link text-active-primary ms-0 me-10 py-5 active cursor-pointer"
+              [class.active]="selectedTab === 'tab1'" (click)="selectTab('tab1')">
+              Details
+            </a>
+          </li>
+        </ul>
+        <div class="d-flex align-items-center">
+          <button (click)="onEditUser(); displayCancelBtn()" class="btn btn-sm btn-primary ms-3"
+            *ngIf="!displayListing && isEditUserPermission">
+            Edit
+          </button>
+          <button (click)="onCancel()" class="btn btn-sm btn-light btn-active-light-primary me-3"
+            *ngIf="displayListing && displayCancel">
+            Cancel
+          </button>
+          <button (click)="onUserSubmit()" class="btn btn-sm btn-primary" *ngIf="displayListing">
+            Save
+          </button>
+        </div>
+      </div><!--./d-flex-->
+    </div><!--./card-header-->
+
+    <div class="card-body position-relative p-0">
+      <ul class="accordian-shortcuts">
+        <li id="sec_1_1">
+          <button (click)="scrollToElement('secStatus'); basic = true"
+          [ngClass]="isSubmitted && BasicUserDetails.invalid && (BasicUserDetails.dirty || BasicUserDetails.touched) ? 'border-error' : '' ">
+            <i class="bi bi-house"></i>
+          </button>
+          <span class="reveal">Basic Details</span>
+        </li>
+        
+      </ul>
+      <div class="accordion" *ngIf="selectedTab === 'tab1'" id="kt_accordion_1" #container>
+
+          <div id="secStatus" class="accordion-body border-bottom">
+            <div class="row mb-6">
+              <label class="col-lg-3 col-form-label fw-bold fs-6 ">Status</label>
+              <div class="col-lg-6">
+              <ng-select formControlName="Status" bindLabel="name" appendTo=".col-lg-6"  [clearable]="false" bindValue="id" [ngClass]="BasicUserDetails.get('Status')?.value == 1? 'ph-status-dropdown text-green':BasicUserDetails.get('Status')?.value == 0?'ph-status-dropdown text-red':''">
+                  <ng-option *ngFor="let status of AllStatusTypes" [value]="status.id">{{ status.name }}</ng-option>
+                </ng-select>
+              </div>
+            </div>
+          </div>
+
+        <div class="accordion-item" id="sec1">
+          <h2 class="accordion-header" id="kt_accordion_1_header_1">
+            <button class="accordion-button fs-4 fw-semibold" type="button" (click)="basic = !basic"
+              [class.collapsed]="!basic" [ngClass]="
+              isSubmitted && BasicUserDetails.invalid && (BasicUserDetails.dirty || BasicUserDetails.touched)
+                  ? 'border-error' : '' ">
+              Basic Details
+            </button>
+          </h2>
+          <div id="kt_accordion_1_body_1" class="accordion-collapse collapse" [class.show]="basic">
+            <div class="accordion-body">
+
+                <div class="row mb-6">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6 required">Email</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <input  class="form-control form-control-lg mb-3 mb-lg-0" id="email" type="email" formControlName="email" (input)="onChangeEmail($event)"
+                        [class.border-error]="(isSubmitted && f['email'].errors && 
+                      (f['email'].dirty || f['email'].touched)) || isDuplicateEmail"/>
+                    </div>
+                    <div *ngIf="isSubmitted && BasicUserDetails.get('email')?.hasError('required')" class="required-feedback">
+                      <div class="error-text">Email is required</div>
+                    </div>
+                    <div *ngIf="isSubmitted && BasicUserDetails.get('email')?.hasError('pattern')" class="required-feedback">
+                      <div class="error-text">Email is invalid</div>
+                    </div>
+                    <div *ngIf="isDuplicateEmail" class="required-feedback">
+                      <div class="error-text">Email already exists</div>
+                    </div>
+                    
+                  </div>
+                </div>
+                <div class="row mb-6">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6 required">Role</label>
+                  <div class="col-lg-6">
+                    <ng-select formControlName="role" bindLabel="role"
+                      [class.border-error]="isSubmitted && f['role'].errors && (f['role'].dirty ||  f['role'].touched )" [ngClass]="isSubmitted && f['role'].errors && (f['role'].dirty || f['role'].touched )
+                            ? 'border-error': ''">
+                      <ng-option *ngFor="let role of AllRolesTypess" [value]="role.id">{{ role.name }}
+                      </ng-option>
+                    </ng-select>
+                    <div *ngIf="isSubmitted && f['role'].errors && (f['role'].dirty || f['role'].touched )" class="required-feedback">
+                      <div class="error-text">Role is required</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-6">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6 required">First Name</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <input class="form-control form-control-lg mb-3 mb-lg-0" id="firstName" type="text" formControlName="firstName"
+                        [class.border-error]="isSubmitted && f['firstName'].errors && (f['firstName'].dirty || f['firstName'].touched)" />
+                    </div>
+                    <div *ngIf="isSubmitted && f['firstName'].errors &&
+                        (f['firstName'].dirty || f['firstName'].touched )" class="required-feedback">
+                      <div class="error-text">First Name is required</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-6">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6 required">Last Name</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <input class="form-control form-control-lg mb-3 mb-lg-0" id="lastName" type="text" formControlName="lastName"
+                        [class.border-error]="isSubmitted && 
+                        f['lastName'].errors &&(f['lastName'].dirty || f['lastName'].touched)" />
+                    </div>
+                    <div *ngIf="isSubmitted && f['lastName'].errors &&
+                        (f['lastName'].dirty ||  f['lastName'].touched )" class="required-feedback">
+                      <div class="error-text">Last Name is required</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-6">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6 ">Mobile</label>
+                  <div class="col-lg-6">
+                    <div class="input-group">
+                      <ng-select [items]="CountryCodeList" formControlName="CountryCode" bindLabel="name" bindValue="id">
+                      <!--   [class.border-error]=" (isSubmitted && f['CountryCode']?.invalid)" [ngClass]="isSubmitted && f['CountryCode']?.invalid ? 'border-error' 
+                        : ''" -->
+                        <ng-template ng-label-tmp let-item="item">
+                          {{item.code}}
+                        </ng-template>
+                      </ng-select>
+                      <input type="text" id="Ref" (keypress)="isNumber($event)"
+                        class="form-control form-control-lg mb-3 mb-lg-0" formControlName="Mobile"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-6">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6 ">Job Title</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <input class="form-control form-control-lg mb-3 mb-lg-0" id="jobtitle" type="text" formControlName="jobTitle" />
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-6">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Department</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <input class="form-control form-control-lg mb-3 mb-lg-0" id="department" type="text" formControlName="department" />
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-6">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6">Broker Registration No.</label>
+                  <div class="col-lg-6">
+                    <div>
+                      <input class="form-control form-control-lg mb-3 mb-lg-0" id="reraBrn" type="text" formControlName="reraBrn" />
+                    </div>
+                  </div>
+                </div>
+              <!-- </form> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!--./card-body -->
+    </form>
+  </div><!--./card-->
+</div>

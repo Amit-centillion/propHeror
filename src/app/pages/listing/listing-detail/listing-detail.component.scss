@@ -1,0 +1,54 @@
+.img-display-dropzone {
+    position: relative;
+}
+
+.form-switch.form-check-custom.form-switch-xs .form-check-input {
+    height: 1rem;
+    width: 2rem;
+}
+
+.ph-table-inner {
+    tr td{
+        font-size: 1.05rem;
+
+        &:first-child {
+            width: 200px;
+            height: 35px;
+        }
+    }
+}
+
+.ph-hover {
+
+    .ph-hover__menu {
+        position: absolute;
+        white-space: nowrap;
+        transform: translateX(5px);
+        transition: all ease .1s;
+    }
+
+    .ph-hover__trigger:hover  + .ph-hover__menu {
+        display: block !important;
+        transform: translateX(0);
+    }
+
+}
+
+//  ::ng-deep .sortable-list li {
+//     width: 33.33% !important;
+// }
+
+// ::ng-deep .sortable-list .active {
+//     background: transparent !important;
+// }
+
+// ::ng-deep .sortable-list {
+//     display: flex !important;
+//     flex-wrap: wrap !important;
+//     height: 100% !important;
+// }
+
+// ::ng-deep .sortable-container {
+//     width: 100% !important;
+//     border: none !important;
+// }

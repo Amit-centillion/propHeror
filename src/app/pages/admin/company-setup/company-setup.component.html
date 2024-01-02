@@ -1,0 +1,216 @@
+<form novalidate="" class="form">
+  <div class="card-header align-items-center p-0 gap-2 gap-md-5">
+    <div class="d-flex w-100 flex-end">
+      <a (click)="onAddCompany()"
+      class="kt_company-setup-details_toggle btn btn-sm btn-flex btn-flex  btn-primary fw-bold me-1">
+        <i class="bi bi-plus fs-2"></i> Add Company
+      </a>
+    </div>
+    <div class="table-responsive">
+      <table
+        id="listings_row"
+        class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+        <thead class="fw-bold">
+          <!-- <th class="w-40px">
+            <div
+              class="form-check form-check-sm form-check-custom form-check-solid p-0">
+              <input class="form-check-input cursor-pointer" type="checkbox" value="1" 
+              data-kt-check="true" data-kt-check-target=".widget-9-check"/>
+            </div>
+          </th> -->
+          <th class="min-w-120px">
+             Status
+          </th>
+          <th class="min-w-120px">
+             Company Name
+          </th>
+          <th class="min-w-120px">
+            First Name
+         </th>
+         <th class="min-w-120px">
+          Last Name
+       </th>
+          <!-- <th class="min-w-120px">
+            Address
+          </th> -->
+          <th class="min-w-120px">
+            Email 
+          </th>
+          <th class="min-w-120px">
+            No. of Users
+          </th>
+          <th class="min-w-120px">
+            Role 
+          </th>
+          <th class="min-w-120px">
+            Country 
+          </th>
+          <th class="min-w-120px">
+            Currency
+          </th>
+          <th class="min-w-120px">
+            Measuring Unit
+          </th>
+          <th class="min-w-120px">
+            Time Zone
+          </th>
+          
+          <th class="min-w-120px">
+            Created Date
+          </th>
+          <th class="min-w-120px">
+            Created By 
+          </th>
+          
+          <th class="min-w-120px">
+            Updated Date
+          </th>
+          <th class="min-w-120px">
+            Updated By 
+          </th>
+        
+        </thead>
+        <!-- <thead id="filter"> -->
+          <!-- <th>
+              <ng-select formControlName="status" bindLabel="name"
+                (change)="onFilterSelectionDrp('status', $event, page, itemsPerPage)">
+                <ng-option
+                  *ngFor="let status of AllStatusTypes"
+                  [value]="status.id">{{status.name}}
+                  </ng-option>
+              </ng-select>
+          </th>  -->
+          <!-- <th>
+              <input class="form-control mb-3 mb-lg-0" type="text"
+                placeholder="Min 3 chars"  formControlName="email"
+                name="email" 
+                (keyup)="onFilterSelection('email', $event, page, itemsPerPage)"/>
+          </th>
+          <th>
+              <ng-select
+                formControlName="roleId" bindLabel="name"
+                (change)="onFilterSelectionDrp('roleId', $event, page, itemsPerPage)">
+                <ng-option
+                  *ngFor="let role of AllRolesTypess"
+                  [value]="role.id">{{ role.name }}</ng-option>
+              </ng-select>
+          </th>
+          <th>
+                <input class="form-control mb-3 mb-lg-0" type="text"
+                  placeholder="Min 3 chars" formControlName="firstName"
+                  name="firstName" 
+                  (keyup)="onFilterSelection('firstName', $event, page, itemsPerPage)"/>
+            </th>
+            <th>
+                <input class="form-control mb-3 mb-lg-0" type="text"
+                  placeholder="Min 3 chars"  formControlName="lastName"
+                  name="lastName" 
+                  (keyup)="onFilterSelection('lastName', $event, page, itemsPerPage)"/>
+            </th>
+          <th>
+                <input class="form-control mb-3 mb-lg-0" type="text"
+                  placeholder="Min 3 chars"  formControlName="mobile"
+                  name="mobile" 
+                  (keyup)="onFilterSelection('mobile', $event, page, itemsPerPage)"/>
+            </th>
+          <th>
+              <input class="form-control mb-3 mb-lg-0"  type="text"
+                placeholder="Min 3 chars" formControlName="jobTitle"
+                name="jobTitle"  
+                (keyup)="onFilterSelection('jobTitle', $event, page, itemsPerPage)"/>
+          </th>
+          <th>
+              <input class="form-control mb-3 mb-lg-0" type="text"
+                placeholder="Min 3 chars"  formControlName="department"
+                name="department" 
+                (keyup)="onFilterSelection('department', $event, page, itemsPerPage)"/>
+          </th>
+          <th>
+              <input class="form-control mb-3 mb-lg-0" type="text"
+                formControlName="reraBrn" name="reraBrn"
+                 placeholder="Min 3 chars"
+                (keyup)="onFilterSelection('reraBrn', $event, page, itemsPerPage)"
+                style="border-bottom-color: #e1e3ea"/>
+          </th>
+          <th>
+            <div class="d-flex gap-2 w-300px">
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0" formControlName="CreatedFrom" (change)="onFilterSelection('CreatedFrom', $event, page, itemsPerPage)"/>
+                <span class="input-date-placeholder" for="CreatedFrom">From</span>
+              </div>
+              <div class="position-relative w-50">
+                <input type="date" class="form-control mb-3 mb-lg-0" formControlName="CreatedTo" (change)="onFilterSelection('CreatedTo', $event, page, itemsPerPage)"/>
+                <span class="input-date-placeholder" for="filterCreatedTo">To</span>
+              </div>
+            </div>
+          </th> -->
+        <!-- </thead> -->
+        <tbody>
+          <tr *ngFor="let data of getAllCompanyAccounts| paginate : {
+            itemsPerPage: itemsPerPage,currentPage: page,
+            totalItems: totalRecord }">
+            <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_company-setup-details_toggle':'' " (click)="onEditCompany(data.companyId)">
+              <span [ngClass]="data.status ? 'text-green' : 'text-red'">{{ data.status ? 'Active' : 'Inactive' }}</span>
+            </th>
+            <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_company-setup-details_toggle':'' " (click)="onEditCompany(data.companyId)">
+              {{ data.companyName }}
+            </th>
+            <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_company-setup-details_toggle':'' " (click)="onEditCompany(data.companyId)">
+              {{ data.firstName }}
+            </th>
+            <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_company-setup-details_toggle':'' " (click)="onEditCompany(data.companyId)">
+              {{ data.lastName }}
+            </th>
+            <!-- <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_company-setup-details_toggle':'' " (click)="onEditCompany(data.companyId)">
+              {{ data.address }}
+            </th> -->
+            <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_company-setup-details_toggle':'' " (click)="onEditCompany(data.companyId)">
+              {{ data.email }}
+            </th>
+            <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_company-setup-details_toggle':'' " (click)="onEditCompany(data.companyId)">
+              {{ data.numberOfUsers }}
+            </th> 
+            <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_company-setup-details_toggle':'' " (click)="onEditCompany(data.companyId)">
+              {{ data.roleName }}
+            </th>
+            <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_company-setup-details_toggle':'' " (click)="onEditCompany(data.companyId)">
+              {{ data.countryName }}
+            </th>
+            <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_company-setup-details_toggle':'' " (click)="onEditCompany(data.companyId)">
+              {{ data.currency }}
+            </th>
+            <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_company-setup-details_toggle':'' " (click)="onEditCompany(data.companyId)">
+              {{ data.measuringUnitName }}
+            </th>
+            <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_company-setup-details_toggle':'' " (click)="onEditCompany(data.companyId)">
+              {{ data.timezone }}
+            </th>
+            <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_company-setup-details_toggle':'' " (click)="onEditCompany(data.companyId)">
+              {{ data.createdDate| date:'dd/MM/yyyy' }}
+            </th>
+            <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_company-setup-details_toggle':'' " (click)="onEditCompany(data.companyId)">
+              {{ data.createdBy }}
+            </th>
+
+
+            <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_company-setup-details_toggle':'' " (click)="onEditCompany(data.companyId)">
+              {{ data.updatedDate| date:'dd/MM/yyyy' }}
+            </th>
+            <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_company-setup-details_toggle':'' " (click)="onEditCompany(data.companyId)">
+              {{ data.updatedBy }}
+            </th>
+          </tr>
+        </tbody>
+      </table> 
+      <div class="text-center mt-5 mb-5" *ngIf="getAllCompanyAccounts && getAllCompanyAccounts?.length === 0">
+        Record not available
+      </div>
+    </div>
+    <div class="d-flex justify-content-between w-100 flex-column-reverse">
+      <pagination-controls *ngIf="getAllCompanyAccounts.length> 0"
+      (pageChange)="renderPage($event)"></pagination-controls>
+      <span class="d-block mb-3">Showing {{ getAllCompanyAccounts.length }} of
+        <b>{{ getAllCompanyAccounts.length}}</b> Company</span>
+  </div>
+  </div>
+</form>

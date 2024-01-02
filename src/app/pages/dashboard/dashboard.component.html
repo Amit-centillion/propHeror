@@ -1,0 +1,328 @@
+
+<!--begin::Actions-->
+<div id="splash-screen" class="splash-screen" *ngIf="IsLoading">
+  <img src="./assets/media/logos/prophero-small.svg" alt="PropHero logo" />
+  <span>Loading ...</span>
+</div>
+<div>
+  <form [formGroup]="reportForm">
+  <div class="d-flex w-100 justify-content-end mb-4">
+      <div class="d-flex">
+        <h4 class="pt-2 pe-3">Created Date</h4>
+         <ng-select  [clearable]="false" style="width: 235px" formControlName="filterCreatedDate" bindLabel="text" (change)="changeCreatedDate($event)">
+            <ng-option *ngFor="let filter of CreatedDateFilter" [value]="filter.id">{{ filter.text}}</ng-option>
+  </ng-select>
+    <div *ngIf="reportForm.get('filterCreatedDate')?.value == 7" class="d-flex gap-2 w-300px ms-2">
+           <div class="position-relative w-50">
+             <input type="date" class="form-control mb-3 mb-lg-0" formControlName="fromDate" (change)="changeDate()"/>
+          </div>
+          <div *ngIf="reportForm.get('filterCreatedDate')?.value == 7" class="position-relative w-50" (change)="changeDate()" >
+                  <input type="date" class="form-control mb-3 mb-lg-0" formControlName="toDate"/>
+          </div>
+        </div>
+      </div>
+  </div>
+  <!--end::Actions-->
+  
+  <div class="row mb-6">
+      <div *ngIf="getPermissionAccess(23)" class="col-md-6">
+          <div class="card">
+                <div class="card-header border-0 pt-5">
+                  <!-- begin::Title-->
+                  <h3 class="card-title align-items-start flex-column">
+                    <span class="card-label fw-bolder fs-3 mb-1">Published Listings by Usage & Purpose</span>
+                
+                  </h3>
+                  <!-- end::Title-->
+                
+                  <!-- begin::Toolbar-->
+                  <div class="card-toolbar">
+                    <!-- begin::Menu-->
+                   
+                    <!-- end::Menu-->
+                  </div>
+                  <!-- end::Toolbar-->
+                </div>
+                <!-- end::Header-->
+                
+                <!-- begin::Body-->
+                <div class="card-body">
+                  <!-- begin::Chart-->
+                  <div #chartRef [style.height]="'350px'">
+                    <apx-chart
+                      [series]="chartOptionsListings.series"
+                      [chart]="chartOptionsListings.chart"
+                      [xaxis]="chartOptionsListings.xaxis"
+                      [yaxis]="chartOptionsListings.yaxis"
+                      [dataLabels]="chartOptionsListings.dataLabels"
+                      [stroke]="chartOptionsListings.stroke"
+                      [legend]="chartOptionsListings.legend"
+                      [fill]="chartOptionsListings.fill"
+                      [states]="chartOptionsListings.states"
+                      [tooltip]="chartOptionsListings.tooltip"
+                      [colors]="chartOptionsListings.colors"
+                      [markers]="chartOptionsListings.markers"
+                      [plotOptions]="chartOptionsListings.plotOptions"
+                    ></apx-chart>
+                  </div>
+          
+                  <!-- end::Chart-->
+                </div>
+  
+          </div><!--./card-->
+          
+          
+      </div><!--./col-md-6-->
+      <div *ngIf="getPermissionAccess(24)" class="col-md-6">
+          <div class="card">
+              <div class="card-header border-0 pt-5">
+                <!-- begin::Title-->
+                <h3 class="card-title align-items-start flex-column">
+                  <span class="card-label fw-bolder fs-3 mb-1">Leads by Lead Type & Pipeline Status</span>
+              
+                </h3>
+                <!-- end::Title-->
+              
+                <!-- begin::Toolbar-->
+                <div class="card-toolbar">
+                  <!-- begin::Menu-->
+                 
+                  <!-- end::Menu-->
+                </div>
+                <!-- end::Toolbar-->
+              </div>
+              <!-- end::Header-->
+              
+              <!-- begin::Body-->
+              <div class="card-body">
+                <!-- begin::Chart-->
+                <div #chartRef [style.height]="'350px'">
+                  <apx-chart
+                    [series]="chartOptionsLeads.series"
+                    [chart]="chartOptionsLeads.chart"
+                    [xaxis]="chartOptionsLeads.xaxis"
+                    [yaxis]="chartOptionsLeads.yaxis"
+                    [dataLabels]="chartOptionsLeads.dataLabels"
+                    [stroke]="chartOptionsLeads.stroke"
+                    [legend]="chartOptionsLeads.legend"
+                    [fill]="chartOptionsLeads.fill"
+                    [states]="chartOptionsLeads.states"
+                    [tooltip]="chartOptionsLeads.tooltip"
+                    [colors]="chartOptionsLeads.colors"
+                    [markers]="chartOptionsLeads.markers"
+                    [plotOptions]="chartOptionsLeads.plotOptions"
+                  ></apx-chart>
+                </div>
+        
+                <!-- end::Chart-->
+              </div>
+  
+        </div><!--./card-->
+        
+      </div>
+  </div>
+  
+  
+  <div class="row mb-6">
+      <div *ngIf="getPermissionAccess(24)" class="col-md-6">
+          <div class="card">
+              <div class="card-header border-0 pt-5">
+                  <!-- begin::Title-->
+                  <h3 class="card-title align-items-start flex-column">
+                  <span class="card-label fw-bolder fs-3 mb-1">Lead Source (Top 10) with Conversion Rate</span>
+              
+                  </h3>
+                  <!-- end::Title-->
+              
+                  <!-- begin::Toolbar-->
+                  <div class="card-toolbar">
+                  <!-- begin::Menu-->
+                  
+                  <!-- end::Menu-->
+                  </div>
+                  <!-- end::Toolbar-->
+              </div>
+              <!-- end::Header-->
+              
+              <!-- begin::Body-->
+              <div class="card-body">
+                  <!-- begin::Chart-->
+                  <div #chartRef  [style.height]="'350px'">
+                  <apx-chart
+                      [series]="chartOptionsLeadsConversion.series"
+                      [chart]="chartOptionsLeadsConversion.chart"
+                      [xaxis]="chartOptionsLeadsConversion.xaxis"
+                      [yaxis]="chartOptionsLeadsConversion.yaxis"
+                      [dataLabels]="chartOptionsLeadsConversion.dataLabels"
+                      [stroke]="chartOptionsLeadsConversion.stroke"
+                      [legend]="chartOptionsLeadsConversion.legend"
+                      [fill]="chartOptionsLeadsConversion.fill"
+                      [states]="chartOptionsLeadsConversion.states"
+                      [tooltip]="chartOptionsLeadsConversion.tooltip"
+                      [colors]="chartOptionsLeadsConversion.colors"
+                      [markers]="chartOptionsLeadsConversion.markers"
+                      [plotOptions]="chartOptionsLeadsConversion.plotOptions"
+                  ></apx-chart>
+                  </div>
+      
+                  <!-- end::Chart-->
+              </div>
+          </div><!--./card-->
+          
+          
+      </div><!--./col-md-6-->
+      
+      <div *ngIf="getPermissionAccess(25)" class="col-md-6">
+          <div class="card">
+              <div class="card-header border-0 pt-5">
+                  <!-- begin::Title-->
+                  <h3 class="card-title align-items-start flex-column">
+                  <span class="card-label fw-bolder fs-3 mb-1">Viewings by Purpose & Status</span>
+              
+                  </h3>
+                  <!-- end::Title-->
+              
+                  <!-- begin::Toolbar-->
+                  <div class="card-toolbar">
+                  <!-- begin::Menu-->
+                  
+                  <!-- end::Menu-->
+                  </div>
+                  <!-- end::Toolbar-->
+              </div>
+              <!-- end::Header-->
+            
+              <!-- begin::Body-->
+              <div class="card-body">
+                  <!-- begin::Chart-->
+                  <div #chartRef [style.height]="'350px'">
+                  <apx-chart
+                      [series]="chartOptionsViewings.series"
+                      [chart]="chartOptionsViewings.chart"
+                      [xaxis]="chartOptionsViewings.xaxis"
+                      [yaxis]="chartOptionsViewings.yaxis"
+                      [dataLabels]="chartOptionsViewings.dataLabels"
+                      [stroke]="chartOptionsViewings.stroke"
+                      [legend]="chartOptionsViewings.legend"
+                      [fill]="chartOptionsViewings.fill"
+                      [states]="chartOptionsViewings.states"
+                      [tooltip]="chartOptionsViewings.tooltip"
+                      [colors]="chartOptionsViewings.colors"
+                      [markers]="chartOptionsViewings.markers"
+                      [plotOptions]="chartOptionsViewings.plotOptions"
+                  ></apx-chart>
+                  </div>
+      
+                  <!-- end::Chart-->
+              </div>
+  
+        </div><!--./card-->
+        
+      </div>
+  </div>
+  
+  
+  <div class="row">
+      <div *ngIf="getPermissionAccess(26)" class="col-md-6">
+          <div class="card">
+              <div class="card-header border-0 pt-5">
+                  <!-- begin::Title-->
+                  <h3 class="card-title align-items-start flex-column">
+                  <span class="card-label fw-bolder fs-3 mb-1">Deals by Purpose & Deal Status</span>
+              
+                  </h3>
+                  <!-- end::Title-->
+              
+                  <!-- begin::Toolbar-->
+                  <div class="card-toolbar">
+                  <!-- begin::Menu-->
+                  
+                  <!-- end::Menu-->
+                  </div>
+                  <!-- end::Toolbar-->
+              </div>
+              <!-- end::Header-->
+              
+              <!-- begin::Body-->
+              <div class="card-body">
+                  <!-- begin::Chart-->
+                  <div #chartRef  [style.height]="'350px'">
+                  <apx-chart
+                      [series]="chartOptionsDeals.series"
+                      [chart]="chartOptionsDeals.chart"
+                      [xaxis]="chartOptionsDeals.xaxis"
+                      [yaxis]="chartOptionsDeals.yaxis"
+                      [dataLabels]="chartOptionsDeals.dataLabels"
+                      [stroke]="chartOptionsDeals.stroke"
+                      [legend]="chartOptionsDeals.legend"
+                      [fill]="chartOptionsDeals.fill"
+                      [states]="chartOptionsDeals.states"
+                      [tooltip]="chartOptionsDeals.tooltip"
+                      [colors]="chartOptionsDeals.colors"
+                      [markers]="chartOptionsDeals.markers"
+                      [plotOptions]="chartOptionsDeals.plotOptions"
+                  ></apx-chart>
+                  </div>
+      
+                  <!-- end::Chart-->
+              </div>
+          </div><!--./card-->
+          
+          
+      </div><!--./col-md-6-->
+      
+      <div *ngIf="getPermissionAccess(27)" class="col-md-6">
+          <div class="card">
+              <div class="card-header border-0 pt-5">
+                  <!-- begin::Title-->
+                  <h3 class="card-title align-items-center gap-4">
+                    <span class="card-label fw-bolder fs-3 mb-1">Top 10 Agents by</span>
+                      <!-- begin::Menu-->
+                      <ng-select class="ph-head-filter fs-6 fw-normal" [clearable]="false" style="width: 175px" formControlName="filterBy" bindLabel="text" (change)="changeFilterBy()">
+                        <!-- <ng-option value="" selected>Select Assign To</ng-option> -->
+                                <ng-option *ngFor="let filter of FilterByList" [value]="filter.id">{{ filter.text
+                                  }}</ng-option>
+                      </ng-select>
+                      <!-- end::Menu-->
+                  </h3>
+  
+                  <!-- end::Title-->
+              
+                  <!-- begin::Toolbar-->
+                  <div class="card-toolbar">
+                  
+                  </div>
+                  <!-- end::Toolbar-->
+              </div>
+              <!-- end::Header-->
+            
+              <!-- begin::Body-->
+              <div class="card-body">
+                  <!-- begin::Chart-->
+                  <div #chartRef [style.height]="'350px'">
+                  <apx-chart
+                      [series]="chartOptionsAgents.series"
+                      [chart]="chartOptionsAgents.chart"
+                      [xaxis]="chartOptionsAgents.xaxis"
+                      [yaxis]="chartOptionsAgents.yaxis"
+                      [dataLabels]="chartOptionsAgents.dataLabels"
+                      [stroke]="chartOptionsAgents.stroke"
+                      [legend]="chartOptionsAgents.legend"
+                      [fill]="chartOptionsAgents.fill"
+                      [states]="chartOptionsAgents.states"
+                      [tooltip]="chartOptionsAgents.tooltip"
+                      [colors]="chartOptionsAgents.colors"
+                      [markers]="chartOptionsAgents.markers"
+                      [plotOptions]="chartOptionsAgents.plotOptions"
+                  ></apx-chart>
+                  </div>
+      
+                  <!-- end::Chart-->
+              </div>
+  
+        </div><!--./card-->
+        
+      </div>
+  </div>
+</form>
+</div>

@@ -1,0 +1,18 @@
+:host {
+  height: inherit;
+  width: inherit;
+}
+.menu-link {
+  cursor: default;
+
+  .menu-title {
+    color: #000;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  &:hover {
+    background: transparent !important;
+    color: #000;
+  }
+}

@@ -1,0 +1,9 @@
+ng-select[formControlName="countryCode"]::ng-deep .ng-select-container {
+    width: 110px;
+    border-top-right-radius: 0;
+    height: 46px !important;
+    border-bottom-right-radius: 0;
+}
+ng-select[formControlName="status"]::ng-deep .ng-select-container {
+    height: 46px !important;
+}

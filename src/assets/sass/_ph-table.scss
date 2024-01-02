@@ -1,0 +1,147 @@
+
+#filter {
+  position: relative;
+  
+  td {
+    padding: 8px 0;
+  }
+
+  .d-flex {
+    padding: 0 !important;
+  }
+
+  ng-select {
+    padding: 0 !important;
+    
+    &:not(.ph-head-filter)::ng-deep .ng-select-container {
+      height: 28px !important;
+      min-height: 28px !important;
+      border: 0 !important;
+    }
+  }
+}                                                           zz
+
+#filter ::ng-deep select,
+#filter ::ng-deep input:not(.form-check-input):not([aria-autocomplete="list"]) {
+  padding: 4px 25px 4px 5px;
+  font-size: 12px;
+  min-width: 100px;
+  width: 100%;
+  color: var(--bs-gray-700);
+  background-color: var(--bs-body-bg);
+  background-clip: padding-box;
+  border: 1px solid var(--bs-gray-300);
+}
+#filter ::ng-deep input[type="date"] {
+  padding: 4px 5px !important;
+}
+
+  .advance-filter-modal {
+    .modal-body {
+      max-height: calc(100vh - 160px - 4rem);
+      overflow: scroll;
+    }
+  
+    .advance-filter {
+      ng-select ::ng-deep .ng-select-container {
+        height: 33px !important;
+        min-height: 33px !important;
+      }
+  
+      .d-flex > input[type="date"] {
+        width: 50%;
+      }
+  
+      .input-group-text {
+        height: 33px;
+      }
+  
+      @media(min-width: 768px) {
+        .row.mb-6 label:nth-of-type(odd) {
+            margin-right: -30px;
+        }
+  
+        .row.mb-6 label:nth-of-type(even) {
+            margin-right: -30px;
+            margin-left: 60px;
+        }
+      }
+    }
+  }
+  
+  .kt_activities_toggle{
+    cursor: pointer;
+  }
+  
+#listings_row thead.fw-bold {
+    font-weight: 500 !important;
+}
+
+#listings_row thead:not(#filter) {
+    background: #eef2f5;
+    
+  th:not(:first-child) {
+    color: #000 !important;
+    padding-right: 25px;
+    cursor: pointer;
+    background-position: center right 8px;
+    background-size: 14px;
+    background-repeat: no-repeat;
+    background-image: url('data:image/svg+xml,<%3Fxml version="1.0" encoding="utf-8"%3F><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools --><svg fill="%23a1a5b7" width="800px" height="800px" viewBox="-9 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"><title>sort</title><path d="M0.281 13.063l5.969-7.438c0.531-0.688 1.406-0.688 1.938 0l5.969 7.438c0.531 0.688 0.281 1.25-0.625 1.25h-12.625c-0.906 0-1.156-0.563-0.625-1.25zM14.156 18.938l-5.969 7.438c-0.531 0.688-1.406 0.688-1.938 0l-5.969-7.438c-0.531-0.688-0.281-1.25 0.625-1.25h12.625c0.906 0 1.156 0.563 0.625 1.25z"></path></svg>');
+  }
+
+  input[type="checkbox"]:not(:checked) {
+    background: #fff;
+  }
+}
+
+#listings_row tbody tr th:not(:first-child) {
+  cursor: pointer;
+}
+
+  .w-40px {
+      min-width: 40px !important;
+    }
+    .max-w-200px {
+      max-width: 200px !important;
+      overflow: hidden ;
+      text-overflow: ellipsis;
+    }
+    .max-w-400px {
+      max-width: 400px !important;
+      overflow: hidden ;
+      text-overflow: ellipsis
+    }
+    .min-w-120px {
+      min-width: 120px;
+    }
+    #listings_row th,
+    #listings_row td {
+      white-space: nowrap;
+      padding-left: 8px;
+      color: #333;
+    }
+    #listings_row td {
+      white-space: nowrap;
+      font-weight: 500;
+      color: #333;
+    }
+
+
+    input.form-check-input {
+    min-width: 21px !important;
+  }
+  
+  .select2-selection {
+    padding: 0 5px !important;
+    background-color: var(--bs-gray-100);
+    border-color: var(--bs-gray-100) !important;
+    color: var(--bs-gray-700);
+    width: 100%;
+  }
+  
+  .advance-filter {
+    .col-lg-3 {
+      margin-bottom: 10px;
+    }
+  }

@@ -1,0 +1,263 @@
+<!--begin::Menu wrapper-->
+<div
+  id="kt_app_sidebar_menu_wrapper"
+  class="app-sidebar-wrapper hover-scroll-overlay-y my-5"
+  data-kt-scroll="true"
+  data-kt-scroll-activate="true"
+  data-kt-scroll-height="auto"
+  data-kt-scroll-dependencies="#kt_app_sidebar_logo, #kt_app_sidebar_footer"
+  data-kt-scroll-wrappers="#kt_app_sidebar_menu"
+  data-kt-scroll-offset="5px"
+  data-kt-scroll-save-state="true"
+>
+  <!--begin::Menu-->
+  <div
+    class="menu menu-column menu-rounded menu-sub-indention px-3"
+    id="#kt_app_sidebar_menu"
+    data-kt-menu="true"
+    data-kt-menu-expand="false"
+  >
+    <!-- Dashboard -->
+    <div class="menu-item" *ngIf="getPermissionAccess(1)">
+      <a
+        class="menu-link without-sub"
+        routerLink="/dashboard"
+        routerLinkActive="active"
+      >
+        <span class="menu-icon">
+          <i class="bi bi-columns-gap fs-2"></i>
+        </span>
+        <span class="menu-title" translate="Dashboard"></span>
+      </a>
+    </div>
+    <!-- Listings -->
+    <div class="menu-item" *ngIf="getPermissionAccess(2)">
+      <a
+        class="menu-link without-sub"
+        routerLink="/listings"
+        routerLinkActive="active"
+      >
+        <span class="menu-icon">
+          <i class="bi bi-buildings fs-2"></i>
+        </span>
+        <span class="menu-title">Listings</span>
+      </a>
+    </div>
+    <!-- Contacts -->
+    <div class="menu-item" *ngIf="getPermissionAccess(3)">
+      <a class="menu-link without-sub" routerLink="/contacts" routerLinkActive="active">
+        <span class="menu-icon">
+          <i class="bi bi-person-lines-fill fs-2"></i>
+        </span>
+        <span class="menu-title">Contacts</span>
+      </a>
+    </div> 
+    <!-- Leads -->
+    <div class="menu-item" *ngIf="getPermissionAccess(4)">
+      <a class="menu-link without-sub" routerLink="/leads" routerLinkActive="active">
+        <span class="menu-icon">
+        <i class="bi bi-person-rolodex fs-2"></i>
+      </span>
+      <span class="menu-title">Leads</span>
+    </a>
+    </div> 
+    <!-- Viewings -->
+    <div class="menu-item" *ngIf="getPermissionAccess(6)">
+      <a class="menu-link without-sub"
+      routerLink="/viewings"
+      routerLinkActive="active">
+        <span class="menu-icon">
+          <i class="bi bi-view-list fs-2 "></i>
+        </span>
+        <span class="menu-title">Viewings</span>
+      </a>
+    </div> 
+    <!-- Deals -->
+    <div class="menu-item" *ngIf="getPermissionAccess(5)">
+      <a class="menu-link without-sub" routerLink="/deals" routerLinkActive="active">
+        <span class="menu-icon">
+          <i class="bi bi-tags fs-2 "></i>
+        </span>
+        <span class="menu-title">Deals</span>
+      </a>
+    </div> 
+
+    <!--Reports-->
+    <div
+    *ngIf="getPermissionAccess(23) || getPermissionAccess(24) || getPermissionAccess(25) || getPermissionAccess(26) || getPermissionAccess(27)"
+      class="menu-item menu-accordion"
+      data-kt-menu-trigger="click"
+      data-kt-menu-trigger="click"
+      routerLinkActive="here show"
+    >
+      <!--begin:Menu link-->
+      <span class="menu-link">
+        <span class="menu-icon">
+          <i class="bi bi-graph-up fs-2"></i>
+        </span>
+        <span class="menu-title">Reports</span>
+        <span class="menu-arrow"></span>
+      </span>
+      <!--end:Menu link-->
+      <!--begin:Menu sub-->
+      <div
+        class="menu-sub menu-sub-accordion"
+        routerLinkActive="menu-active-bg"
+      >
+
+        <!--begin:Listings-->
+        <div *ngIf="getPermissionAccess(23)" class="menu-item">
+          <a  class="menu-link without-sub" routerLink="/reports/listings" routerLinkActive="active">
+            <span class="menu-icon">
+              <i class="bi bi-buildings fs-2"></i>
+            </span>
+            <span class="menu-title">Listings</span>
+          </a>
+        </div>
+        <!--end:Listings-->
+
+        <!--begin:Leads-->
+        <div *ngIf="getPermissionAccess(24)" class="menu-item">
+          <a  class="menu-link without-sub" routerLink="/reports/leads" routerLinkActive="active">
+            <span class="menu-icon">
+              <i class="bi bi-person-rolodex fs-2"></i>
+            </span>
+            <span class="menu-title">Leads</span>
+          </a>
+        </div>
+        <!--end:Leads-->
+
+        <!--begin:Viewings-->
+        <div *ngIf="getPermissionAccess(25)" class="menu-item">
+          <a class="menu-link without-sub" routerLink="/reports/viewings" routerLinkActive="active">
+            <span class="menu-icon">
+              <i class="bi bi-view-list fs-2"></i>
+            </span>
+            <span class="menu-title">Viewings</span>
+          </a>
+        </div>
+        <!--end:Viewings-->
+
+        <!--begin:Deals-->
+        <div *ngIf="getPermissionAccess(26)" class="menu-item">
+          <a class="menu-link without-sub" routerLink="/reports/deals" routerLinkActive="active">
+            <span class="menu-icon">
+              <i class="bi bi-tags fs-2"></i>
+            </span>
+            <span class="menu-title">Deals</span>
+          </a>
+        </div>
+        <!--end:Deals-->
+
+        <!--begin:Agent Leaderboard-->
+        <div *ngIf="getPermissionAccess(27)" class="menu-item">
+          <a class="menu-link without-sub" routerLink="/reports/agent-leaderboard" routerLinkActive="active">
+            <span class="menu-icon">
+              <i class="bi bi-trophy fs-2"></i>
+            </span>
+            <span class="menu-title">Agent Leaderboard</span>
+          </a>
+        </div>
+        <!--end:Agent Leaderboard-->
+        
+      </div>
+      <!--end:Menu sub-->
+    </div>
+
+    <!--Settings-->
+    <div *ngIf="getPermissionAccess(7) || getPermissionAccess(8)"
+      class="menu-item menu-accordion"
+      data-kt-menu-trigger="click"
+      data-kt-menu-trigger="click"
+      routerLinkActive="here show"
+    >
+      <!--begin:Menu link-->
+      <span class="menu-link">
+        <span class="menu-icon">
+          <i class="bi bi-gear fs-2"></i>
+        </span>
+        <span class="menu-title">Settings</span>
+        <span class="menu-arrow"></span>
+      </span>
+      <!--end:Menu link-->
+      <!--begin:Menu sub-->
+      <div
+        class="menu-sub menu-sub-accordion"
+        routerLinkActive="menu-active-bg"
+      >
+        <!--Company-->
+        <div class="menu-item" *ngIf="getPermissionAccess(7)">
+          <!--begin:Company-->
+          <a class="menu-link without-sub" routerLink="/settings/company" routerLinkActive="active">
+
+            <span class="menu-icon">
+              <i class="bi bi-building fs-2"></i>
+            </span>
+            <span class="menu-title">Company</span>
+          </a>
+          <!--Company-->
+        </div>
+        <!--end:Menu item-->
+
+        <!--begin:Users-->
+        <div class="menu-item" *ngIf="getPermissionAccess(8)">
+          <!--begin:Users-->
+          <a class="menu-link without-sub" routerLink="/settings/users" routerLinkActive="active">
+            <span class="menu-icon">
+              <i class="bi bi-people fs-2"></i>
+            </span>
+            <span class="menu-title">Users</span>
+          </a>
+          <!--end:Users-->
+        </div>
+        <!--end:Users-->
+      </div>
+      <!--end:Menu sub-->
+    </div>
+
+
+
+    <!--Admin-->
+    <div
+    *ngIf="getPermissionAccess(29)"
+      class="menu-item menu-accordion"
+      data-kt-menu-trigger="click"
+      data-kt-menu-trigger="click"
+      routerLinkActive="here show"
+    >
+      <!--begin:Menu link-->
+      <span class="menu-link">
+        <span class="menu-icon">
+          <i class="bi bi-gear fs-2"></i>
+        </span>
+        <span class="menu-title">Admin</span>
+        <span class="menu-arrow"></span>
+      </span>
+      <!--end:Menu link-->
+      <!--begin:Menu sub-->
+      <div
+        class="menu-sub menu-sub-accordion"
+        routerLinkActive="menu-active-bg"
+      >
+        <!--Company-->
+        <div class="menu-item" >
+          <!--begin:Company-->
+          <a class="menu-link without-sub" routerLink="/admin/company-setup" routerLinkActive="active">
+
+            <span class="menu-icon">
+              <i class="bi bi-building fs-2"></i>
+            </span>
+            <span class="menu-title">Company Setup</span>
+          </a>
+          <!--Company-->
+        </div>
+        <!--end:Menu item-->
+      </div>
+      <!--end:Menu sub-->
+    </div>
+
+  </div>
+  <!--end::Menu-->
+
+</div>
+<!--end::Menu wrapper-->

@@ -1,0 +1,40 @@
+<div class="accordian-body py-5" style="padding-left: 40px">
+  <div class="row mb-4">
+    <div class="col-lg-6" *ngIf="notesHidden">
+      <textarea
+        [(ngModel)]="noteText"
+        id="notes-add-for-display"
+        [ngModelOptions]="{ standalone: true }"
+        type="text"
+        placeholder="Enter Notes"
+        [ngClass]="
+          clickbtn && noteText == ''
+            ? 'form-control form-control-lg mb-3 border-error'
+            : 'form-control form-control-lg mb-3'
+        "
+        (keyup)="onTextBox()"
+        rows="4"
+      ></textarea>
+      <div *ngIf="clickbtn && noteText == ''">
+        <div
+          [ngClass]="clickbtn && noteText == '' ? 'error-text' : ''"
+          class=""
+        >
+          Notes is required 
+        </div>
+      </div>
+      <button (click)="OnSaveNotes()" class="btn btn-sm btn-primary">
+        Submit
+      </button>
+    </div>
+  </div>
+</div>
+
+<div
+  class="p-4"
+  id="notes-add-for-display-1"
+  *ngIf="listingNotesData?.length > 0"
+>
+  <app-listing-notes [notesData]="listingNotesData"></app-listing-notes>
+  <!-- <div *ngIf="listingNotesData.length > 0"> -->
+</div>

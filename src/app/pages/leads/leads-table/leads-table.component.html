@@ -1,0 +1,2324 @@
+<div id="splash-screen" class="splash-screen" *ngIf="IsLoading">
+  <img src="./assets/media/logos/prophero-small.svg" alt="PropHero logo" />
+  <span>Loading ...</span>
+</div>
+
+<form novalidate="" [formGroup]="ContactBasicForm" class="form">
+  <div class="card-header align-items-center p-0 gap-2 gap-md-5">
+    <!--begin::Actions-->
+    <div class="d-flex w-100 justify-content-between">
+      <div class="d-flex gap-2">
+        <ng-select
+        class="ph-head-filter"
+        formControlName="leadsTypes"
+        style="width: 175px"
+        [clearable]="false"
+        (change)="
+          onFilterSelectionDrp('leadsTypes', $event, page, itemsPerPage)
+        "
+        bindLabel="listingType"
+      >
+        <ng-option value="1">My Leads</ng-option>
+        <ng-option value="2">Company Leads</ng-option>
+      </ng-select>
+        <!--begin::Menu toggle-->
+        <a
+          class="btn btn-sm btn-light-primary"
+          data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
+          (click)="openAdvanceFilter()"
+        >
+          <i class="bi bi-funnel"></i> Advanced Search
+        </a>
+        <!--begin::Modal-->
+        <ng-template #Advancemodal>
+          <div class="modal-content advance-filter-modal">
+            <div class="modal-header py-3">
+              <!--begin::Modal title-->
+              <h4 class="m-0">Advanced Search</h4>
+              <!--end::Modal title-->
+              <div
+                class="btn btn-sm btn-icon btn-active-color-primary"
+                (click)="closeAdvanceSearchPopup()"
+              >
+                <i class="ki-duotone ki-cross fs-1"
+                  ><span class="path1"></span><span class="path2"></span
+                ></i>
+              </div>
+            </div>
+            <div class="modal-body">
+              <div class="advance-filter">
+                <div class="row mb-6">
+                  <ng-container *ngFor="let column of columnOrder">
+                  <label *ngIf="column.isVisible && column.column == 'Reference'" class="col-lg-3 col-form-label fw-bold fs-6">Reference</label>
+                  <div *ngIf="column.isVisible && column.column == 'Reference'" class="col-lg-3">
+                    <div>
+                          <input
+                            class="form-control mb-3 mb-lg-0"
+                            type="text"
+                            formControlName="reference"
+                            style="min-width: 40px !important"
+                            
+                          />
+                    </div>
+                  </div>
+                  <label *ngIf="column.isVisible && column.column == 'Status'" class="col-lg-3 col-form-label fw-bold fs-6">Status</label>
+                  <div *ngIf="column.isVisible && column.column == 'Status'" class="col-lg-3">
+                    <div>
+                        <ng-select
+                          formControlName="statusId"
+                          bindLabel="name"
+                          
+                        >
+                          <ng-option
+                          *ngFor="let type of AllStatusType"
+                          [value]="type.id"
+                          >{{ type.name }}</ng-option
+                        >
+                        </ng-select>
+                    </div>
+                  </div>
+                  <label *ngIf="column.isVisible && column.column == 'Sub Status'" class="col-lg-3 col-form-label fw-bold fs-6">Sub Status</label>
+                  <div *ngIf="column.isVisible && column.column == 'Sub Status'" class="col-lg-3">
+                    <div>
+                      <ng-select
+                        formControlName="subStatusId"
+                        bindLabel="name"
+                      
+                      >
+                        <ng-option
+                          *ngFor="let a of AllSubStatusType"
+                          [value]="a.id"
+                          >{{ a.name }}</ng-option
+                        >
+                      </ng-select>
+                    </div>
+                  </div>
+                  <label *ngIf="column.isVisible && column.column == 'Assigned To'" class="col-lg-3 col-form-label fw-bold fs-6">Assigned To</label>
+                  <div *ngIf="column.isVisible && column.column == 'Assigned To'" class="col-lg-3">
+                  <div>
+                    <ng-select
+                      formControlName="agentId"
+                      bindLabel="name"
+                    
+                    >
+                      <ng-option *ngFor="let s of AgentList" [value]="s.id">{{
+                        s.name
+                      }}</ng-option>
+                    </ng-select>
+                  </div>
+                 </div>
+                 <label *ngIf="column.isVisible && column.column == 'Contact Reference'" class="col-lg-3 col-form-label fw-bold fs-6"
+                 >Contact Reference</label
+               >
+               <div *ngIf="column.isVisible && column.column == 'Contact Reference'" class="col-lg-3">
+                 <div>
+                   <input
+                     class="form-control mb-3 mb-lg-0"
+                     type="text"
+                     formControlName="contactRef"
+                     name="ContactReference"
+                     style="min-width: 40px !important"
+                    
+                   />
+                 </div>
+
+                 
+               </div>
+                 <label *ngIf="column.isVisible && column.column == 'First Name'" class="col-lg-3 col-form-label fw-bold fs-6"
+                    >First Name</label
+                  >
+                  <div *ngIf="column.isVisible && column.column == 'First Name'" class="col-lg-3">
+                    <div>
+                      <input
+                        class="form-control mb-3 mb-lg-0"
+                        type="text"
+                        formControlName="firstName"
+                        name="name"
+                        style="min-width: 40px !important"
+                       
+                      />
+                    </div>
+                  </div>
+                  <label *ngIf="column.isVisible && column.column == 'Last Name'" class="col-lg-3 col-form-label fw-bold fs-6"
+                  >Last Name</label
+                >
+                <div *ngIf="column.isVisible && column.column == 'Last Name'" class="col-lg-3">
+                  
+                  <div>
+                    <input
+                      class="form-control mb-3 mb-lg-0"
+                      type="text"
+                      formControlName="lastName"
+                      name="name"
+                      style="min-width: 40px !important"
+                   
+                    />
+                  </div>
+                </div>
+               
+                
+                    <label *ngIf="column.isVisible && column.column == 'Personal Mobile'" class="col-lg-3 col-form-label fw-bold fs-6"
+                  >Personal Mobile</label
+                >
+                <div *ngIf="column.isVisible && column.column == 'Personal Mobile'" class="col-lg-3">
+                  <div>
+                    <input
+                      class="form-control mb-3 mb-lg-0"
+                      type="text"
+                      formControlName="personalMobile"
+                      name="name"
+                      style="min-width: 40px !important"
+                     
+                    />
+                  </div>
+                </div>
+                <label *ngIf="column.isVisible && column.column == 'Work Mobile'" class="col-lg-3 col-form-label fw-bold fs-6"
+                >Work Mobile</label
+              >
+              <div *ngIf="column.isVisible && column.column == 'Work Mobile'" class="col-lg-3">
+                <div>
+                  <input
+                    class="form-control mb-3 mb-lg-0"
+                    type="text"
+                    formControlName="workMobile"
+                    name="name"
+                    style="min-width: 40px !important"
+                   
+                  />
+                </div>
+              </div>
+              <label *ngIf="column.isVisible && column.column == 'Other Mobile'" class="col-lg-3 col-form-label fw-bold fs-6"
+              >Other Mobile</label
+            >
+            <div *ngIf="column.isVisible && column.column == 'Other Mobile'" class="col-lg-3">
+              <div>
+                <input
+                  class="form-control mb-3 mb-lg-0"
+                  type="text"
+                  formControlName="otherMobile"
+                  name="name"
+                  style="min-width: 40px !important"
+                  
+                />
+              </div>
+            </div>
+            <label *ngIf="column.isVisible && column.column == 'Personal Phone'" class="col-lg-3 col-form-label fw-bold fs-6"
+            >Personal Phone</label
+          >
+          <div *ngIf="column.isVisible && column.column == 'Personal Phone'" class="col-lg-3">
+            <div>
+              <input
+                class="form-control mb-3 mb-lg-0"
+                type="text"
+                formControlName="personalPhone"
+                name="name"
+                style="min-width: 40px !important"
+              
+              />
+            </div>
+          </div>
+          <label *ngIf="column.isVisible && column.column == 'Work Phone'" class="col-lg-3 col-form-label fw-bold fs-6"
+          >Work Phone</label
+        >
+        <div *ngIf="column.isVisible && column.column == 'Work Phone'" class="col-lg-3">
+          <div>
+            <input
+              class="form-control mb-3 mb-lg-0"
+              type="text"
+              formControlName="workPhone"
+              name="name"
+              style="min-width: 40px !important"
+              
+            />
+          </div>
+        </div>
+        <label *ngIf="column.isVisible && column.column == 'Other Phone'" class="col-lg-3 col-form-label fw-bold fs-6"
+        >Other Phone</label
+      >
+      <div *ngIf="column.isVisible && column.column == 'Other Phone'" class="col-lg-3">
+        <div>
+          <input
+            class="form-control mb-3 mb-lg-0"
+            type="text"
+            formControlName="otherPhone"
+            name="name"
+            style="min-width: 40px !important"
+          
+          />
+        </div>
+      </div>
+      <label *ngIf="column.isVisible && column.column == 'Personal Email'" class="col-lg-3 col-form-label fw-bold fs-6"
+      >Personal Email</label
+    >
+    <div *ngIf="column.isVisible && column.column == 'Personal Email'" class="col-lg-3">
+      <div>
+        <input
+          class="form-control mb-3 mb-lg-0"
+          type="text"
+          formControlName="personalEmail"
+          name="name"
+          style="min-width: 40px !important"
+          
+        />
+      </div>
+        </div>
+        <label *ngIf="column.isVisible && column.column == 'Work Email'" class="col-lg-3 col-form-label fw-bold fs-6"
+          >Work Email</label
+        >
+          <div *ngIf="column.isVisible && column.column == 'Work Email'" class="col-lg-3">
+            <div>
+              <input
+                class="form-control mb-3 mb-lg-0"
+                type="text"
+                formControlName="workEmail"
+                name="name"
+                style="min-width: 40px !important"
+                
+              />
+            </div>
+          </div>
+          <label *ngIf="column.isVisible && column.column == 'Other Email'" class="col-lg-3 col-form-label fw-bold fs-6"
+          >Other Email</label
+        >
+          <div *ngIf="column.isVisible && column.column == 'Other Email'" class="col-lg-3">
+            <div>
+              <input
+                class="form-control mb-3 mb-lg-0"
+                type="text"
+                formControlName="otherEmail"
+                name="name"
+                style="min-width: 40px !important"
+                
+              />
+            </div>
+          </div>
+               
+              <label *ngIf="column.isVisible && column.column == 'Enquiry Date'" class="col-lg-3 col-form-label fw-bold fs-6"
+                    >Enquiry Date</label
+                  >
+                  <div *ngIf="column.isVisible && column.column == 'Enquiry Date'" class="col-lg-3">
+                    <div class="d-flex gap-2">
+                      <div class="position-relative w-50">
+                        <input
+                          type="date"
+                          class="form-control mb-3 mb-lg-0"
+                          formControlName="fromEnquiryDate"
+                        />
+                        <span class="input-date-placeholder" for="fromEnquiryDate">From</span>
+                      </div>
+                      <div class="position-relative w-50">
+                        <input
+                          type="date"
+                          class="form-control mb-3 mb-lg-0"
+                          formControlName="toEnquiryDate"
+                        />
+                        <span class="input-date-placeholder" for="toEnquiryDate">To</span>
+                      </div>
+                    </div>
+                  </div>
+                  <label *ngIf="column.isVisible && column.column == 'Lead Type'" class="col-lg-3 col-form-label fw-bold fs-6"
+                  >Lead Type</label
+                >
+                <div *ngIf="column.isVisible && column.column == 'Lead Type'" class="col-lg-3">
+                  <div>
+                    <ng-select
+                      formControlName="leadTypeId"
+                      bindLabel="name"
+                    
+                    >
+                      <ng-option
+                        *ngFor="let type of LeadTypeList"
+                        [value]="type.id"
+                        >{{ type.name }}</ng-option
+                      >
+                    </ng-select>
+                  </div>
+                </div>
+                <label *ngIf="column.isVisible && column.column == 'Finance'" class="col-lg-3 col-form-label fw-bold fs-6"
+                >Finance</label
+              >
+              <div *ngIf="column.isVisible && column.column == 'Finance'" class="col-lg-3">
+                <div>
+                  <ng-select
+                    formControlName="leadFinanceId"
+                    bindLabel="name"
+                   
+                    ><ng-option
+                      *ngFor="let c of AllLeadFinance"
+                      [value]="c.id"
+                      >{{ c.name }}</ng-option
+                    >
+                  </ng-select>
+                </div>
+              </div>
+              <label *ngIf="column.isVisible && column.column == 'Priority'" class="col-lg-3 col-form-label fw-bold fs-6"
+              >Priority</label
+            >
+            <div *ngIf="column.isVisible && column.column == 'Priority'" class="col-lg-3">
+              <div>
+                <ng-select
+                  formControlName="priorityId"
+                  bindLabel="name"
+               
+                  ><ng-option
+                    *ngFor="let c of AllPriorityType"
+                    [value]="c.id"
+                    >{{ c.name }}</ng-option
+                  >
+                </ng-select>
+              </div>
+            </div>
+            <label *ngIf="column.isVisible && column.column == 'Hot Lead'" class="col-lg-3 col-form-label fw-bold fs-6"
+            >Hot Lead</label
+          >
+          <div *ngIf="column.isVisible && column.column == 'Hot Lead'" class="col-lg-3">
+            <ng-select 
+                formControlName="hot"
+                bindLabel="name"
+              >
+
+              <ng-option [value]="1">Yes</ng-option>
+              <ng-option [value]="0">No</ng-option>
+
+            </ng-select>
+          </div>
+          <label *ngIf="column.isVisible && column.column == 'Source'" class="col-lg-3 col-form-label fw-bold fs-6"
+          >Source</label
+        >
+        <div *ngIf="column.isVisible && column.column == 'Source'" class="col-lg-3">
+          <div>
+            <ng-select
+              formControlName="sourceId"
+              bindLabel="name"
+           
+            >
+              <ng-option
+                *ngFor="let s of sourceOfListingList"
+                [value]="s.id"
+                >{{ s.name }}</ng-option
+              >
+            </ng-select>
+          </div>
+        </div>
+        <label *ngIf="column.isVisible && column.column == 'Agent Referral'" class="col-lg-3 col-form-label fw-bold fs-6">Agent Referral</label>
+        <div *ngIf="column.isVisible && column.column == 'Agent Referral'" class="col-lg-3">
+            <ng-select 
+              formControlName="agentReferral"
+              bindLabel="name"
+              >
+
+              <ng-option [value]="1">Yes</ng-option>
+              <ng-option [value]="0">No</ng-option>
+
+            </ng-select>
+        </div>
+        <label *ngIf="column.isVisible && column.column == 'Listing Reference'" class="col-lg-3 col-form-label fw-bold fs-6"
+                  >Listing Reference</label
+                >
+                <div *ngIf="column.isVisible && column.column == 'Listing Reference'" class="col-lg-3">
+                  <div>
+                    <input
+                      class="form-control mb-3 mb-lg-0"
+                      type="text"
+                      formControlName="listingRef"
+                      name="name"
+                      style="min-width: 40px !important"
+                     
+                    />
+                  </div>
+                </div>
+                <label *ngIf="column.isVisible && column.column == 'Property Type'" class="col-lg-3 col-form-label fw-bold fs-6"
+                >Property Type</label
+              >
+              <div *ngIf="column.isVisible && column.column == 'Property Type'" class="col-lg-3">
+                <div>
+                  <ng-select
+                    formControlName="categoryId"
+                    bindLabel="name"
+                  
+                    ><ng-option
+                      *ngFor="let c of propertyTypeList"
+                      [value]="c.id"
+                      >{{ c.name }}</ng-option
+                    >
+                  </ng-select>
+                </div>
+              </div>
+              <label *ngIf="column.isVisible && column.column == 'Emirate'" class="col-lg-3 col-form-label fw-bold fs-6"
+              >Emirates</label
+            >
+            <div *ngIf="column.isVisible && column.column == 'Emirate'" class="col-lg-3">
+              <div>
+                <ng-select
+                  formControlName="emirateId"
+                  bindLabel="name"
+                  
+                >
+                  <ng-option
+                    *ngFor="let e of AllEmirates"
+                    [value]="e.id"
+                    >{{ e.name }}</ng-option
+                  >
+                </ng-select>
+              </div>
+            </div>
+               
+                  <label *ngIf="column.isVisible && column.column == 'Location'" class="col-lg-3 col-form-label fw-bold fs-6"
+                    >Location</label
+                  >
+                  <div *ngIf="column.isVisible && column.column == 'Location'" class="col-lg-3">
+                    <div>
+                      <ng-select
+                        formControlName="locationId"
+                        bindLabel="name"
+                      
+                        ><ng-option
+                          *ngFor="let l of AllLocation"
+                          [value]="l.id"
+                          >{{ l.name }}</ng-option
+                        >
+                      </ng-select>
+                    </div>
+                  </div>
+                  <label *ngIf="column.isVisible && column.column == 'Sub Location'" class="col-lg-3 col-form-label fw-bold fs-6"
+                    >Sub Location</label
+                  >
+                 
+                  <div *ngIf="column.isVisible && column.column == 'Sub Location'" class="col-lg-3">
+                    <div>
+                      <ng-select
+                        formControlName="subLocationId"
+                        bindLabel="name"
+                       
+                        ><ng-option
+                          *ngFor="let subl of AllSubLocation"
+                          [value]="subl.id"
+                          >{{ subl.name }}</ng-option
+                        >
+                      </ng-select>
+                    </div>
+                  </div>
+              
+                  <label *ngIf="column.isVisible && column.column == 'Beds'" class="col-lg-3 col-form-label fw-bold fs-6"
+                  >Beds</label
+                >
+                <div *ngIf="column.isVisible && column.column == 'Beds'" class="col-lg-3">
+                  <div class="d-flex gap-2">
+                    <div class="position-relative w-50">
+                    <ng-select
+                        formControlName="minBedId"
+                        bindLabel="name"
+                      
+                        ><ng-option
+                          *ngFor="let subl of AllBeds"
+                          [value]="subl.id"
+                          >{{ subl.name }}</ng-option
+                        >
+                      </ng-select>
+                  </div>
+                  <div class="position-relative w-50">                  
+                    <ng-select
+                    formControlName="maxBedId"
+                    bindLabel="name"
+                  
+                    ><ng-option
+                      *ngFor="let subl of AllBeds"
+                      [value]="subl.id"
+                      >{{ subl.name }}</ng-option
+                    >
+                  </ng-select>
+                  </div>
+                </div>
+                </div>
+                <label *ngIf="column.isVisible && column.column == 'Price'" class="col-lg-3 col-form-label fw-bold fs-6"
+                >Price</label >
+              <div *ngIf="column.isVisible && column.column == 'Price'" class="col-lg-3">
+                <div class="d-flex gap-2">
+                  <div class="position-relative w-50">
+                      <div class="input-group mb-5">
+                        <span class="input-group-text" id="basic-addon1">
+                          {{this.companySettings?.currency}}
+                        </span>
+                      <input
+                      class="form-control mb-3 mb-lg-0"
+                      type="text"
+                      formControlName="minPrice"
+                      name="minPrice"
+                      style="min-width: 40px !important"
+                  
+                    />
+                    </div>
+                </div>
+                <div class="position-relative w-50">
+                  <div class="input-group mb-5">
+                    <span class="input-group-text" id="basic-addon1">
+                      {{this.companySettings?.currency}}
+                    </span>
+                    <input
+                    class="form-control mb-3 mb-lg-0"
+                    type="text"
+                    formControlName="maxPrice"
+                    name="maxPrice"
+                    style="min-width: 40px !important"
+                   
+                  />
+                  </div>
+                </div>
+              </div>
+              </div>
+              <label *ngIf="column.isVisible && column.column == 'Built-up Area'" class="col-lg-3 col-form-label fw-bold fs-6"
+              >Built-up Area</label
+            >
+            <div *ngIf="column.isVisible && column.column == 'Built-up Area'" class="col-lg-3">
+              <div class="d-flex gap-2">
+                <div class="position-relative w-50">
+                  <div class="input-group mb-5">
+                    <span class="input-group-text" id="basic-addon1">
+                      {{ companySettings?.measuringUnit == 'Square Feet'? 'Sq. Ft.':'Sq. M.' }}</span>
+                  <input
+                  class="form-control mb-3 mb-lg-0"
+                  type="text"
+                  formControlName="minBUA"
+                  name="minArea"
+                  style="min-width: 40px !important"
+                 
+                />
+                </div>
+              </div>
+              <div class="position-relative w-50">
+                <div class="input-group mb-5">
+                  <span class="input-group-text" id="basic-addon1">
+                    {{ companySettings?.measuringUnit == 'Square Feet'? 'Sq. Ft.':'Sq. M.' }}</span>
+                <input
+                  class="form-control mb-3 mb-lg-0"
+                  type="text"
+                  formControlName="maxBUA"
+                  name="minArea"
+                  style="min-width: 40px !important"
+                 
+                />
+                </div>
+                <!-- <input
+                  type="text"
+                  class="form-control mb-3 mb-lg-0"
+                  formControlName="maxArea"
+                  placeholder="To"
+                  (change)="onchangeCheckBox('maxArea', $event)"
+                /> -->
+              </div>
+            </div>
+            </div>
+               <!--  <label class="col-lg-3 col-form-label fw-bold fs-6"
+                >Max Beads</label
+              >
+              <div class="col-lg-3">
+                <div>
+                  <input
+                    class="form-control mb-3 mb-lg-0"
+                    type="text"
+                    formControlName="maxBed"
+                    name="name"
+                    style="min-width: 40px !important"
+                    (keyup)="
+                      onFilterSelectionAdvanceTextFilter('maxBed', $event)
+                    "
+                  />
+                </div>
+              </div> -->
+              <!-- <label class="col-lg-3 col-form-label fw-bold fs-6"
+                >Min Price</label
+              >
+              <div class="col-lg-3">
+                <div>
+                  <input
+                    class="form-control mb-3 mb-lg-0"
+                    type="text"
+                    formControlName="minPrice"
+                    name="name"
+                    style="min-width: 40px !important"
+                    (keyup)="
+                      onFilterSelectionAdvanceTextFilter('minPrice', $event)
+                    "
+                  />
+                </div>
+              </div>
+              <label class="col-lg-3 col-form-label fw-bold fs-6"
+                >Max Price</label
+              >
+              <div class="col-lg-3">
+                <div>
+                  <input
+                    class="form-control mb-3 mb-lg-0"
+                    type="text"
+                    formControlName="maxPrice"
+                    name="name"
+                    style="min-width: 40px !important"
+                    (keyup)="
+                      onFilterSelectionAdvanceTextFilter('maxPrice', $event)
+                    "
+                  />
+                </div>
+              </div> -->
+              <!-- <label class="col-lg-3 col-form-label fw-bold fs-6"
+              >Min Built-up Area</label
+            >
+            <div class="col-lg-3">
+              <div>
+                <input
+                  class="form-control mb-3 mb-lg-0"
+                  type="text"
+                  formControlName="maxArea"
+                  name="name"
+                  style="min-width: 40px !important"
+                  (keyup)="
+                    onFilterSelectionAdvanceTextFilter('maxPrice', $event)
+                  "
+                />
+              </div>
+            </div>
+            <label class="col-lg-3 col-form-label fw-bold fs-6"
+            >Max Built-up Area</label
+          >
+          <div class="col-lg-3">
+            <div>
+              <input
+                class="form-control mb-3 mb-lg-0"
+                type="text"
+                formControlName="minArea"
+                name="name"
+                style="min-width: 40px !important"
+                (keyup)="
+                  onFilterSelectionAdvanceTextFilter('minArea', $event)
+                "
+              />
+            </div>
+          </div> -->
+          <label *ngIf="column.isVisible && column.column == 'Layout Type'" class="col-lg-3 col-form-label fw-bold fs-6"
+          >Layout Type</label
+        >
+        <div *ngIf="column.isVisible && column.column == 'Layout Type'" class="col-lg-3">
+          <div>
+            <input
+              class="form-control mb-3 mb-lg-0"
+              type="text"
+              formControlName="layoutType"
+              name="name"
+              style="min-width: 40px !important"
+             
+            />
+          </div>
+        </div>
+         <label *ngIf="column.isVisible && column.column == 'Unit'" class="col-lg-3 col-form-label fw-bold fs-6"
+          >Unit</label
+        >
+        <div *ngIf="column.isVisible && column.column == 'Unit'" class="col-lg-3">
+          <div>
+            <input
+              class="form-control mb-3 mb-lg-0"
+              type="text"
+              formControlName="unit"
+              name="unit"
+              style="min-width: 40px !important"
+             
+            />
+          </div>
+        </div>
+        <label *ngIf="column.isVisible && column.column == 'Created'" class="col-lg-3 col-form-label fw-bold fs-6"
+        >Created</label
+      >
+      <div *ngIf="column.isVisible && column.column == 'Created'" class="col-lg-3">
+        <div class="d-flex gap-2">
+          <div class="position-relative w-50">
+            <input
+              type="date"
+              class="form-control mb-3 mb-lg-0"
+              formControlName="fromCreated"
+            />
+            <span class="input-date-placeholder" for="fromCreated">From</span>
+          </div>
+          <div class="position-relative w-50">
+            <input
+              type="date"
+              class="form-control mb-3 mb-lg-0"
+              formControlName="toCreated"
+            />
+            <span class="input-date-placeholder" for="toCreated">To</span>
+          </div>
+        </div>
+      </div>
+      <label *ngIf="column.isVisible && column.column == 'Created By'" class="col-lg-3 col-form-label fw-bold fs-6"
+      >Created By</label
+    >
+    <div *ngIf="column.isVisible && column.column == 'Created By'" class="col-lg-3">
+      <div>
+        <ng-select formControlName="createdBy" bindLabel="name" >
+                  <ng-option
+                  *ngFor="let user of userList"
+                  [value]="user.id"
+                        >{{ user.name }}</ng-option>
+                </ng-select>
+      </div>
+    </div>
+        <label *ngIf="column.isVisible && column.column == 'Updated'" class="col-lg-3 col-form-label fw-bold fs-6"
+                    >Updated</label
+                  >
+                  <div *ngIf="column.isVisible && column.column == 'Updated'" class="col-lg-3">
+                    <div class="d-flex gap-2">
+                      <div class="position-relative w-50">
+                        <input
+                          type="date"
+                          class="form-control mb-3 mb-lg-0"
+                          formControlName="fromUpdated"
+                        />
+                        <span class="input-date-placeholder" for="fromDateUpdated">From</span>
+                      </div>
+                      <div class="position-relative w-50">
+                          <input
+                            type="date"
+                            class="form-control mb-3 mb-lg-0"
+                            formControlName="toUpdated"
+                          />
+                          <span class="input-date-placeholder" for="toDateUpdated">To</span>
+                      </div>
+                    </div>
+                  </div>
+                <label *ngIf="column.isVisible && column.column == 'Updated By'" class="col-lg-3 col-form-label fw-bold fs-6"
+                >Updated By</label
+              >
+              <div *ngIf="column.isVisible && column.column == 'Updated By'" class="col-lg-3">
+                <div>
+                  <ng-select formControlName="updatedBy" bindLabel="name" >
+                  <ng-option
+                  *ngFor="let user of userList"
+                  [value]="user.id"
+                  >{{ user.userName }}</ng-option>
+                </ng-select>
+                </div>
+
+                
+              </div>
+                  
+            </ng-container>    
+            </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="reset"
+                class="btn btn-sm btn-light btn-active-light-primary me-2"
+                data-kt-menu-dismiss="true"
+                (click)="ResetAdvanceFilter(); close()"
+              >
+                Reset
+              </button>
+              <button
+                type="submit"
+                class="btn btn-sm btn-primary"
+                data-kt-menu-dismiss="true"
+                (click)="onAdvanceFilter(); close()"
+              >
+                Apply
+              </button>
+            </div>
+          </div>
+        </ng-template>
+        <a class="btn btn-sm btn-light-primary" (click)="exportLeads()">
+          <i class="bi bi-upload"></i> Export
+        </a>
+        <!--end::Modal-->
+        <!--end::Menu toggle-->
+      </div>
+      <!--begin::Drawer toggle-->
+      <a *ngIf="isAddLeadsPermission"
+        (click)="onAdd()"
+        class="kt_activities_toggle btn btn-sm btn-flex btn-primary fw-bold me-1"
+      >
+        <i class="bi bi-plus fs-2"></i> Add Lead
+      </a>
+      <!--end::Drawer toggle-->
+    </div>
+    <!--end::Actions-->
+
+    <div class="table-responsive">
+      <!-- begin::Table -->
+      <table id="listings_row" class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+        <!-- begin::Table head -->
+        <thead class="fw-bold">
+          <th class="w-40px">
+            <div class="form-check form-check-sm form-check-custom form-check-solid p-0">
+              <input
+                class="form-check-input cursor-pointer"
+                type="checkbox"
+                value="1"
+                data-kt-check="true"
+                data-kt-check-target=".widget-9-check" [(ngModel)]="isSelectAllLeads" [ngModelOptions]="{standalone: true}"
+                (change)="SelectAllLeads($event)"
+              />
+            </div>
+          </th>
+          <ng-container *ngFor="let column of columnOrder">
+          <th
+          *ngIf="column.isVisible && column.column == 'Reference'"
+          class="min-w-120px"
+          (click)="
+            leadData(
+              'Ref',
+              !ContactBasicForm.value.sortDirection,
+              page,
+              itemsPerPage
+            )
+          "
+        >
+            Reference
+          </th>
+          <th
+          *ngIf="column.isVisible && column.column == 'Status'"
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'Status',
+                !ContactBasicForm.value.sortDirection,
+                page,
+                itemsPerPage
+              )
+            "
+          >
+          Status
+        </th>
+        <th
+        *ngIf="column.isVisible && column.column == 'Sub Status'"
+          class="min-w-120px"
+          (click)="
+            leadData(
+              'SubStatus',
+              !ContactBasicForm.value.sortDirection,
+              page,
+              itemsPerPage
+            )
+          "
+        >
+          Sub Status
+        </th>
+       <th 
+       *ngIf="column.isVisible && column.column == 'Assigned To'"
+       class="min-w-120px"
+       (click)="
+         leadData(
+           'Agent',
+           !ContactBasicForm.value.sortDirection,
+           page,
+           itemsPerPage
+         )
+       "
+     >
+     Assigned To
+       </th>
+       <th
+       *ngIf="column.isVisible && column.column == 'Contact Reference'"
+       class="min-w-120px"
+       (click)="
+         leadData(
+           'ContactRef',
+           !ContactBasicForm.value.sortDirection,
+           page,
+           itemsPerPage
+         )
+       "
+     >
+       <!-- Last Update By Agent On
+     </th>
+     <th
+       class="min-w-120px"
+       (click)="
+         leadData(
+           'ContactReference',
+           !ContactBasicForm.value.sortDirection,
+           page,
+           itemsPerPage
+         )
+       "
+     > -->
+       Contact Reference
+     </th>
+          <th
+          *ngIf="column.isVisible && column.column == 'First Name'"
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'FirstName',
+                !ContactBasicForm.value.sortDirection,
+                page,
+                itemsPerPage
+              )
+            "
+          >
+          
+          First Name
+        </th>
+        <th
+        *ngIf="column.isVisible && column.column == 'Last Name'"
+          class="min-w-120px"
+          (click)="
+            leadData(
+              'LastName',
+              !ContactBasicForm.value.sortDirection,
+              page,
+              itemsPerPage
+            )
+          "
+        >
+          Last Name
+        </th>
+        <!-- <th
+          class="min-w-120px"
+          (click)="
+            leadData(
+              'MobileNo',
+              !ContactBasicForm.value.sortDirection,
+              page,
+              itemsPerPage
+            )
+          "
+        >
+        Mobile
+      </th>
+      
+      <th
+        class="min-w-120px"
+        (click)="
+          leadData(
+            'phone',
+            !ContactBasicForm.value.sortDirection,
+            page,
+            itemsPerPage
+          )
+        "
+      >
+        Phone
+      </th> -->
+      <th
+      *ngIf="column.isVisible && column.column == 'Personal Mobile'"
+      class="min-w-120px"
+      (click)="
+        leadData(
+          'personalMobile',
+          !ContactBasicForm.value.sortDirection,
+          page,
+          itemsPerPage
+        )
+      "
+        >
+        
+        Personal Mobile
+      </th>
+      <th
+      *ngIf="column.isVisible && column.column == 'Work Mobile'"
+      class="min-w-120px"
+      (click)="
+        leadData(
+          'workMobile',
+          !ContactBasicForm.value.sortDirection,
+          page,
+          itemsPerPage
+        )
+      "
+        >
+        Work Mobile
+      </th>
+      <th
+      *ngIf="column.isVisible && column.column == 'Other Mobile'"
+      class="min-w-120px"
+      (click)="
+        leadData(
+          'otherMobile',
+          !ContactBasicForm.value.sortDirection,
+          page,
+          itemsPerPage
+        )
+      "
+        >
+        Other Mobile
+      </th>
+      <th
+      *ngIf="column.isVisible && column.column == 'Personal Phone'"
+      class="min-w-120px"
+      (click)="
+        leadData(
+          'personalPhone',
+          !ContactBasicForm.value.sortDirection,
+          page,
+          itemsPerPage
+        )
+      "
+        >
+        Personal Phone
+      </th>
+      <th
+      *ngIf="column.isVisible && column.column == 'Work Phone'"
+      class="min-w-120px"
+      (click)="
+        leadData(
+          'workPhone',
+          !ContactBasicForm.value.sortDirection,
+          page,
+          itemsPerPage
+        )
+      "
+        >
+        Work Phone
+      </th>
+      <th
+      *ngIf="column.isVisible && column.column == 'Other Phone'"
+      class="min-w-120px"
+      (click)="
+        leadData(
+          'otherPhone',
+          !ContactBasicForm.value.sortDirection,
+          page,
+          itemsPerPage
+        )
+      "
+        >
+        Other Phone
+      </th>
+      <th
+      *ngIf="column.isVisible && column.column == 'Personal Email'"
+      class="min-w-120px"
+      (click)="
+        leadData(
+          'personalEmail',
+          !ContactBasicForm.value.sortDirection,
+          page,
+          itemsPerPage
+        )
+      "
+        >
+        Personal Email
+      </th>
+      <th
+      *ngIf="column.isVisible && column.column == 'Work Email'"
+      class="min-w-120px"
+      (click)="
+        leadData(
+          'workEmail',
+          !ContactBasicForm.value.sortDirection,
+          page,
+          itemsPerPage
+        )
+      "
+        >
+        Work Email
+      </th>
+      <th
+      *ngIf="column.isVisible && column.column == 'Other Email'"
+      class="min-w-120px"
+      (click)="
+        leadData(
+          'OtherEmail',
+          !ContactBasicForm.value.sortDirection,
+          page,
+          itemsPerPage
+        )
+      "
+        >
+        Other Email
+      </th>
+
+      <!-- <th
+        class="min-w-120px"
+        (click)="
+          leadData(
+            'DateAdded',
+            !ContactBasicForm.value.sortDirection,
+            page,
+            itemsPerPage
+          )
+        "
+      >
+      Email
+    </th> -->
+    <th
+    *ngIf="column.isVisible && column.column == 'Enquiry Date'"
+      class="min-w-120px"
+      (click)="
+        leadData(
+          'EnquiryDate',
+          !ContactBasicForm.value.sortDirection,
+          page,
+          itemsPerPage
+        )
+      "
+    >
+    Enquiry Date
+  </th>
+        <th
+        *ngIf="column.isVisible && column.column == 'Lead Type'"
+          class="min-w-120px"
+          (click)="
+            leadData(
+              'leadType',
+              !ContactBasicForm.value.sortDirection,
+              page,
+              itemsPerPage
+            )
+          "
+          >
+          Lead Type
+          </th>
+          <th
+          *ngIf="column.isVisible && column.column == 'Finance'"
+          class="min-w-120px"
+          (click)="
+            leadData(
+              'Finance',
+              !ContactBasicForm.value.sortDirection,
+              page,
+              itemsPerPage
+            )
+          "
+          >
+          Finance
+          </th>
+          <th
+          *ngIf="column.isVisible && column.column == 'Priority'"
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'Priority',
+                !ContactBasicForm.value.sortDirection,
+                page,
+                itemsPerPage
+              )
+            "
+          >
+            Priority
+          </th>
+                    
+          <th
+          *ngIf="column.isVisible && column.column == 'Hot Lead'"
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'Hot',
+                !ContactBasicForm.value.sortDirection,
+                page,
+                itemsPerPage
+              )
+            "
+          >
+          Hot Lead
+          </th>
+          <th
+          *ngIf="column.isVisible && column.column == 'Source'"
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'Source',
+                !ContactBasicForm.value.sortDirection,
+                page,
+                itemsPerPage
+              )
+            "
+          >
+          Source
+        </th>
+        <th
+        *ngIf="column.isVisible && column.column == 'Agent Referral'"
+        class="min-w-120px"
+        (click)="
+          leadData(
+            'AgentReferral',
+            !ContactBasicForm.value.sortDirection,
+            page,
+            itemsPerPage
+          )
+        "
+      >
+      Agent Referral
+      </th>
+      <th
+      *ngIf="column.isVisible && column.column == 'Listing Reference'"
+      class="min-w-120px"
+      (click)="
+        leadData(
+          'ListingReference',
+          !ContactBasicForm.value.sortDirection,
+          page,
+          itemsPerPage
+        )
+      "
+    >
+    Listing Reference
+      </th>
+        <th
+        *ngIf="column.isVisible && column.column == 'Property Type'"
+          class="min-w-120px"
+          (click)="
+            leadData(
+              'PropertyType',
+              !ContactBasicForm.value.sortDirection,
+              page,
+              itemsPerPage
+            )
+          "
+        >
+            Property Type
+          </th>
+          <th
+          *ngIf="column.isVisible && column.column == 'Emirate'"
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'Emirate',
+                !ContactBasicForm.value.sortDirection,
+                page,
+                itemsPerPage
+              )
+            "
+          >
+            Emirate
+          </th>
+          <th
+          *ngIf="column.isVisible && column.column == 'Location'"
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'Location',
+                !ContactBasicForm.value.sortDirection,
+                page,
+                itemsPerPage
+              )
+            "
+          >
+            Location
+          </th>
+          <th
+          *ngIf="column.isVisible && column.column == 'Sub Location'"
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'SubLocation',
+                !ContactBasicForm.value.sortDirection,
+                page,
+                itemsPerPage
+              )
+            "
+          >
+            Sub Location
+          </th>
+          <th
+          *ngIf="column.isVisible && column.column == 'Beds'"
+          class="min-w-120px"
+          (click)="
+            leadData(
+              'Beds',
+              !ContactBasicForm.value.sortDirection,
+              page,
+              itemsPerPage
+            )
+          "
+            >
+            Beds
+          </th>
+          <th
+          *ngIf="column.isVisible && column.column == 'Price'"
+          class="min-w-120px"
+          (click)="
+            leadData(
+              'Price',
+              !ContactBasicForm.value.sortDirection,
+              page,
+              itemsPerPage
+            )
+          "
+            >
+            Price
+          </th>
+          <th
+          *ngIf="column.isVisible && column.column == 'Built-up Area'"
+          class="min-w-120px"
+          (click)="
+            leadData(
+              'BuildUpArea',
+              !ContactBasicForm.value.sortDirection,
+              page,
+              itemsPerPage
+            )
+          "
+            >
+            Built-up Area
+          </th>
+          <th
+          *ngIf="column.isVisible && column.column == 'Layout Type'"
+          class="min-w-120px"
+          (click)="
+            leadData(
+              'LayoutType',
+              !ContactBasicForm.value.sortDirection,
+              page,
+              itemsPerPage
+            )
+          "
+            >
+            Layout Type
+          </th>
+          <th
+          *ngIf="column.isVisible && column.column == 'Unit'"
+          class="min-w-120px"
+          (click)="
+            leadData(
+              'Unit',
+              !ContactBasicForm.value.sortDirection,
+              page,
+              itemsPerPage
+            )
+          "
+            >
+            Unit
+          </th>
+      
+          <!-- <th
+          class="min-w-120px"
+          (click)="
+            leadData(
+              'ContactCompany',
+              !ContactBasicForm.value.sortDirection,
+              page,
+              itemsPerPage
+            )
+          "
+        >
+          Contact Company
+        </th>
+        -->
+     
+          <th
+          *ngIf="column.isVisible && column.column == 'Created'"
+          class="min-w-120px"
+          (click)="
+            leadData(
+              'Created',
+              !ContactBasicForm.value.sortDirection,
+              page,
+              itemsPerPage
+            )
+          "
+        >
+        Created
+        </th>
+        <th *ngIf="column.isVisible && column.column == 'Created By'" class="min-w-120px">Created By</th>
+          <th
+          *ngIf="column.isVisible && column.column == 'Updated'"
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'Updated',
+                !ContactBasicForm.value.sortDirection,
+                page,
+                itemsPerPage
+              )
+            "
+          >
+          
+            Updated
+          </th>
+          <th class="min-w-120px" *ngIf="column.isVisible && column.column == 'Updated By'">Updated By</th>
+
+          <!-- <th
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'AgentReferral',
+                !ContactBasicForm.value.sortDirection,
+                page,
+                itemsPerPage
+              )
+            "
+          >
+            Agent Referral
+          </th> -->
+          <!-- <th
+            class="min-w-120px"
+            (click)="
+              leadData(
+                'ShareThisLead',
+                !ContactBasicForm.value.sortDirection,
+                page,
+                itemsPerPage
+              )
+            "
+          >
+            Share This Lead
+          </th> -->
+         
+        </ng-container>
+        </thead>
+
+        <!-- begin::Table Filter -->
+        <thead id="filter">
+          <th></th>
+          <ng-container *ngFor="let column of columnOrder">
+          <th *ngIf="column.isVisible && column.column == 'Reference'">
+              <input
+                class="form-control mb-3 mb-lg-0"
+                type="text"
+                placeholder="Min 3 chars"
+                formControlName="reference"
+                style="min-width: 40px !important"
+                (keyup)="
+                  onFilterSelection('reference', $event, page, itemsPerPage)
+                "
+              />
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Status'">
+              <ng-select
+                formControlName="statusId"
+                bindLabel="name"
+                (change)="
+                  onFilterSelectionDrp('statusId', $event, page, itemsPerPage)
+                "
+              >
+                <ng-option
+                  *ngFor="let status of AllStatusType"
+                  [value]="status.id"
+                  >{{ status.name }}</ng-option
+                >
+              </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Sub Status'">
+              <ng-select
+                formControlName="subStatusId"
+                bindLabel="name"
+                (change)="
+                  onFilterSelectionDrp(
+                    'subStatusId',
+                    $event,
+                    page,
+                    itemsPerPage
+                  )
+                "
+              >
+                <ng-option
+                  *ngFor="let sub of AllSubStatusType"
+                  [value]="sub.id"
+                  >{{ sub.name }}</ng-option
+                >
+              </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Assigned To'">
+              <ng-select
+                formControlName="agentId"
+                bindLabel="name"
+                (change)="
+                  onFilterSelectionDrp(
+                    'agentId',
+                    $event,
+                    page,
+                    itemsPerPage
+                  )
+                "
+              >
+                <ng-option
+                  *ngFor="let agent of AgentList"
+                  [value]="agent.id"
+                  >{{ agent.name }}</ng-option
+                >
+              </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Contact Reference'">
+            <input
+              class="form-control mb-3 mb-lg-0"
+              type="text"
+              placeholder="Min 3 chars"
+              formControlName="contactRef"
+              name="contactRef"
+              style="min-width: 40px !important"
+              (keyup)="
+                onFilterSelection(
+                  'contactRef',
+                  $event,
+                  page,
+                  itemsPerPage
+                )
+              "
+            />
+        </th>
+          <th *ngIf="column.isVisible && column.column == 'First Name'">
+              <input
+                class="form-control mb-3 mb-lg-0"
+                type="text"
+                placeholder="Min 3 chars"
+                formControlName="firstName"
+                name="Firstname"
+                style="min-width: 40px !important"
+                (keyup)="
+                  onFilterSelection('firstName', $event, page, itemsPerPage)
+                "
+              />
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Last Name'">
+              <input
+                class="form-control mb-3 mb-lg-0"
+                type="text"
+                placeholder="Min 3 chars"
+                formControlName="lastName"
+                name="Lastname"
+                style="min-width: 40px !important"
+                (keyup)="
+                  onFilterSelection('lastName', $event, page, itemsPerPage)
+                "
+              />
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Personal Mobile'">
+              <input
+                class="form-control mb-3 mb-lg-0"
+                type="text"
+                placeholder="Min 3 chars"
+                formControlName="personalMobile"
+                style="min-width: 40px !important"
+                (keyup)="
+                  onFilterSelection('personalMobile', $event, page, itemsPerPage)
+                "
+              />
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Work Mobile'">
+              <input
+                class="form-control mb-3 mb-lg-0"
+                type="text"
+                placeholder="Min 3 chars"
+                formControlName="workMobile"
+                name="workMobile"
+                style="min-width: 40px !important"
+                (keyup)="
+                  onFilterSelection('workMobile', $event, page, itemsPerPage)
+                "
+              />
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Other Mobile'">
+              <input
+                class="form-control mb-3 mb-lg-0"
+                type="text"
+                placeholder="Min 3 chars"
+                formControlName="otherMobile"
+                name="otherMobile"
+                style="min-width: 40px !important"
+                (keyup)="
+                  onFilterSelection('otherMobile', $event, page, itemsPerPage)
+                "
+              />
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Personal Phone'">
+              <input
+                class="form-control mb-3 mb-lg-0"
+                type="text"
+                placeholder="Min 3 chars"
+                formControlName="personalPhone"
+                name="personalPhone"
+                style="min-width: 40px !important"
+                (keyup)="
+                  onFilterSelection('personalPhone', $event, page, itemsPerPage)
+                "
+              />
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Work Phone'">
+              <input
+                class="form-control mb-3 mb-lg-0"
+                type="text"
+                placeholder="Min 3 chars"
+                formControlName="workPhone"
+                name="workPhone"
+                style="min-width: 40px !important"
+                (keyup)="
+                  onFilterSelection('workPhone', $event, page, itemsPerPage)
+                "
+              />
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Other Phone'">
+              <input
+                class="form-control mb-3 mb-lg-0"
+                type="text"
+                placeholder="Min 3 chars"
+                formControlName="otherPhone"
+                name="otherPhone"
+                style="min-width: 40px !important"
+                (keyup)="
+                  onFilterSelection('otherPhone', $event, page, itemsPerPage)
+                "
+              />
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Personal Email'">
+              <input
+                class="form-control mb-3 mb-lg-0"
+                type="text"
+                placeholder="Min 3 chars"
+                formControlName="personalEmail"
+                name="personalEmail"
+                style="min-width: 40px !important"
+                (keyup)="
+                  onFilterSelection('personalEmail', $event, page, itemsPerPage)
+                "
+              />
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Work Email'">
+              <input
+                class="form-control mb-3 mb-lg-0"
+                type="text"
+                placeholder="Min 3 chars"
+                formControlName="workEmail"
+                name="workEmail"
+                style="min-width: 40px !important"
+                (keyup)="
+                  onFilterSelection('workEmail', $event, page, itemsPerPage)
+                "
+              />
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Other Email'">
+              <input
+                class="form-control mb-3 mb-lg-0"
+                type="text"
+                placeholder="Min 3 chars"
+                formControlName="otherEmail"
+                name="otherEmail"
+                style="min-width: 40px !important"
+                (keyup)="
+                  onFilterSelection('otherEmail', $event, page, itemsPerPage)
+                "
+              />
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Enquiry Date'">
+            <div class="d-flex gap-2 w-300px">
+              <div class="position-relative w-50">
+                <input
+                  type="date"
+                  class="form-control mb-3 mb-lg-0"
+                  formControlName="fromEnquiryDate"
+                  (change)="
+                    onFilterDateSelection(
+                      'fromEnquiryDate',
+                      $event,
+                      page,
+                      itemsPerPage
+                    )
+                  "
+                />
+                <span class="input-date-placeholder" for="fromEnquiryDate">From</span>
+              </div>
+              <div class="position-relative w-50">
+                <input
+                  type="date"
+                  class="form-control mb-3 mb-lg-0"
+                  formControlName="toEnquiryDate"
+                  (change)="
+                    onFilterDateSelection('toEnquiryDate', $event, page, itemsPerPage)
+                  "
+                />
+                <span class="input-date-placeholder" for="toEnquiryDate">To</span>
+              </div>
+            </div>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Lead Type'">
+              <ng-select
+                formControlName="leadTypeId"
+                bindLabel="name"
+                (change)="
+                  onFilterSelectionDrp('leadTypeId', $event, page, itemsPerPage)
+                "
+              >
+                <ng-option
+                  *ngFor="let type of LeadTypeList"
+                  [value]="type.id"
+                  >{{ type.name }}</ng-option
+                >
+              </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Finance'">
+              <ng-select
+                formControlName="leadFinanceId"
+                bindLabel="name"
+                (change)="
+                  onFilterSelectionDrp('finance', $event, page, itemsPerPage)
+                "
+              >
+                <ng-option
+                  *ngFor="let type of AllLeadFinance"
+                  [value]="type.id"
+                  >{{ type.name }}</ng-option
+                >
+              </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Priority'">
+              <ng-select
+                formControlName="priorityId"
+                bindLabel="name"
+                (change)="
+                  onFilterSelectionDrp('priorityId', $event, page, itemsPerPage)
+                "
+              >
+                <ng-option *ngFor="let p of AllPriorityType" [value]="p.id">{{
+                  p.name
+                }}</ng-option>
+              </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Hot Lead'">
+            <ng-select
+              formControlName="hot"
+              bindLabel="name"
+              (change)="onchangeCheckBox('hot', $event)"
+            >
+              <ng-option [value]="1">Yes</ng-option>
+              <ng-option [value]="0">No</ng-option>
+            </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Source'">
+              <ng-select
+                formControlName="sourceId"
+                bindLabel="Source"
+                (change)="
+                  onFilterSelectionDrp('sourceId', $event, page, itemsPerPage)
+                "
+              >
+                <ng-option
+                  *ngFor="let s of sourceOfListingList"
+                  [value]="s.id"
+                  >{{ s.name }}</ng-option
+                >
+              </ng-select>
+          </th>   
+          <th *ngIf="column.isVisible && column.column == 'Agent Referral'">
+              <ng-select
+                formControlName="agentReferral"
+                bindLabel="Agent"
+                (change)="
+                  onFilterSelectionDrp('agentReferral', $event, page, itemsPerPage)
+                "
+              >
+              <ng-option [value]="1">Yes</ng-option>
+              <ng-option [value]="0">No</ng-option>
+              </ng-select>
+          </th>     
+          <th *ngIf="column.isVisible && column.column == 'Listing Reference'">
+            <input
+            class="form-control mb-3 mb-lg-0"
+            type="text"
+            placeholder="Min 3 chars"
+            formControlName="listingRef"
+            name="listingRef"
+            style="min-width: 40px !important"
+            (keyup)="
+              onFilterSelection('listingRef', $event, page, itemsPerPage)
+            "
+          />
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Property Type'">
+              <ng-select
+                formControlName="categoryId"
+                bindLabel="PropertyType"
+                (change)="
+                  onFilterSelectionDrp('categoryId', $event, page, itemsPerPage)
+                "
+              >
+                <ng-option *ngFor="let c of propertyTypeList" [value]="c.id">{{
+                  c.name
+                }}</ng-option>
+              </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Emirate'">
+              <ng-select
+                formControlName="emirateId"
+                bindLabel="name"
+                (change)="
+                  onFilterSelectionDrp('emirateId', $event, page, itemsPerPage)
+                "
+              >
+                <ng-option *ngFor="let e of AllEmirates" [value]="e.id">{{
+                  e.name
+                }}</ng-option>
+              </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Location'">
+              <ng-select
+                formControlName="locationId"
+                bindLabel="name"
+                (change)="
+                  onFilterSelectionDrp('locationId', $event, page, itemsPerPage)
+                "
+              >
+                <ng-option *ngFor="let l of AllLocation" [value]="l.id">{{
+                  l.name
+                }}</ng-option>
+              </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Sub Location'">
+              <ng-select
+                formControlName="subLocationId"
+                bindLabel="name"
+                (change)="
+                  onFilterSelectionDrp(
+                    'subLocationId',
+                    $event,
+                    page,
+                    itemsPerPage
+                  )
+                "
+              >
+                <ng-option
+                  *ngFor="let subl of AllSubLocation"
+                  [value]="subl.id"
+                  >{{ subl.name }}</ng-option
+                >
+              </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Beds'">
+            <div class="d-flex gap-2 w-200px">
+              <div class="position-relative w-50">
+                <ng-select
+                formControlName="minBedId"
+                bindLabel="name"
+                (change)="
+                onFilterSelectionDrp(
+                    'minBedId',
+                    $event,
+                    page,
+                    itemsPerPage
+                  )
+                "
+                ><ng-option
+                  *ngFor="let subl of AllBeds"
+                  [value]="subl.id"
+                  >{{ subl.name }}</ng-option
+                >
+              </ng-select>
+              </div>
+              <div class="position-relative w-50">
+                <ng-select
+                formControlName="maxBedId"
+                bindLabel="name"
+                (change)="
+                onFilterSelectionDrp(
+                    'maxBedId',
+                    $event,
+                    page,
+                    itemsPerPage
+                  )
+                "
+                ><ng-option
+                  *ngFor="let subl of AllBeds"
+                  [value]="subl.id"
+                  >{{ subl.name }}</ng-option
+                >
+              </ng-select>
+              </div>
+            </div>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Price'">
+            <div class="d-flex gap-2 w-200px">
+              <div class="position-relative w-50">
+                <input
+                  class="form-control mb-3 mb-lg-0"
+                  type="text"
+                  placeholder="From"
+                  formControlName="minPrice"
+                  name="name"
+                  style="min-width: 40px !important"
+                  (keyup)="onFilterSelection('minPrice', $event, page, itemsPerPage)"
+                />
+              </div>
+              <div class="position-relative w-50">
+                <input
+                class="form-control mb-3 mb-lg-0"
+                type="text"
+                placeholder="To"
+                formControlName="maxPrice"
+                name="name"
+                style="min-width: 40px !important"
+                (keyup)="onFilterSelection('maxPrice', $event, page, itemsPerPage)"
+              />
+              </div>
+            </div>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Built-up Area'">
+            <div class="d-flex gap-2 w-200px">
+              <div class="position-relative w-50">
+                <input
+                  class="form-control mb-3 mb-lg-0"
+                  type="text"
+                  placeholder="From"
+                  formControlName="minBUA"
+                  name="minArea"
+                  (keyup)="onFilterSelection('minBUA', $event, page, itemsPerPage)"
+                />
+              </div>
+              <div class="position-relative w-50">
+                <input
+                class="form-control mb-3 mb-lg-0"
+                type="text"
+                placeholder="To"
+                formControlName="maxBUA"
+                name="maxArea"
+                (keyup)="onFilterSelection('maxBUA', $event, page, itemsPerPage)"
+              />
+              </div>
+            </div>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Layout Type'">
+              <input
+                class="form-control mb-3 mb-lg-0"
+                type="text"
+                placeholder="Min 3 chars"
+                formControlName="layoutType"
+                name="layoutType"
+                (keyup)="onFilterSelection('layoutType', $event, page, itemsPerPage)"
+              />
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Unit'">
+              <input
+                class="form-control mb-3 mb-lg-0"
+                type="text"
+                placeholder="Min 3 chars"
+                formControlName="unit"
+                name="unit"
+                style="min-width: 40px !important"
+                (keyup)="onFilterSelection('unit', $event, page, itemsPerPage)"
+              />
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Created'">
+              <div class="d-flex gap-2 w-300px">
+                <div class="position-relative w-50">
+                  <input
+                    type="date"
+                    class="form-control mb-3 mb-lg-0"
+                    formControlName="fromCreated"
+                    (change)="
+                      onFilterDateSelection('fromCreated', $event, page, itemsPerPage)
+                    "
+                  />
+                  <span class="input-date-placeholder" for="fromCreated">From</span>
+                </div>
+                <div class="position-relative w-50">
+                  <input
+                    type="date"
+                    class="form-control mb-3 mb-lg-0"
+                    formControlName="toCreated"
+                    (change)="
+                      onFilterDateSelection('toCreated', $event, page, itemsPerPage)
+                    "
+                  />
+                  <span class="input-date-placeholder" for="toCreated">To</span>
+                </div>
+              </div>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Created By'">
+                <ng-select formControlName="createdBy" bindLabel="name" (change)="onFilterSelectionDrp('createdBy',
+                $event,
+                page,
+                itemsPerPage)">
+                  <ng-option
+                  *ngFor="let user of userList"
+                  [value]="user.id"
+                  >{{ user.name }}</ng-option>
+                </ng-select>
+          </th>
+          <th *ngIf="column.isVisible && column.column == 'Updated'">
+              <div class="d-flex gap-2 w-300px">
+                <div class="position-relative w-50">
+                  <input
+                    type="date"
+                    class="form-control mb-3 mb-lg-0"
+                    formControlName="fromUpdated"
+                    (change)="
+                      onFilterDateSelection('fromUpdated', $event, page, itemsPerPage)
+                    "
+                  />
+                  <span class="input-date-placeholder" for="fromDateUpdated">From</span>
+                </div>
+                <div class="position-relative w-50">
+                  <input
+                    type="date"
+                    class="form-control mb-3 mb-lg-0"
+                    formControlName="toUpdated"
+                    (change)="
+                      onFilterDateSelection('toUpdated', $event, page, itemsPerPage)
+                    "
+                  />
+                  <span class="input-date-placeholder" for="toDateUpdated">To</span>
+                </div>
+              </div>
+          </th>   
+          <th *ngIf="column.isVisible && column.column == 'Updated By'">
+                <ng-select formControlName="updatedBy" bindLabel="name" (change)="onFilterSelectionDrp('updatedBy',
+                $event,
+                page,
+                itemsPerPage)">
+                  <ng-option
+                  *ngFor="let user of userList"
+                  [value]="user.id"
+                  >{{ user.name }}</ng-option>
+                </ng-select>
+          </th>
+        </ng-container>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="
+              let data of leadsDetails
+                | paginate
+                  : {
+                      id:'lead_data_table',
+                      itemsPerPage: itemsPerPage,
+                      currentPage: page,
+                      totalItems: totalItems
+                    }
+            "
+          >
+            <th class="w-40px">
+              <div
+                class="form-check form-check-sm form-check-custom form-check-solid p-0"
+              >
+                <input
+                  class="form-check-input cursor-pointer"
+                  type="checkbox"
+                  [(ngModel)]="data.isSelected" [ngModelOptions]="{standalone: true}" value="{{ data.Id }}" data-kt-check="true" data-kt-check-target=".widget-9-check" (change)="SelectListningDataTable($event,data.id)"/>
+              </div>
+            </th>
+            <ng-container *ngFor="let column of columnOrder">
+            <th *ngIf="column.isVisible && column.column == 'Reference'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.reference }}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Status'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              <span [ngClass]="data.statusName == 'Closed'? 'text-grey':data.statusName == 'Open'?'text-blue': ''">{{ data?.statusName }}</span>
+            </th>
+           
+            <th *ngIf="column.isVisible && column.column == 'Sub Status'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+             <span [ngClass]="data.subStatusName == 'In Progress'||
+              data.subStatusName == 'Viewing Arranged'||
+              data.subStatusName == 'Offer Made'||
+              data.subStatusName == 'Interested'||
+              data.subStatusName == 'Interested To Meet'||
+              data.subStatusName == 'Viewing Done' ||
+              data.subStatusName == 'Successful'
+               ? 'text-green'
+               :data.subStatusName == 'Budget Differs'||
+               data.subStatusName == 'Not Interested'||
+               data.subStatusName == 'Client not Reachable'||
+               data.subStatusName == 'Incorrect Contact Details'||
+               data.subStatusName == 'Invalid inquiry'||
+               data.subStatusName == 'Price too High'||
+               data.subStatusName == 'Unsuccessful'
+               ?'text-red'
+               : data.subStatusName == 'Not Yet Contacted'||
+               data.subStatusName == 'Called No Reply'||
+               data.subStatusName == 'Follow Up'||
+               data.subStatusName == 'Client to revert'||
+               data.subStatusName == 'Needs More Info'||
+               data.subStatusName == 'Needs Time'||
+               data.subStatusName == 'Look-see'||
+               data.subStatusName == 'SMS sent to Agen'||
+               data.subStatusName == 'Email sent to Agent'||
+               data.subStatusName == 'Client Connected Online To Agent'
+               ? 'text-blue' : ''">{{ data?.subStatusName }}</span>
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Assigned To'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              <span class="d-flex gap-2 align-items-center">
+                <ngx-avatar *ngIf="data?.profileImage == null || data?.profileImage == ''" size="26" class="avatar" [name]="data?.agentName"></ngx-avatar>
+                <img *ngIf="data?.profileImage != null && data?.profileImage != ''" [src]="imgUrl + data?.profileImage" alt="Image Preview" [style.border-radius.px]="50" [style.width.px]="26" [style.height.px]="26">
+                <!-- <ngx-avatar size="26" class="avatar" [name]="data?.agentName"></ngx-avatar> -->
+                {{ data?.agentName }}
+              </span>
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Contact Reference'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.contactRef }}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'First Name'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.firstName }}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Last Name'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.lastName }}
+            </th>     
+            <!-- <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.mobile }}
+            </th>
+            <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.phone }}
+            </th> -->
+            <th *ngIf="column.isVisible && column.column == 'Personal Mobile'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{getMobile(1,data?.leadMobile)}}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Work Mobile'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{getMobile(2,data?.leadMobile)}}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Other Mobile'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{getMobile(3,data?.leadMobile)}}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Personal Phone'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{getPhone(1,data?.leadPhone)}}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Work Phone'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{getPhone(2,data?.leadPhone)}}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Other Phone'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{getPhone(3,data?.leadPhone)}}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Personal Email'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{getEmail(1,data?.leadEmail)}}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Work Email'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{getEmail(2,data?.leadEmail)}}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Other Email'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{getEmail(3,data?.leadEmail)}}
+            </th>
+            <!-- <th class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.email }}
+            </th> -->
+            <th *ngIf="column.isVisible && column.column == 'Enquiry Date'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.enquiryDate | date : "dd/MM/yyyy" }}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Lead Type'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.leadTypeName }}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Finance'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              <!-- {{ data?.leadTypeName }} finance is not geting in this api -->
+              {{data?.leadFinanceName}}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Priority'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.priorityName }}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Hot Lead'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+            {{data.hot === "True"? "Yes" :"No"}}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Source'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.sourceName }}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Agent Referral'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.agentReferral ===  true ? "Yes" :"No" }}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Listing Reference'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              <!-- {{ data?.leadTypeName }} finance is not geting in this api -->
+              {{data?.listingRef}}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Property Type'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.propertyTypeName }}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Emirate'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.emirateName }}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Location'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.locationName }}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Sub Location'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.subLocationName }}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Beds'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.bedsName }}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Price'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.price }}
+            </th>
+            <th  *ngIf="column.isVisible && column.column == 'Built-up Area'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.buildUpArea }}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Layout Type'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.layoutType }}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Unit'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.unit }}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Created'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.created | date : "dd/MM/yyyy" }}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Created By'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.createdBy  }}</th>
+            <th *ngIf="column.isVisible && column.column == 'Updated'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.updated | date : "dd/MM/yyyy" }}
+            </th>
+            <th *ngIf="column.isVisible && column.column == 'Updated By'" class="align-middle" [ngClass]="isDraweropen == false ? 'kt_activities_toggle':'' " (click)="onEdit(data?.id)">
+              {{ data?.updatedBy }}</th>
+          </ng-container>
+            </tr>
+        </tbody>
+      </table>
+
+      <div class="text-center mt-5 mb-5" *ngIf="leadsDetails && leadsDetails?.length === 0">
+        Record not available
+      </div>
+      <!-- end::Table -->
+    </div><!--./table-responsive-->
+
+    <div class="d-flex justify-content-between w-100 flex-column-reverse">
+      <pagination-controls *ngIf="leadsDetails.length > 0" (pageChange)="renderPage($event)" id="lead_data_table"></pagination-controls>
+      <span class="d-flex justify-content-between mb-3">
+        <div class="d-flex align-items-center">
+          <span>
+            Showing {{ leadsDetails.length }} of <b>{{ totalItems }}</b> Leads
+      </span>
+      </div>
+      <div>
+        <a
+        class="btn btn-sm btn-light-primary"
+        data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
+        (click)="openColumnSettings()"
+      >
+        <i class="bi bi-gear"></i> Column Settings
+      </a>
+      </div>
+        </span>
+      <!-- <span class="d-block mb-3">Showing {{ leadsDetails.length }} of <b>{{ totalItems }}</b> Leads</span> -->
+    </div>
+  </div>
+</form>
+
+<ng-template #columnSettingmodal>
+  <div class="modal-content advance-filter-modal">
+    <div class="modal-header py-3">
+      <!--begin::Modal title-->
+      <h4 class="m-0">Manage Columns</h4>
+      <!--end::Modal title-->
+      <div
+        class="btn btn-sm btn-icon btn-active-color-primary"
+        (click)="closeColumnSettings()"
+      >
+        <i class="ki-duotone ki-cross fs-1">
+          <span class="path1"></span>
+          <span class="path2"></span>
+        </i>
+      </div>
+    </div>
+    <div class="modal-body">
+      <!--begin::Form-->
+      <div class="advance-filter">
+        <div cdkDropList class="column-list" (cdkDropListDropped)="drop($event)">
+          <div class="column-box" *ngFor="let column of tempcolumnOrder" cdkDragLockAxis="y" cdkDrag >
+            <input type="checkbox" [(ngModel)]="column.isVisible">
+            <span class="ml-2">{{column.column}}</span>
+          </div>
+        </div>
+        <!-- <div class="row " cdkDropList (cdkDropListDropped)="drop($event)">
+          <div class="col-lg-12 dragColumn mb-6" *ngFor="let column of tempcolumnOrder" cdkDrag>
+            <input type="checkbox" [(ngModel)]="column.isVisible">
+            <span>{{column.column}}</span>
+          </div>
+        </div> -->
+      </div>
+    </div>
+    <!--end::Form-->
+    <div class="modal-footer">
+      <button
+        type="reset"
+        class="btn btn-sm btn-light btn-active-light-primary me-2"
+        data-kt-menu-dismiss="true"
+        (click)="closeColumnSettings()"
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        class="btn btn-sm btn-primary"
+        data-kt-menu-dismiss="true"
+        (click)="saveColumnSettings()"
+      >
+        Apply
+      </button>
+    </div>
+  </div>
+</ng-template>
+

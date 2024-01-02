@@ -1,0 +1,519 @@
+<div id="kt_company-setup-details" class="bg-body" data-kt-drawer="true" data-kt-drawer-name="company-setup-details"
+    data-kt-drawer-activate="true" data-kt-drawer-overlay="false" data-kt-drawer-width="{default:'300px', 'lg': '900px'}"
+    data-kt-drawer-direction="end" data-kt-drawer-toggle=".kt_company-setup-details_toggle"
+    data-kt-drawer-close="#kt_company_setup_details_close" #container>
+    <div class="card shadow-none rounded-0 w-100">
+      <form [formGroup]="companySetupForm">
+      <div class="card-header" id="kt_activities_header">
+        <div>
+          <div class="card-title fw-bold text-dark">
+            <span *ngIf="!isEdit">New Company</span>
+            <span *ngIf="isEdit">{{companyName}}</span>
+          </div>
+          <div class="card-toolbar">
+            <button type="button" class="btn btn-sm btn-icon btn-active-light-primary me-n5" id="kt_company_setup_details_close" (click)="closeCompanyDetails()">
+              X
+            </button>
+          </div>
+        </div>
+  
+        <div class="d-flex align-items-center">
+          <ul class="nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bold">
+            <li class="nav-item">
+              <a class="nav-link text-active-primary ms-0 me-10 py-5 active cursor-pointer"
+               >
+                Details
+              </a>
+            </li>
+          </ul>
+          <div class="d-flex align-items-center">
+            <button  class="btn btn-sm btn-primary ms-3" *ngIf="onEdit" (click)="editCompany()">
+              Edit
+            </button>
+            <button class="btn btn-sm btn-light btn-active-light-primary me-3" *ngIf="oncancel" (click)="onCancel()"
+              >
+              Cancel
+            </button>
+            <button class="btn btn-sm btn-primary" *ngIf="onSave" (click)="save()">
+              Save
+            </button>
+          </div>
+        </div><!--./d-flex-->
+      </div><!--./card-header-->
+  
+      <div class="card-body position-relative p-0">
+        
+        <ul class="accordian-shortcuts" >
+          <li id="sec_1_1"[ngClass]="
+          (submitted &&
+          (f['companyName'].errors)) ||
+          (submitted &&
+          (f['firstName'].errors)) ||
+          (submitted &&
+          (f['lastName'].errors)) ||
+          (submitted &&
+          (f['email'].errors)) ||
+          (submitted &&
+          (f['numberOfUsers'].errors)) ||
+          (submitted &&
+          (f['role'].errors)) ||
+          (submitted &&
+          (f['currency'].errors)) ||
+          (submitted &&
+          (f['country'].errors)) ||
+          (submitted &&
+          (f['measuringUnit'].errors)) ||
+          (submitted &&
+          (f['timezone'].errors))|| isDuplicateEmail
+          ? 'border-error'
+          : ''">
+            <button
+            [ngClass]="
+                  (submitted &&
+                  (f['companyName'].errors)) ||
+                  (submitted &&
+                  (f['firstName'].errors)) ||
+                  (submitted &&
+                  (f['lastName'].errors)) ||
+                  (submitted &&
+                  (f['email'].errors)) ||
+                  (submitted &&
+                  (f['numberOfUsers'].errors)) ||
+                  (submitted &&
+                  (f['role'].errors)) ||
+                  (submitted &&
+                  (f['currency'].errors)) ||
+                  (submitted &&
+                  (f['country'].errors)) ||
+                  (submitted &&
+                  (f['measuringUnit'].errors)) ||
+                  (submitted &&
+                  (f['timezone'].errors))|| isDuplicateEmail
+                  ? 'border-error'
+                  : ''">
+              <i class="bi bi-house"></i>
+            </button>
+            <span class="reveal">Basic Details</span>
+          </li>
+          
+        </ul>
+        <div class="accordion" id="kt_accordion_1" #container>
+<!--   
+            <div id="secStatus" class="accordion-body border-bottom">
+              <div class="row mb-6">
+                <label class="col-lg-3 col-form-label fw-bold fs-6 ">Status</label>
+                <div class="col-lg-6">
+                <ng-select  bindLabel="name" appendTo=".col-lg-6"  [clearable]="false" bindValue="id" >
+                    <ng-option>Active</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+            </div> -->
+            <div id="secStatus" class="accordion-body border-bottom">
+              <div class="row mb-6">
+                <label class="col-lg-3 col-form-label fw-bold fs-6 ">Status</label>
+                <div class="col-lg-6">
+                <ng-select formControlName="status" bindLabel="name" appendTo=".col-lg-6"  [clearable]="false" bindValue="id">
+                    <ng-option *ngFor="let status of AllStatusTypes" [value]="status.id">{{ status.name }}</ng-option>
+                  </ng-select>
+                  <!-- [ngClass]="companySetupForm.get('status')?.value === true? 'ph-status-dropdown text-green':companySetupForm.get('status')?.value === false'ph-status-dropdown text-red':''" -->
+                </div>
+              </div>
+            </div>
+  
+          <div class="accordion-item" id="sec1">
+            <h2 class="accordion-header" id="kt_accordion_1_header_1">
+              <button class="accordion-button fs-4 fw-semibold" type="button" (click)="basic = !basic"
+              [class.collapsed]="!basic"
+              [ngClass]="
+              submitted && companySetupForm.invalid|| isDuplicateEmail
+                  ? 'border-error' : '' "
+              >
+                Basic Details
+              </button>
+            </h2>
+            <div id="kt_accordion_1_body_1" class="accordion-collapse collapse show" [class.show]="basic">
+              <div class="accordion-body">
+
+                <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6 required">Company Name</label>
+                    <div class="col-lg-6">
+                      <input type="text" formControlName="companyName" class="form-control form-control-lg mb-3 " [class.border-error]=" submitted &&
+                      (f['companyName'].errors)"
+                        >
+                        <div
+                        *ngIf="
+                          submitted &&
+                          (f['companyName'].errors)
+                        "
+                        class="required-feedback"
+                      >
+                        <div class="error-text">Company Name is required/invalid</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6 required">Country</label>
+                    <div class="col-lg-6">
+                      <ng-select class="h-46px mb-3" appendTo=".col-lg-6" [items]="getAllCountry"
+                      formControlName="countryId"
+                      bindLabel="countryName" bindValue="id" [class.border-error]="submitted &&
+                      (f['countryId'].errors)">
+                      </ng-select>
+                        <div
+                        *ngIf="
+                          submitted &&
+                        (f['countryId'].errors)
+                        "
+                        class="required-feedback"
+                      >
+                        <div class="error-text">
+                          Country is required
+                        </div>
+                      </div>
+                    </div>
+                </div>
+
+                <div class="row mb-6">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6 required ">Currency</label>
+                  <div class="col-lg-6">
+                     <ng-select class="h-46px mb-3" appendTo=".col-lg-6" [items]="CurrencyList"
+                     formControlName="currency" [class.border-error]=" submitted &&
+                    ( f['currency'].errors)"
+                     bindLabel="currencyName" bindValue="currencyCode">
+                     </ng-select >
+                      <div
+                      *ngIf="
+                        submitted &&
+                        (f['currency'].errors)
+                      "
+                      class="required-feedback"
+                    >
+                      <div class="error-text">
+                          Currency is required
+                      </div>
+                    </div>
+                  </div>
+              </div>
+  
+              <div class="row mb-6">
+                  <label class="col-lg-3 col-form-label fw-bold fs-6 required">Measuring Unit</label>
+                  <div class="col-lg-6">
+                    <ng-select class="h-46px mb-3" appendTo=".col-lg-6" [items]="measuringUnitList"
+                    formControlName="measuringUnit"
+                    bindLabel="name" bindValue="id" [class.border-error]="submitted &&
+                    (f['measuringUnit'].errors)">
+                    </ng-select>
+                      <div
+                      *ngIf="
+                        submitted &&
+                      (f['measuringUnit'].errors)
+                      "
+                      class="required-feedback"
+                    >
+                      <div class="error-text">
+                          Measuring Unit is required
+                      </div>
+                    </div>
+                  </div>
+              </div>
+  
+              <div class="row mb-6">
+                <label class="col-lg-3 col-form-label fw-bold fs-6 required">Time Zone</label>
+                <div class="col-lg-6">
+                  <ng-select class="h-46px mb-3" appendTo=".col-lg-6" [items]="timeZoneData"
+                  formControlName="timezone"
+                  bindLabel="name" bindValue="timeZoneId" [class.border-error]="submitted &&
+                  (f['timezone'].errors)">
+                  </ng-select>
+                    <div
+                    *ngIf="
+                      submitted &&
+                    (f['timezone'].errors)
+                    "
+                    class="required-feedback"
+                  >
+                    <div class="error-text">
+                        Timezone is required
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+            <div class="row mb-6">
+              <label class="col-lg-3 col-form-label fw-bold fs-6 required">No. of Users</label>
+              <div class="col-lg-6">
+                <input type="text"  (keypress)="isNumber($event)" formControlName="numberOfUsers" class="form-control form-control-lg mb-3 " [class.border-error]=" submitted &&
+                (f['numberOfUsers'].errors)">
+                  <div
+                  *ngIf="
+                    submitted &&
+                    (f['numberOfUsers'].errors)
+                  "
+                  class="required-feedback"
+                >
+                  <div class="error-text">No. of Users is required/invalid</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mb-6">
+              <label class="col-lg-3 col-form-label fw-bold fs-6 required">Email</label>
+              <div class="col-lg-6">
+                <input type="text" formControlName="email" class="form-control form-control-lg mb-3 " (click)="onFormChange()" [class.border-error]=" submitted &&
+                (f['email'].errors)|| isDuplicateEmail">
+                  <div
+                  *ngIf="
+                    submitted &&
+                    (f['email'].errors)
+                  "
+                  class="required-feedback"
+                >
+                <!-- <ng-container
+  [ngTemplateOutlet]="formError"
+  [ngTemplateOutletContext]="{
+    validation: 'email',
+    message: 'Email is invalid',
+    control: companySetupForm.controls['email']
+  }"
+></ng-container> -->
+                  <div class="error-text">Email is required</div>
+                </div>
+                <div *ngIf="isDuplicateEmail" class="required-feedback">
+                  <div class="error-text">Email already exists.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mb-6">
+              <label class="col-lg-3 col-form-label fw-bold fs-6 required ">Role</label>
+              <div class="col-lg-6">
+                 <ng-select class="h-46px mb-3" appendTo=".col-lg-6" [items]="AllRolesTypess"
+                 formControlName="role" [class.border-error]=" submitted &&
+                ( f['role'].errors)"
+                 bindLabel="name" bindValue="id">
+                 </ng-select >
+                  <div
+                  *ngIf="
+                    submitted &&
+                    (f['role'].errors)
+                  "
+                  class="required-feedback"
+                >
+                  <div class="error-text">
+                      Role is required
+                  </div>
+                </div>
+              </div>
+          </div>
+          
+                  <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6 required">First Name</label>
+                    <div class="col-lg-6">
+                      <input type="text" formControlName="firstName" class="form-control form-control-lg mb-3 " [class.border-error]=" submitted &&
+                      (f['firstName'].errors)">
+                        <div
+                        *ngIf="
+                          submitted &&
+                          (f['firstName'].errors)
+                        "
+                        class="required-feedback"
+                      >
+                        <div class="error-text">First Name is required/invalid</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6 required">Last Name</label>
+                    <div class="col-lg-6">
+                      <input type="text" formControlName="lastName" class="form-control form-control-lg mb-3 " [class.border-error]=" submitted &&
+                      (f['lastName'].errors)">
+                        <div
+                        *ngIf="
+                          submitted &&
+                          (f['lastName'].errors)"
+                        class="required-feedback"
+                      >
+                        <div class="error-text">Last Name is required/invalid</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+
+
+
+
+
+
+
+                  <!-- <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6 required">RERA ORN (Office Registration No.)</label>
+                    <div class="col-lg-6">
+                      <input type="text" formControlName="reraorn" class="form-control form-control-lg mb-3 " [class.border-error]=" submitted &&
+                      (f['reraorn'].errors &&
+                      (f['reraorn'].dirty ||
+                        f['reraorn'].touched))">
+                        <div
+                        *ngIf="
+                          submitted &&
+                          (f['reraorn'].errors &&
+                          (f['reraorn'].dirty ||
+                            f['reraorn'].touched))
+                        "
+                        class="required-feedback"
+                      >
+                        <div class="error-text">RERA is required/invalid</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6 required">TRN (Tax Registration No.)</label>
+                    <div class="col-lg-6">
+                      <input type="text" formControlName="trn" class="form-control form-control-lg mb-3 " [class.border-error]=" submitted &&
+                      (f['trn'].errors &&
+                      (f['trn'].dirty ||
+                        f['trn'].touched))">
+                        <div
+                        *ngIf="
+                          submitted &&
+                          (f['trn'].errors &&
+                          (f['trn'].dirty ||
+                            f['trn'].touched))
+                        "
+                        class="required-feedback"
+                      >
+                        <div class="error-text">TRN is required/invalid</div>
+                      </div>
+                    </div>
+                  </div> -->
+
+                  <!-- <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6 required">Address</label>
+                    <div class="col-lg-6">
+                      <input type="text" formControlName="address" class="form-control form-control-lg mb-3 " [class.border-error]=" submitted &&
+                      (f['address'].errors &&
+                      (f['address'].dirty ||
+                        f['address'].touched))">
+                        <div
+                        *ngIf="
+                          submitted &&
+                          (f['address'].errors &&
+                          (f['address'].dirty ||
+                            f['address'].touched))
+                        "
+                        class="required-feedback"
+                      >
+                        <div class="error-text">Address is required/invalid</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6 required">Mobile</label>
+                    <div class="col-lg-6">
+                      <div class="input-group">
+                        <ng-select [items]="CountryCodeList" formControlName="CountryCode" bindLabel="name" bindValue="id">
+                          <ng-template ng-label-tmp let-item="item">
+                            {{item.code}}
+                          </ng-template>
+                        </ng-select>
+                        <input type="text" id="Ref" (keypress)="isNumber($event)"
+                          class="form-control form-control-lg mb-3 mb-lg-0" formControlName="phone"
+                        />
+                      </div>
+                    </div>
+                  </div> -->
+<!-- 
+                  <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6 required">Website</label>
+                    <div class="col-lg-6">
+                      <input type="text" formControlName="website" class="form-control form-control-lg mb-3 " [class.border-error]=" submitted &&
+                      (f['website'].errors &&
+                      (f['website'].dirty ||
+                        f['website'].touched))">
+                        <div
+                        *ngIf="
+                          submitted &&
+                          (f['website'].errors &&
+                          (f['website'].dirty ||
+                            f['website'].touched))
+                        "
+                        class="required-feedback"
+                      >
+                        <div class="error-text">Website is required/invalid</div>
+                      </div>
+                    </div>
+                  </div> -->
+
+                  <!-- <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6 required">Company Profile
+                    </label>
+                    <div class="col-lg-6">
+                      <input type="text" formControlName="companyProfile" class="form-control form-control-lg mb-3 " [class.border-error]=" submitted &&
+                      (f['companyProfile'].errors &&
+                      (f['companyProfile'].dirty ||
+                        f['companyProfile'].touched))">
+                        <div
+                        *ngIf="
+                          submitted &&
+                          (f['companyProfile'].errors &&
+                          (f['companyProfile'].dirty ||
+                            f['companyProfile'].touched))
+                        "
+                        class="required-feedback"
+                      >
+                        <div class="error-text">Company Profile is required/invalid</div>
+                      </div>
+                    </div>
+                  </div> -->
+                  <!-- Copy three fields from settings/system.component.html-->
+           
+                  <!-- <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6 required">Role</label>
+                    <div class="col-lg-6">
+                      <ng-select bindLabel="role">
+                        <ng-option >Active</ng-option>
+                        <ng-option >Inactive</ng-option>
+                      </ng-select>
+                      <div class="required-feedback">
+                        <div class="error-text">Role is required</div>
+                      </div>
+                    </div>
+                  </div> -->
+
+                  <!-- <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6 required">First Name</label>
+                    <div class="col-lg-6">
+                      <div>
+                        <input class="form-control form-control-lg mb-3 mb-lg-0" id="firstName" type="text"/>
+                      </div>
+                      <div class="required-feedback">
+                        <div class="error-text">First Name is required/invalid</div>
+                      </div>
+
+
+                    </div>
+                  </div> -->
+
+                  <!-- <div class="row mb-6">
+                    <label class="col-lg-3 col-form-label fw-bold fs-6 required">Last Name</label>
+                    <div class="col-lg-6">
+                      <div>
+                        <input class="form-control form-control-lg mb-3 mb-lg-0" id="lastName" type="text"/>
+                      </div>
+                      <div class="required-feedback">
+                        <div class="error-text">Last Name is required/invalid</div>
+                      </div>
+                    </div>
+                  </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!--./card-body -->
+      </form>
+    </div><!--./card-->
+  </div>
